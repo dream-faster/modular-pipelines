@@ -5,7 +5,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.metrics import f1_score, accuracy_score
 from sklearn.svm import LinearSVC
-from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import GaussianNB, MultinomialNB
 from sklearn.base import ClassifierMixin
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.pipeline import Pipeline
@@ -38,4 +38,4 @@ def train(classifier: ClassifierMixin):
     print(f"{type(classifier)} f1: {f1}")
 
 train(LinearSVC())
-train(GaussianNB())
+train(MultinomialNB())
