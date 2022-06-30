@@ -1,0 +1,28 @@
+name: nlp
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - black
+  - ipython
+  - notebook
+  - ipykernel
+  - pytorch=1.10.2
+  - tqdm
+  - numpy
+  - pandas
+  - pytest
+  - tensorboard
+  - pyright
+  - wandb
+  - python-dotenv
+  - nltk
+  - transformers
+  - datasets
+  - scikit-learn
+  - spacy
+  - imbalanced-learn
+  - swifter
+  - pip
+
+prefix: /usr/local/anaconda3/envs/nlp
