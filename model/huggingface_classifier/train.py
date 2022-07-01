@@ -1,14 +1,13 @@
-from datasets import load_dataset
 from transformers import (
     AutoTokenizer,
     DataCollatorWithPadding,
     AutoModelForSequenceClassification,
-    AutoModelForMaskedLM,
     TrainingArguments,
     Trainer,
 )
 import numpy as np
-from datasets import load_metric, list_metrics, inspect_metric
+from datasets import load_metric, Dataset
+from config import HuggingfaceConfig, huggingface_config
 from data.dataloader import load_data
 
 
@@ -27,8 +26,9 @@ def compute_metrics(eval_pred):
     return {"accuracy": accuracy, "f1": f1}
 
 
-def run_training():
-    train_dataset, val_dataset, test_dataset = load_data(huggingface=False)
+def run_training_pipeline(
+    train_data: Dataset, val_data: Dataset, config: HuggingfaceConfig
+) -> Trainer:
 
     tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
     model = AutoModelForSequenceClassification.from_pretrained(
@@ -38,29 +38,27 @@ def run_training():
     def preprocess_function(examples):
         return tokenizer(examples["text"], truncation=True)
 
-    tokenized_train = train_dataset.map(preprocess_function, batched=True)
-    tokenized_test = test_dataset.map(preprocess_function, batched=True)
+    tokenized_train = train_data.map(preprocess_function, batched=True)
+    tokenized_val = val_data.map(preprocess_function, batched=True)
 
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
-    repo_name = "finetuning-sentiment-model-sst"
-
     training_args = TrainingArguments(
-        output_dir=repo_name,
+        output_dir="model/huggingface_classifier/saved/" + config.repo_name,
         learning_rate=2e-5,
         per_device_train_batch_size=16,
         per_device_eval_batch_size=16,
         num_train_epochs=2,
         weight_decay=0.01,
         save_strategy="epoch",
-        push_to_hub=False,
+        push_to_hub=config.push_to_hub,
     )
 
     trainer = Trainer(
         model=model,
         args=training_args,
         train_dataset=tokenized_train,
-        eval_dataset=tokenized_test,
+        eval_dataset=tokenized_val,
         tokenizer=tokenizer,
         data_collator=data_collator,
         compute_metrics=compute_metrics,
@@ -69,6 +67,7 @@ def run_training():
     trainer.train()
     trainer.evaluate()
 
+    if config.push_to_hub:
+        trainer.push_to_hub()
 
-if __name__ == "__main__":
-    run_training()
+    return trainer

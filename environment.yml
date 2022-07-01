@@ -23,6 +23,7 @@ dependencies:
   - spacy
   - imbalanced-learn
   - swifter
+  - huggingface_hub
   - pip
 
 prefix: /usr/local/anaconda3/envs/nlp
