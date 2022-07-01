@@ -1,7 +1,7 @@
 from datasets import load_dataset
 from transformers import AutoTokenizer, DataCollatorWithPadding, AutoModelForSequenceClassification, AutoModelForMaskedLM, TrainingArguments, Trainer
 import numpy as np
-from datasets import load_metric
+from datasets import load_metric, list_metrics, inspect_metric
 from data.dataloader import load_data
 
 def compute_metrics(eval_pred):
@@ -11,7 +11,7 @@ def compute_metrics(eval_pred):
    logits, labels = eval_pred
    predictions = np.argmax(logits, axis=-1)
    accuracy = load_accuracy.compute(predictions=predictions, references=labels)["accuracy"]
-   f1 = load_f1.compute(predictions=predictions, references=labels)["f1"]
+   f1 = load_f1.compute(predictions=predictions, references=labels, average='micro')["f1"]
    return {"accuracy": accuracy, "f1": f1}
 
 
