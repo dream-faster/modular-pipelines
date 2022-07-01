@@ -1,9 +1,9 @@
 class BaseModel:
-    def __init__(self):
+    def __init__(self, config):
         pass
 
-    def fit(self, X, y):
+    def fit(self, train_dataset, val_dataset):
         pass
 
-    def predict(self, X):
+    def predict(self, test_dataset):
         pass

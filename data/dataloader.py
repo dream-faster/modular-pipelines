@@ -1,6 +1,35 @@
-from datasets import load_metric, load_dataset, Dataset, Features, Value, ClassLabel
+from datasets import load_dataset, Dataset, Features, Value, ClassLabel
 from typing import Tuple
 import pandas as pd
+from config import GlobalPreprocessConfig
+
+
+def shorten_datasets(
+    data: Tuple[Dataset, Dataset, Dataset],
+    preprocess_config: GlobalPreprocessConfig,
+) -> Tuple[Dataset, Dataset, Dataset]:
+    if preprocess_config.train_size != -1:
+        train_dataset = data[0].select(
+            [i for i in list(range(min(len(data[0]), preprocess_config.train_size)))]
+        )
+    else:
+        train_dataset = data[0]
+
+    if preprocess_config.val_size != -1:
+        val_dataset = data[1].select(
+            [i for i in list(range(min(len(data[1]), preprocess_config.val_size)))]
+        )
+    else:
+        val_dataset = data[1]
+
+    if preprocess_config.test_size != -1:
+        test_dataset = data[2].select(
+            [i for i in list(range(min(len(data[2]), preprocess_config.test_size)))]
+        )
+    else:
+        test_dataset = data[2]
+
+    return train_dataset, val_dataset, test_dataset
 
 
 def load_data(from_huggingface: bool = False) -> Tuple[Dataset, Dataset, Dataset]:

@@ -5,12 +5,11 @@ from config import HuggingfaceConfig, huggingface_config
 
 
 class HuggingfaceClassifyModel(BaseModel):
-    def __init__(self, data, config):
-        self.train_data, self.val_data, self.test_data = data[0], data[1], data[2]
+    def __init__(self, config):
         self.config = config
 
-    def fit(self):
-        return run_training_pipeline(self.train_data, self.val_data, self.config)
+    def fit(self, train_dataset, val_dataset):
+        return run_training_pipeline(train_dataset, val_dataset, self.config)
 
-    def predict(self):
-        return run_inference_pipeline(self.test_data, huggingface_config, self.config)
+    def predict(self, test_dataset):
+        return run_inference_pipeline(test_dataset, huggingface_config, self.config)
