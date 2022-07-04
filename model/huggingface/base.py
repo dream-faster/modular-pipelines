@@ -54,7 +54,7 @@ class HuggingfaceModel(BaseModel):
             return False
 
     def is_fitted(self):
-        self.load_fitted(self.config)
+        return self.load_fitted(self.config)
 
 
 def from_pandas(df: pd.DataFrame) -> Dataset:
