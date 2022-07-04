@@ -7,8 +7,7 @@ from transformers import (
 )
 import numpy as np
 from datasets import load_metric, Dataset
-from config import HuggingfaceConfig, huggingface_config
-from data.dataloader import load_data
+from config import HuggingfaceConfig
 
 
 def compute_metrics(eval_pred):
@@ -27,12 +26,14 @@ def compute_metrics(eval_pred):
 
 
 def run_training_pipeline(
-    train_data: Dataset, val_data: Dataset, config: HuggingfaceConfig
+    train_data: Dataset,
+    val_data: Dataset,
+    config: HuggingfaceConfig,
 ) -> Trainer:
 
-    tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
+    tokenizer = AutoTokenizer.from_pretrained(config.pretrained_model)
     model = AutoModelForSequenceClassification.from_pretrained(
-        "distilbert-base-uncased", num_labels=5
+        config.pretrained_model, num_labels=config.num_classes
     )
 
     def preprocess_function(examples):
@@ -69,5 +70,3 @@ def run_training_pipeline(
 
     if config.push_to_hub:
         trainer.push_to_hub()
-
-    return trainer

@@ -10,14 +10,17 @@ Probabilities = List[float]
 
 @dataclass
 class BaseConfig:
+    force_fit: bool
     pass
 
 
 @dataclass
 class HuggingfaceConfig(BaseConfig):
+    pretrained_model: str
     epochs: int
     user_name: str
     repo_name: str
+    num_classes: int
     push_to_hub: bool = False
 
 
