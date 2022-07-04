@@ -26,9 +26,10 @@ nb = MultinomialNB()
 lg = LogisticRegression()
 gb = GradientBoostingClassifier(n_estimators=100, max_depth=20, random_state=0)
 
-sklearn_config = SKLearnConfig(
-    classifier=VotingClassifier(
-        estimators=[("nb", nb), ("lg", lg), ("gb", gb)], voting="soft"
-    ),
-    one_vs_rest=False
-)
+# sklearn_config = SKLearnConfig(
+#     classifier=VotingClassifier(
+#         estimators=[("nb", nb), ("lg", lg), ("gb", gb)], voting="soft"
+#     ),
+#     one_vs_rest=False,
+# )
+sklearn_config = SKLearnConfig(classifier=nb, one_vs_rest=False)

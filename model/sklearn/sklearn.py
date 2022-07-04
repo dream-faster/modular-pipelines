@@ -12,6 +12,7 @@ import spacy
 from typing import Tuple, List
 import swifter
 
+
 class SKLearnModel(BaseModel):
 
     config: SKLearnConfig
@@ -53,9 +54,10 @@ class SKLearnModel(BaseModel):
         print(f"{type(self.config.classifier)} f1: {f1}")
 
     def predict(self, test_dataset: pd.DataFrame) -> List[Tuple[Label, Probabilities]]:
-        return self.pipeline.predict_proba(
-            test_dataset["text"].swifter.apply(preprocess)
-        )
+        prerocessed_dataset = test_dataset["text"].swifter.apply(preprocess)
+        predictions = self.pipeline.predict(prerocessed_dataset)
+        probabilities = self.pipeline.predict_proba(prerocessed_dataset)
+        return list(zip(predictions, probabilities))
 
 
 def create_classifier(
