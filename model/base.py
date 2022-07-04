@@ -12,6 +12,9 @@ class BaseModel(ABC):
     def __init__(self, config: BaseConfig):
         raise NotImplementedError()
 
+    def preload(self):
+        pass
+
     def fit(self, train_dataset: pd.DataFrame, val_dataset: pd.DataFrame) -> None:
         raise NotImplementedError()
 

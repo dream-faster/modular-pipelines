@@ -11,6 +11,10 @@ class Ensemble(BaseModel):
         self.models = models
         self.config = BaseConfig(force_fit=False)
 
+    def preload(self):
+        for model in self.models:
+            model.preload()
+
     def fit(self, train_dataset: pd.DataFrame, val_dataset: pd.DataFrame) -> None:
         for model in self.models:
             train_model(model, train_dataset, val_dataset)

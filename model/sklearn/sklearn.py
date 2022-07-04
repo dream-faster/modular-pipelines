@@ -9,6 +9,7 @@ from model.base import BaseModel
 from type import SKLearnConfig, Label, Probabilities
 from .preprocess import preprocess
 import spacy
+from spacy.cli.download import download
 from typing import Tuple, List
 import swifter
 
@@ -19,7 +20,10 @@ class SKLearnModel(BaseModel):
 
     def __init__(self, config: SKLearnConfig):
         self.config = config
-        nlp = spacy.load("en_core_web_sm")
+
+    def preload(self):
+        download("en_core_web_lg")
+        nlp = spacy.load("en_core_web_lg")
         self.spacy_stopwords = spacy.lang.en.stop_words.STOP_WORDS
 
     def fit(self, train_dataset: pd.DataFrame, val_dataset: pd.DataFrame) -> None:
@@ -61,6 +65,7 @@ class SKLearnModel(BaseModel):
 
     def is_fitted(self) -> bool:
         return False
+
 
 def create_classifier(
     classifier: ClassifierMixin, one_vs_rest: bool
