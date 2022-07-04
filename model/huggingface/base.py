@@ -42,19 +42,18 @@ class HuggingfaceModel(BaseModel):
             model, from_pandas(test_dataset), huggingface_config
         )
 
-    def load_fitted(self, config: HuggingfaceConfig) -> bool:
+    def __load_fitted(self) -> bool:
+        repo_name = self.config.user_name + "/" + self.config.repo_name
         try:
-            self.model = load_module(config.user_name + "/" + config.repo_name)
-            print(
-                f'⬇️ Loading model found on {config.user_name + "/" + config.repo_name}'
-            )
+            self.model = load_module(repo_name)
+            print(f"⬇️ Loading model found on {repo_name}")
             return True
         except:
-            print(f'0️⃣ No model found on {config.user_name + "/" + config.repo_name}')
+            print(f"0️⃣ No model found on {repo_name}")
             return False
 
     def is_fitted(self):
-        return self.load_fitted(self.config)
+        return self.__load_fitted()
 
 
 def from_pandas(df: pd.DataFrame) -> Dataset:

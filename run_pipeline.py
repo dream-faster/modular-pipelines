@@ -30,7 +30,7 @@ if __name__ == "__main__":
     run_pipeline(
         global_preprocess_config,
         [
-            # SKLearnModel(config=sklearn_config),
+            SKLearnModel(config=sklearn_config),
             HuggingfaceModel(config=huggingface_config),
         ],
     )
