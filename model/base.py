@@ -4,7 +4,11 @@ import pandas as pd
 from typing import List, Tuple
 from type import Label, Probabilities
 
+
 class BaseModel(ABC):
+
+    config: BaseConfig
+
     def __init__(self, config: BaseConfig):
         raise NotImplementedError()
 
@@ -12,4 +16,7 @@ class BaseModel(ABC):
         raise NotImplementedError()
 
     def predict(self, test_dataset: pd.DataFrame) -> List[Tuple[Label, Probabilities]]:
+        raise NotImplementedError()
+
+    def is_fitted(self) -> bool:
         raise NotImplementedError()

@@ -59,6 +59,8 @@ class SKLearnModel(BaseModel):
         probabilities = self.pipeline.predict_proba(prerocessed_dataset)
         return list(zip(predictions, probabilities))
 
+    def is_fitted(self) -> bool:
+        return False
 
 def create_classifier(
     classifier: ClassifierMixin, one_vs_rest: bool
