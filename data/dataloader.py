@@ -9,7 +9,7 @@ def load_data(
     df_train = pd.read_json(f"{folder}/train.jsonl", lines=True)[
         : preprocessing_config.train_size
     ]
-    df_val = pd.read_json(f"{folder}/dev.jsonl", lines=True)[
+    df_val = pd.read_json(f"{folder}/val.jsonl", lines=True)[
         : preprocessing_config.val_size
     ]
     df_test = pd.read_json(f"{folder}/test.jsonl", lines=True)[
