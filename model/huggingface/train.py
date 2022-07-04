@@ -44,7 +44,7 @@ def run_training_pipeline(
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
     training_args = TrainingArguments(
-        output_dir="model/huggingface_classifier/saved/" + config.repo_name,
+        output_dir="model/huggingface/saved/" + config.repo_name,
         learning_rate=2e-5,
         per_device_train_batch_size=16,
         per_device_eval_batch_size=16,
