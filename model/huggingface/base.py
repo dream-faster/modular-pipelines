@@ -42,21 +42,19 @@ class HuggingfaceModel(BaseModel):
             model, from_pandas(test_dataset), huggingface_config
         )
 
-    def load_fitted(self, config: HuggingfaceConfig) -> Optional[Callable]:
+    def load_fitted(self, config: HuggingfaceConfig) -> bool:
         try:
-            model = load_module(config.user_name + "/" + config.repo_name)
+            self.model = load_module(config.user_name + "/" + config.repo_name)
             print(
                 f'⬇️ Loading model found on {config.user_name + "/" + config.repo_name}'
             )
+            return True
         except:
-            model = None
             print(f'0️⃣ No model found on {config.user_name + "/" + config.repo_name}')
-
-        self.model = model
-        return model
+            return False
 
     def is_fitted(self):
-        return False if self.load_fitted(self.config) is None else True
+        self.load_fitted(self.config)
 
 
 def from_pandas(df: pd.DataFrame) -> Dataset:
