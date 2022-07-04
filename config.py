@@ -19,8 +19,8 @@ huggingface_config = HuggingfaceConfig(
 )
 
 global_preprocess_config = GlobalPreprocessConfig(
-    train_size=100,
-    val_size=100,
+    train_size=-1,
+    val_size=-1,
     test_size=5,
     data_from_huggingface=False,
 )
