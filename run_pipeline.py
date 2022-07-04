@@ -30,8 +30,7 @@ if __name__ == "__main__":
         AverageEnsembleModel(
             [
                 SKLearnModel(config=sklearn_config),
-                SKLearnModel(config=sklearn_config),
-                # HuggingfaceModel(config=huggingface_config),
+                HuggingfaceModel(config=huggingface_config),
             ]
         ),
     )
