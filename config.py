@@ -11,10 +11,10 @@ from sklearn.ensemble import (
 huggingface_config = HuggingfaceConfig(
     pretrained_model="distilbert-base-uncased",
     epochs=1,
-    user_name="semy",
-    repo_name="finetuning-sentiment-model-sst",
-    push_to_hub=False,
-    num_classes=5,
+    user_name="itchingpixels",
+    repo_name="finetuning-tweeteval-hate-speech",
+    push_to_hub=True,
+    num_classes=2,
     force_fit=False,
 )
 

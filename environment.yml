@@ -1,6 +1,7 @@
 name: nlp
 channels:
   - conda-forge
+  - huggingface
 dependencies:
   - python=3.9
   - black

@@ -1,5 +1,5 @@
 from typing import List
-from model.average_ensemble import AverageEnsembleModel
+from model.ensemble import Ensemble
 from model.huggingface import HuggingfaceModel
 
 from model.sklearn import SKLearnModel
@@ -11,7 +11,7 @@ from config import (
     GlobalPreprocessConfig,
 )
 from model.base import BaseModel
-from model.average_ensemble import AverageEnsembleModel
+from model.ensemble import Ensemble
 from training.train import train_model
 
 
@@ -27,7 +27,7 @@ def run_pipeline(preprocess_config: GlobalPreprocessConfig, model: BaseModel):
 if __name__ == "__main__":
     run_pipeline(
         global_preprocess_config,
-        AverageEnsembleModel(
+        Ensemble(
             [
                 SKLearnModel(config=sklearn_config),
                 HuggingfaceModel(config=huggingface_config),

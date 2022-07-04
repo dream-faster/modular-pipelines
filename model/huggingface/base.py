@@ -24,8 +24,8 @@ class HuggingfaceModel(BaseModel):
 
     def fit(self, train_dataset: pd.DataFrame, val_dataset: pd.DataFrame) -> None:
         run_training_pipeline(
-            from_pandas(train_dataset),
-            from_pandas(val_dataset),
+            from_pandas(train_dataset, self.config.num_classes),
+            from_pandas(val_dataset, self.config.num_classes),
             self.config,
         )
 
@@ -39,7 +39,9 @@ class HuggingfaceModel(BaseModel):
             model = load_module(self.config.pretrained_model)
 
         return run_inference_pipeline(
-            model, from_pandas(test_dataset), huggingface_config
+            model,
+            from_pandas(test_dataset, self.config.num_classes),
+            huggingface_config,
         )
 
     def __load_fitted(self) -> bool:
@@ -56,8 +58,8 @@ class HuggingfaceModel(BaseModel):
         return self.__load_fitted()
 
 
-def from_pandas(df: pd.DataFrame) -> Dataset:
+def from_pandas(df: pd.DataFrame, num_classes: int) -> Dataset:
     return Dataset.from_pandas(
         df,
-        features=Features({"text": Value("string"), "label": ClassLabel(5)}),
+        features=Features({"text": Value("string"), "label": ClassLabel(num_classes)}),
     )

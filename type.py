@@ -11,7 +11,6 @@ Probabilities = List[float]
 @dataclass
 class BaseConfig:
     force_fit: bool
-    pass
 
 
 @dataclass

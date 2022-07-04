@@ -6,9 +6,10 @@ import numpy as np
 from training.train import train_model
 
 
-class AverageEnsembleModel(BaseModel):
+class Ensemble(BaseModel):
     def __init__(self, models: List[BaseModel]):
         self.models = models
+        self.config = BaseConfig(force_fit=False)
 
     def fit(self, train_dataset: pd.DataFrame, val_dataset: pd.DataFrame) -> None:
         for model in self.models:
