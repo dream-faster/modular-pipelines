@@ -15,7 +15,7 @@ class NLTKModel(BaseModel):
     def fit(self, train_dataset, val_dataset):
         pass
 
-    def infer(self, words: List[str]):
+    def infer(self, words: List[str])->List[List[str]]:
         return [
             [single_word for ss in wn.synsets(word) for single_word in ss.lemma_names()]
             for word in words
