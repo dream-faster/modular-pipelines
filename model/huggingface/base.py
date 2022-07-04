@@ -49,17 +49,14 @@ class HuggingfaceModel(BaseModel):
                 f'⬇️ Loading model found on {config.user_name + "/" + config.repo_name}'
             )
         except:
-            print(f'0️⃣ No model found on {config.user_name + "/" + config.repo_name}')
             model = None
+            print(f'0️⃣ No model found on {config.user_name + "/" + config.repo_name}')
 
         self.model = model
         return model
 
     def is_fitted(self):
-        if self.load_fitted(self.config) is not None:
-            return True
-        else:
-            return False
+        return False if self.load_fitted(self.config) is None else True
 
 
 def from_pandas(df: pd.DataFrame) -> Dataset:
