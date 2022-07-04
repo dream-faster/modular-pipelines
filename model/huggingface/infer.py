@@ -1,15 +1,13 @@
-from dataclasses import dataclass
 from typing import Callable, Tuple, List
 
-from config import HuggingfaceConfig, huggingface_config
+from config import HuggingfaceConfig
 from datasets import Dataset
 import numpy as np
 from type import Label, Probabilities
-from model.base import BaseModel
 
 
 def run_inference_pipeline(
-    model: BaseModel, test_data: Dataset, config: HuggingfaceConfig
+    model: Callable, test_data: Dataset, config: HuggingfaceConfig
 ) -> List[Tuple[Label, Probabilities]]:
 
     predictions = model(test_data["text"], top_k=config.num_classes)

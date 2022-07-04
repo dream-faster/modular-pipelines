@@ -7,8 +7,7 @@ from transformers import (
 )
 import numpy as np
 from datasets import load_metric, Dataset
-from config import HuggingfaceConfig, huggingface_config
-from data.dataloader import load_data
+from config import HuggingfaceConfig
 
 
 def compute_metrics(eval_pred):

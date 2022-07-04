@@ -5,7 +5,7 @@ from .train import run_training_pipeline
 from config import HuggingfaceConfig, huggingface_config
 import pandas as pd
 from datasets import Dataset, Features, Value, ClassLabel
-from typing import List, Tuple, Callable, Optional, Any
+from typing import List, Tuple, Callable, Optional
 from type import Label, Probabilities
 from transformers import pipeline
 
