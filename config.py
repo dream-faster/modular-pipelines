@@ -13,6 +13,8 @@ huggingface_config = HuggingfaceConfig(
     user_name="semy",
     repo_name="finetuning-sentiment-model-sst",
     push_to_hub=False,
+    num_classes=5,
+    force_fit=False,
 )
 
 global_preprocess_config = GlobalPreprocessConfig(
@@ -32,4 +34,4 @@ gb = GradientBoostingClassifier(n_estimators=100, max_depth=20, random_state=0)
 #     ),
 #     one_vs_rest=False,
 # )
-sklearn_config = SKLearnConfig(classifier=nb, one_vs_rest=False)
+sklearn_config = SKLearnConfig(classifier=nb, one_vs_rest=False, force_fit=False)
