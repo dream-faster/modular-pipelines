@@ -52,7 +52,7 @@ class HuggingfaceModel(BaseModel):
             print(f"0️⃣ No model found on {repo_name}")
             return False
 
-    def is_fitted(self):
+    def is_fitted(self) -> bool:
         return self.__load_fitted()
 
 
