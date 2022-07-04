@@ -16,6 +16,7 @@ class BaseConfig:
 
 @dataclass
 class HuggingfaceConfig(BaseConfig):
+    pretrained_model: str
     epochs: int
     user_name: str
     repo_name: str

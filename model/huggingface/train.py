@@ -32,9 +32,9 @@ def run_training_pipeline(
     config: HuggingfaceConfig,
 ) -> Trainer:
 
-    tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
+    tokenizer = AutoTokenizer.from_pretrained(config.pretrained_model)
     model = AutoModelForSequenceClassification.from_pretrained(
-        "distilbert-base-uncased", num_labels=config.num_classes
+        config.pretrained_model, num_labels=config.num_classes
     )
 
     def preprocess_function(examples):

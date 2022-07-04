@@ -7,7 +7,6 @@ import pandas as pd
 from datasets import Dataset, Features, Value, ClassLabel
 from typing import List, Tuple, Callable, Optional, Any
 from type import Label, Probabilities
-import os.path
 from transformers import pipeline
 
 
@@ -21,31 +20,39 @@ class HuggingfaceModel(BaseModel):
 
     def __init__(self, config: HuggingfaceConfig):
         self.config: HuggingfaceConfig = config
+        self.model: Optional[Callable] = None
 
     def fit(self, train_dataset: pd.DataFrame, val_dataset: pd.DataFrame) -> None:
-        if not self.fitted_model:
-            run_training_pipeline(
-                from_pandas(train_dataset),
-                from_pandas(val_dataset),
-                self.config,
-            )
+        run_training_pipeline(
+            from_pandas(train_dataset),
+            from_pandas(val_dataset),
+            self.config,
+        )
 
     def predict(self, test_dataset: pd.DataFrame) -> List[Tuple[Label, Probabilities]]:
-        model = self.load_fitted(self.config)
+        if self.model:
+            model = self.model
+        else:
+            print(
+                f"❌ No fitted model, using inference on pretrained foundational model :{self.config.pretrained_model}"
+            )
+            model = load_module(self.config.pretrained_model)
+
         return run_inference_pipeline(
             model, from_pandas(test_dataset), huggingface_config
         )
 
-    def load_fitted(self, config: HuggingfaceConfig) -> Optional[Any]:
+    def load_fitted(self, config: HuggingfaceConfig) -> Optional[Callable]:
         try:
             model = load_module(config.user_name + "/" + config.repo_name)
             print(
-                f'⬇️ Downloading model found on {config.user_name + "/" + config.repo_name}'
+                f'⬇️ Loading model found on {config.user_name + "/" + config.repo_name}'
             )
         except:
             print(f'0️⃣ No model found on {config.user_name + "/" + config.repo_name}')
             model = None
 
+        self.model = model
         return model
 
     def is_fitted(self):

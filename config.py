@@ -9,6 +9,7 @@ from sklearn.ensemble import (
 )
 
 huggingface_config = HuggingfaceConfig(
+    pretrained_model="distilbert-base-uncased",
     epochs=1,
     user_name="semy",
     repo_name="finetuning-sentiment-model-sst",
