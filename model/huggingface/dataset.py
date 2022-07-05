@@ -1,6 +1,6 @@
 import pandas as pd
 from datasets import Dataset
-from configs.constants import DataConst
+from configs.constants import Const
 
 
 class RawDataset(Dataset):
@@ -13,8 +13,8 @@ class RawDataset(Dataset):
 
     def __getitem__(self, idx):
         return (
-            self.dataset[DataConst.input_name].iloc(idx),
-            self.dataset[DataConst.label_name].iloc(idx)[idx],
+            self.dataset[Const.input_col].iloc(idx),
+            self.dataset[Const.label_col].iloc(idx)[idx],
         )
 
     def from_pandas(self, *args, **kwargs):

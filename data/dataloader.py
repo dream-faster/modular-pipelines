@@ -1,7 +1,7 @@
 from typing import Tuple
 import pandas as pd
 from type import GlobalPreprocessConfig
-from configs.constants import DataConst
+from configs.constants import Const
 
 
 def load_data(
@@ -15,14 +15,14 @@ def load_data(
 
     df_train = df_train.rename(
         columns={
-            config.input_name: DataConst.input_name,
-            config.label_name: DataConst.label_name,
+            config.input_col: Const.input_col,
+            config.label_col: Const.label_col,
         }
     )
     df_test = df_test.rename(
         columns={
-            config.input_name: DataConst.input_name,
-            config.label_name: DataConst.label_name,
+            config.input_col: Const.input_col,
+            config.label_col: Const.label_col,
         }
     )
 

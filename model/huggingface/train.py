@@ -9,7 +9,7 @@ from transformers import (
 import numpy as np
 from datasets import load_metric, Dataset
 from configs.config import HuggingfaceConfig
-from configs.constants import DataConst
+from configs.constants import Const
 
 
 def compute_metrics(eval_pred):
@@ -39,7 +39,7 @@ def run_training_pipeline(
     )
 
     def preprocess_function(examples):
-        return tokenizer(examples[DataConst.input_name], truncation=True)
+        return tokenizer(examples[Const.input_col], truncation=True)
 
     tokenized_train = train_data.map(preprocess_function, batched=True)
     tokenized_val = val_data.map(preprocess_function, batched=True)
