@@ -30,7 +30,6 @@ class Sequential(BaseModel):
     def predict(self, test_dataset: List[Any]) -> List[Any]:
         last_output = test_dataset
         for model in self.models:
-            model.predict(last_output)
             last_output = model.predict(test_dataset)
         return last_output
 
