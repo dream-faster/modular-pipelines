@@ -27,7 +27,7 @@ class HuggingfaceModel(BaseModel):
         try:
             self.model = load_pipeline(repo_name)
         except:
-            pass
+            print("❌ No model found in huggingface repository")
 
     def fit(self, train_dataset: pd.DataFrame, val_dataset: pd.DataFrame) -> None:
         model = run_training_pipeline(

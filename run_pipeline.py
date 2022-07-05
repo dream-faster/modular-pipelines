@@ -16,7 +16,7 @@ from training.train import train_model
 
 models = Ensemble(
     [
-        SKLearnModel(config=sklearn_config),
+        # SKLearnModel(config=sklearn_config),
         HuggingfaceModel(config=huggingface_config),
     ]
 )
@@ -29,7 +29,7 @@ def run_pipeline(preprocess_config: GlobalPreprocessConfig, model: BaseModel = m
 
     model.preload()
     train_model(model, train_dataset, val_dataset)
-    model.predict(test_dataset)
+    return model.predict(test_dataset)
 
 
 if __name__ == "__main__":
