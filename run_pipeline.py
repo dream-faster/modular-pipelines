@@ -20,7 +20,7 @@ def run_pipeline(preprocess_config: GlobalPreprocessConfig, model: BaseModel):
         "data/original", preprocess_config
     )
 
-    # model.preload()
+    model.preload()
     train_model(model, train_dataset, val_dataset)
     model.predict(test_dataset)
 
