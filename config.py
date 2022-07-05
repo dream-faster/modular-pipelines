@@ -13,7 +13,7 @@ huggingface_config = HuggingfaceConfig(
     epochs=1,
     user_name="itchingpixels",
     repo_name="finetuning-tweeteval-hate-speech",
-    push_to_hub=True,
+    push_to_hub=False,
     num_classes=2,
     force_fit=False,
 )
