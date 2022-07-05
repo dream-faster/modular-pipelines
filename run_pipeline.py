@@ -20,7 +20,7 @@ def run_pipeline(preprocess_config: GlobalPreprocessConfig, model: BaseModel):
         "data/original", preprocess_config
     )
 
-    model.preload()
+    # model.preload()
     train_model(model, train_dataset, val_dataset)
     model.predict(test_dataset)
 
@@ -30,7 +30,7 @@ if __name__ == "__main__":
         global_preprocess_config,
         Ensemble(
             [
-                SKLearnModel(config=sklearn_config),
+                # SKLearnModel(config=sklearn_config),
                 HuggingfaceModel(config=huggingface_config),
             ]
         ),
