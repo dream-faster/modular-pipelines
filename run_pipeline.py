@@ -16,19 +16,17 @@ from training.train import train_model
 
 models = Ensemble(
     [
-        SKLearnModel(config=sklearn_config),
+        # SKLearnModel(config=sklearn_config),
         HuggingfaceModel(config=huggingface_config),
     ]
 )
 
 
 def run_pipeline(preprocess_config: GlobalPreprocessConfig, model: BaseModel = models):
-    train_dataset, val_dataset, test_dataset = load_data(
-        "data/original", preprocess_config
-    )
+    train_dataset, test_dataset = load_data("data/original", preprocess_config)
 
     model.preload()
-    train_model(model, train_dataset, val_dataset)
+    train_model(model, train_dataset)
     return model.predict(test_dataset)
 
 

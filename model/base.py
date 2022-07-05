@@ -15,7 +15,7 @@ class BaseModel(ABC):
     def preload(self):
         pass
 
-    def fit(self, train_dataset: pd.DataFrame, val_dataset: pd.DataFrame) -> None:
+    def fit(self, train_dataset: pd.DataFrame) -> None:
         raise NotImplementedError()
 
     def predict(self, test_dataset: pd.DataFrame) -> List[Tuple[Label, Probabilities]]:

@@ -8,6 +8,7 @@ from datasets import Dataset, Features, Value, ClassLabel
 from typing import List, Tuple, Callable, Optional, Union
 from type import Label, Probabilities
 from transformers import pipeline, Trainer, PreTrainedModel
+from sklearn.model_selection import train_test_split
 
 
 def load_pipeline(module: Union[str, PreTrainedModel]) -> Callable:
@@ -29,7 +30,12 @@ class HuggingfaceModel(BaseModel):
         except:
             print("❌ No model found in huggingface repository")
 
-    def fit(self, train_dataset: pd.DataFrame, val_dataset: pd.DataFrame) -> None:
+    def fit(self, train_dataset: pd.DataFrame) -> None:
+
+        train_dataset, val_dataset = train_test_split(
+            train_dataset, test_size=self.config.val_size
+        )
+
         model = run_training_pipeline(
             from_pandas(train_dataset, self.config.num_classes),
             from_pandas(val_dataset, self.config.num_classes),
