@@ -1,6 +1,7 @@
 from typing import Tuple
 import pandas as pd
 from type import GlobalPreprocessConfig
+from configs.constants import DataConst
 
 
 def load_data(
@@ -13,10 +14,16 @@ def load_data(
     df_train = pd.concat([df_train, df_val])
 
     df_train = df_train.rename(
-        columns={config.input_name: "input", config.label_name: "label"}
+        columns={
+            config.input_name: DataConst.input_name,
+            config.label_name: DataConst.label_name,
+        }
     )
     df_test = df_test.rename(
-        columns={config.input_name: "input", config.label_name: "label"}
+        columns={
+            config.input_name: DataConst.input_name,
+            config.label_name: DataConst.label_name,
+        }
     )
 
     return df_train, df_test

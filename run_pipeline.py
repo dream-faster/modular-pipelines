@@ -4,7 +4,7 @@ from model.huggingface import HuggingfaceModel
 
 from model.sklearn import SKLearnModel
 from data.dataloader import load_data
-from config import (
+from configs.config import (
     global_preprocess_config,
     huggingface_config,
     sklearn_config,

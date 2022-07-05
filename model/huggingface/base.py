@@ -2,13 +2,15 @@ from numpy import True_
 from model.base import BaseModel
 from .infer import run_inference_pipeline
 from .train import run_training_pipeline
-from config import HuggingfaceConfig, huggingface_config
+from configs.config import HuggingfaceConfig, huggingface_config
 import pandas as pd
 from datasets import Dataset, Features, Value, ClassLabel
 from typing import List, Tuple, Callable, Optional, Union
 from type import Label, Probabilities
 from transformers import pipeline, Trainer, PreTrainedModel
 from sklearn.model_selection import train_test_split
+
+from configs.constants import DataConst
 
 
 def load_pipeline(module: Union[str, PreTrainedModel]) -> Callable:
@@ -65,5 +67,10 @@ class HuggingfaceModel(BaseModel):
 def from_pandas(df: pd.DataFrame, num_classes: int) -> Dataset:
     return Dataset.from_pandas(
         df,
-        features=Features({"input": Value("string"), "label": ClassLabel(num_classes)}),
+        features=Features(
+            {
+                DataConst.input_name: Value("string"),
+                DataConst.label_name: ClassLabel(num_classes),
+            }
+        ),
     )
