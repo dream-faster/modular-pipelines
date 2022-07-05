@@ -15,9 +15,9 @@ class Ensemble(BaseModel):
         for model in self.models:
             model.preload()
 
-    def fit(self, train_dataset: pd.DataFrame, val_dataset: pd.DataFrame) -> None:
+    def fit(self, train_dataset: pd.DataFrame) -> None:
         for model in self.models:
-            train_model(model, train_dataset, val_dataset)
+            train_model(model, train_dataset)
 
     def predict(self, test_dataset: pd.DataFrame) -> List[Tuple[Label, Probabilities]]:
         probabilities = np.average(

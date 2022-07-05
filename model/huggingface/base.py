@@ -65,5 +65,5 @@ class HuggingfaceModel(BaseModel):
 def from_pandas(df: pd.DataFrame, num_classes: int) -> Dataset:
     return Dataset.from_pandas(
         df,
-        features=Features({"text": Value("string"), "label": ClassLabel(num_classes)}),
+        features=Features({"input": Value("string"), "label": ClassLabel(num_classes)}),
     )

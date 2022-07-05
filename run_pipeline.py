@@ -16,7 +16,7 @@ from training.train import train_model
 
 models = Ensemble(
     [
-        # SKLearnModel(config=sklearn_config),
+        SKLearnModel(config=sklearn_config),
         HuggingfaceModel(config=huggingface_config),
     ]
 )
