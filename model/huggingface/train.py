@@ -4,6 +4,7 @@ from transformers import (
     AutoModelForSequenceClassification,
     TrainingArguments,
     Trainer,
+    PreTrainedModel,
 )
 import numpy as np
 from datasets import load_metric, Dataset
@@ -29,7 +30,7 @@ def run_training_pipeline(
     train_data: Dataset,
     val_data: Dataset,
     config: HuggingfaceConfig,
-) -> Trainer:
+) -> PreTrainedModel:
 
     tokenizer = AutoTokenizer.from_pretrained(config.pretrained_model)
     model = AutoModelForSequenceClassification.from_pretrained(
@@ -70,3 +71,5 @@ def run_training_pipeline(
 
     if config.push_to_hub:
         trainer.push_to_hub()
+
+    return trainer.model
