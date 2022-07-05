@@ -14,8 +14,15 @@ from model.base import BaseModel
 from model.ensemble import Ensemble
 from training.train import train_model
 
+models = Ensemble(
+    [
+        SKLearnModel(config=sklearn_config),
+        HuggingfaceModel(config=huggingface_config),
+    ]
+)
 
-def run_pipeline(preprocess_config: GlobalPreprocessConfig, model: BaseModel):
+
+def run_pipeline(preprocess_config: GlobalPreprocessConfig, model: BaseModel = models):
     train_dataset, val_dataset, test_dataset = load_data(
         "data/original", preprocess_config
     )
@@ -26,12 +33,4 @@ def run_pipeline(preprocess_config: GlobalPreprocessConfig, model: BaseModel):
 
 
 if __name__ == "__main__":
-    run_pipeline(
-        global_preprocess_config,
-        Ensemble(
-            [
-                SKLearnModel(config=sklearn_config),
-                HuggingfaceModel(config=huggingface_config),
-            ]
-        ),
-    )
+    run_pipeline(global_preprocess_config, models)
