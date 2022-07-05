@@ -4,7 +4,7 @@ from model.huggingface import HuggingfaceModel
 
 from model.sklearn import SKLearnModel
 from data.dataloader import load_data
-from config import (
+from configs.config import (
     global_preprocess_config,
     huggingface_config,
     sklearn_config,
@@ -23,12 +23,10 @@ models = Ensemble(
 
 
 def run_pipeline(preprocess_config: GlobalPreprocessConfig, model: BaseModel = models):
-    train_dataset, val_dataset, test_dataset = load_data(
-        "data/original", preprocess_config
-    )
+    train_dataset, test_dataset = load_data("data/original", preprocess_config)
 
     model.preload()
-    train_model(model, train_dataset, val_dataset)
+    train_model(model, train_dataset)
     return model.predict(test_dataset)
 
 

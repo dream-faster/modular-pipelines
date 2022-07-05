@@ -15,6 +15,7 @@ huggingface_config = HuggingfaceConfig(
     repo_name="finetuning-tweeteval-hate-speech",
     push_to_hub=True,
     num_classes=2,
+    val_size=0.1,
     force_fit=False,
 )
 
@@ -23,6 +24,8 @@ global_preprocess_config = GlobalPreprocessConfig(
     val_size=-1,
     test_size=5,
     data_from_huggingface=False,
+    input_name="text",
+    label_name="label",
 )
 
 nb = MultinomialNB()

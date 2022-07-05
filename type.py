@@ -20,6 +20,7 @@ class HuggingfaceConfig(BaseConfig):
     user_name: str
     repo_name: str
     num_classes: int
+    val_size: float
     push_to_hub: bool = False
 
 
@@ -38,3 +39,5 @@ class GlobalPreprocessConfig:
     val_size: int
     test_size: int
     data_from_huggingface: bool
+    input_name: str
+    label_name: str
