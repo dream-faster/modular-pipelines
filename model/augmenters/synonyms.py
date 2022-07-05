@@ -18,11 +18,15 @@ class SynonymAugmenter(BaseModel):
     def fit(self, train_dataset: pd.DataFrame):
         pass
 
-    def predict(self, test_dataset: pd.DataFrame) -> List[List[str]]:
+    def predict(self, test_dataset: pd.DataFrame) -> List[str]:
         return [
-            [single_word for ss in wn.synsets(word) for single_word in ss.lemma_names()]
-            for word in test_dataset.iterrows()
+            " ".join([" ".join(get_synonyms(word)) for word in line.split(" ")])
+            for line in test_dataset["text"]
         ]
 
     def is_fitted(self) -> bool:
         return True
+
+
+def get_synonyms(word: str) -> List[str]:
+    return [single_word for ss in wn.synsets(word) for single_word in ss.lemma_names()]
