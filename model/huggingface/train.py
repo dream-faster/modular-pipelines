@@ -9,6 +9,7 @@ from transformers import (
 import numpy as np
 from datasets import load_metric, Dataset
 from config import HuggingfaceConfig
+import copy
 
 
 def compute_metrics(eval_pred):
@@ -36,6 +37,7 @@ def run_training_pipeline(
     model = AutoModelForSequenceClassification.from_pretrained(
         config.pretrained_model, num_labels=config.num_classes
     )
+    old_model = copy.copy(model)
 
     def preprocess_function(examples):
         return tokenizer(examples["text"], truncation=True)
@@ -72,6 +74,7 @@ def run_training_pipeline(
     if config.push_to_hub:
         trainer.push_to_hub()
 
-    print(model == trainer.model)
+    print("Is the original model mutated?")
+    print(old_model == trainer.model)
 
     return trainer.model
