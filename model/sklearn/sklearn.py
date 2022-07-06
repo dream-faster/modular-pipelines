@@ -23,8 +23,12 @@ class SKLearnModel(Model):
         self.config = config
 
     def preload(self):
-        download("en_core_web_lg")
+        # try:
         nlp = spacy.load("en_core_web_lg")
+        # except:
+        #     download("en_core_web_lg")
+        #     nlp = spacy.load("en_core_web_lg")
+
         self.spacy_stopwords = spacy.lang.en.stop_words.STOP_WORDS
 
     def fit(self, train_dataset: pd.DataFrame) -> None:

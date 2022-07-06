@@ -3,6 +3,7 @@ from .base import Block, Model, DataSource
 import pandas as pd
 from typing import List, Any, Callable
 from runner.train import train_model
+from runner.store import Store
 
 
 class Pipeline(Block):
@@ -24,8 +25,9 @@ class Pipeline(Block):
         for model in self.models:
             model.preload()
 
-    def fit(self, get_data: Callable) -> None:
-        last_output = self.datasource.deplate(get_data)
+    def fit(self, store: Store) -> None:
+        print(f"Training {self.id}")
+        last_output = self.datasource.deplate(store)
         for model in self.models:
             train_model(model, last_output)
             last_output = pd.DataFrame(
@@ -34,11 +36,13 @@ class Pipeline(Block):
                     Const.label_col: train_dataset[Const.label_col],
                 }
             )
+            store.set_data(model.id, last_output)
 
-    def predict(self, get_data: Callable) -> List[Any]:
-        last_output = self.datasource.deplate(get_data)
+    def predict(self, store: Store) -> pd.DataFrame:
+        last_output = self.datasource.deplate(store.get_data)
         for model in self.models:
             last_output = model.predict(last_output)
+            store.set_data(model.id, last_output)
         return last_output
 
     def is_fitted(self) -> bool:

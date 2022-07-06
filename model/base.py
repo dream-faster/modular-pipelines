@@ -2,6 +2,7 @@ from type import BaseConfig
 from abc import ABC
 import pandas as pd
 from typing import Any, List, Callable
+from runner.store import Store
 
 
 class Block(ABC):
@@ -35,5 +36,8 @@ class DataSource(Block):
     def __init__(self, id: str):
         self.id = id
 
-    def deplate(self, get_data: Callable) -> pd.DataFrame:
-        return get_data[self.id]
+    def deplate(self, store: Store) -> pd.DataFrame:
+        return store.get_data(self.id)
+
+    def preload(self):
+        pass
