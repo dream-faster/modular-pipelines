@@ -25,13 +25,17 @@ class SKLearnModel(BaseModel):
         self.name = name
 
     def preload(self):
-        download("en_core_web_lg")
-        nlp = spacy.load("en_core_web_lg")
+        try:
+            spacy.load("en_core_web_lg")
+        except:
+            download("en_core_web_lg")
+            spacy.load("en_core_web_lg")
+
         self.spacy_stopwords = spacy.lang.en.stop_words.STOP_WORDS
 
     def fit(self, train_dataset: pd.DataFrame) -> None:
 
-        X_train = train_dataset[Const.input_col].swifter.apply(preprocess)
+        X_train = train_dataset[Const.input_col].astype(str).swifter.apply(preprocess)
         y_train = train_dataset[Const.label_col]
 
         self.pipeline = Pipeline(

@@ -4,40 +4,8 @@ import pandas as pd
 from type import BaseConfig
 from typing import List, Any, Union
 import numpy as np
-
-
-class GlobalState:
-    def __init__(self):
-        self.state = dict()
-
-    def get(self, key: str):
-        return self.state[key]
-
-    def set(self, key: str, value: pd.DataFrame) -> None:
-        self.state[key] = value
-
-
-class BaseAdapter:
-    def __init__(self):
-        pass
-
-    def preload(self):
-        pass
-
-    def get_parent_class(self):
-        for base in self.__class__.__bases__:
-            return base
-
-    def connect(self, state: GlobalState):
-        raise NotImplementedError()
-
-
-class Concatenator(BaseAdapter):
-    def __init__(self):
-        pass
-
-    def connect(self, state: GlobalState):
-        pass
+from data.state import GlobalState
+from adapter.base import BaseAdapter
 
 
 class Linear(BaseModel):
@@ -45,7 +13,22 @@ class Linear(BaseModel):
         self.blocks = blocks
         self.config = BaseConfig(force_fit=False)
         self.state = GlobalState()
+        
+        self.__validity_check()
 
+    def __validity_check(self):
+        """ Check if connectors refer to previous blocks """
+        block_names = ['global']
+        for block in self.blocks:
+            if hasattr(block,"name"):
+                block_names.append(block.name)
+            if hasattr(block,"keys"):
+                for keys in block.keys:
+                    assert keys in block_names, f"{keys} defined before models in {block_names}"
+        
+        """ Check if there are no duplicate names """
+        assert len(block_names) == len(set(block_names)), f"Duplicate model names {block_names}"
+        
     def preload(self):
         for block in self.blocks:
             block.preload()
@@ -55,19 +38,28 @@ class Linear(BaseModel):
             model.fit(data)
 
     def train(self, train_dataset: pd.DataFrame) -> None:
-        output = train_dataset
+        self.state.set("global", train_dataset)
+
+        input = train_dataset
         for block in self.blocks:
             cls = block.get_parent_class()
             if cls == BaseAdapter:
-                block.connect(self.state)
+                input = block.connect(self.state)
             elif cls == BaseModel:
                 if block.train:
-                    self.__train_model__(block, output)
+                    self.__train_model__(block, input)
 
-                output = pd.DataFrame(
+                outputs = block.predict(input[Const.input_col].astype(str))
+                outputs = pd.DataFrame(
                     {
-                        Const.input_col: block.predict(output[Const.input_col]),
+                        Const.input_col: [output[0] for output in outputs],
+                        Const.prob_col: [output[1] for output in outputs],
                         Const.label_col: train_dataset[Const.label_col],
                     }
                 )
-                self.state.set(block.name, output)
+                self.state.set(block.name, outputs)
+                input = outputs
+
+    
+        
+        
