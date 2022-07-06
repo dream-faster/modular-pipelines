@@ -2,6 +2,6 @@ from dataclasses import dataclass
 
 
 @dataclass
-class DataConst:
-    input_name: str = "input"
-    label_name: str = "label"
+class Const:
+    input_col = "input"
+    label_col = "label"

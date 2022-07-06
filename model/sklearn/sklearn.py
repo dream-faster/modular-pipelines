@@ -10,9 +10,9 @@ from type import SKLearnConfig, Label, Probabilities
 from .preprocess import preprocess
 import spacy
 from spacy.cli.download import download
-from typing import Tuple, List
+from typing import Tuple, List, Any
 import swifter
-from configs.constants import DataConst
+from configs.constants import Const
 
 
 class SKLearnModel(BaseModel):
@@ -29,8 +29,8 @@ class SKLearnModel(BaseModel):
 
     def fit(self, train_dataset: pd.DataFrame) -> None:
 
-        X_train = train_dataset[DataConst.input_name].swifter.apply(preprocess)
-        y_train = train_dataset[DataConst.label_name]
+        X_train = train_dataset[Const.input_col].swifter.apply(preprocess)
+        y_train = train_dataset[Const.label_col]
 
         self.pipeline = Pipeline(
             [
@@ -53,10 +53,8 @@ class SKLearnModel(BaseModel):
 
         self.pipeline.fit(X_train, y_train)
 
-    def predict(self, test_dataset: pd.DataFrame) -> List[Tuple[Label, Probabilities]]:
-        prerocessed_dataset = test_dataset[DataConst.input_name].swifter.apply(
-            preprocess
-        )
+    def predict(self, test_dataset: List[Any]) -> List[Any]:
+        prerocessed_dataset = [preprocess(line) for line in test_dataset]
         predictions = self.pipeline.predict(prerocessed_dataset)
         probabilities = self.pipeline.predict_proba(prerocessed_dataset)
         return list(zip(predictions, probabilities))

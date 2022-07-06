@@ -39,5 +39,5 @@ class GlobalPreprocessConfig:
     val_size: int
     test_size: int
     data_from_huggingface: bool
-    input_name: str
-    label_name: str
+    input_col: str
+    label_col: str

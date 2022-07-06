@@ -1,5 +1,5 @@
 from typing import List
-from model.ensemble import Ensemble
+from model.sequential import Sequential
 from model.huggingface import HuggingfaceModel
 
 from model.sklearn import SKLearnModel
@@ -11,13 +11,15 @@ from configs.config import (
     GlobalPreprocessConfig,
 )
 from model.base import BaseModel
-from model.ensemble import Ensemble
+from model.sequential import Sequential
+from model.augmenters.identity import IdentityAugmenter
 from training.train import train_model
 
-models = Ensemble(
+models = Sequential(
     [
+        IdentityAugmenter(),
         SKLearnModel(config=sklearn_config),
-        HuggingfaceModel(config=huggingface_config),
+        # HuggingfaceModel(config=huggingface_config),
     ]
 )
 

@@ -5,12 +5,11 @@ from .train import run_training_pipeline
 from configs.config import HuggingfaceConfig, huggingface_config
 import pandas as pd
 from datasets import Dataset, Features, Value, ClassLabel
-from typing import List, Tuple, Callable, Optional, Union
-from type import Label, Probabilities
+from typing import List, Tuple, Callable, Optional, Union, Any
 from transformers import pipeline, Trainer, PreTrainedModel
 from sklearn.model_selection import train_test_split
 
-from configs.constants import DataConst
+from configs.constants import Const
 
 
 def load_pipeline(module: Union[str, PreTrainedModel]) -> Callable:
@@ -45,7 +44,7 @@ class HuggingfaceModel(BaseModel):
         )
         self.model = load_pipeline(model)
 
-    def predict(self, test_dataset: pd.DataFrame) -> List[Tuple[Label, Probabilities]]:
+    def predict(self, test_dataset: List[Any]) -> List[Any]:
         if self.model:
             model = self.model
         else:
@@ -69,8 +68,8 @@ def from_pandas(df: pd.DataFrame, num_classes: int) -> Dataset:
         df,
         features=Features(
             {
-                DataConst.input_name: Value("string"),
-                DataConst.label_name: ClassLabel(num_classes),
+                Const.input_col: Value("string"),
+                Const.label_col: ClassLabel(num_classes),
             }
         ),
     )

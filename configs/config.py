@@ -24,8 +24,8 @@ global_preprocess_config = GlobalPreprocessConfig(
     val_size=-1,
     test_size=5,
     data_from_huggingface=False,
-    input_name="text",
-    label_name="label",
+    input_col="text",
+    label_col="label",
 )
 
 nb = MultinomialNB()
