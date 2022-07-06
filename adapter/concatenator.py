@@ -11,11 +11,14 @@ class ConcatenatorAdapter(BaseAdapter):
         self.name = name
 
     def connect(self, state: GlobalState):
-        item = pd.DataFrame(columns=[Const.input_col])
-        items = [
-            item[Const.input_col] + state.get(key)[Const.input_col].astype(str)
-            for key in self.keys
-        ]
 
-        state.set(self.name, item)
-        return item
+        items = [state.get(key) for key in self.keys]
+
+        final = items[0]
+        for item in items[1:]:
+            final[Const.input_col] = final[Const.input_col].astype(str) + item[
+                Const.input_col
+            ].astype(str)
+
+        state.set(self.name, final)
+        return final
