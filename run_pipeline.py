@@ -37,7 +37,7 @@ def run_pipeline(preprocess_config: GlobalPreprocessConfig):
 
     pipeline.preload()
     pipeline.train(train_dataset)
-    # return pipeline.predict(test_dataset)
+    return pipeline.predict(test_dataset)
 
 
 if __name__ == "__main__":

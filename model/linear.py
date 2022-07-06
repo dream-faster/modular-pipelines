@@ -59,6 +59,26 @@ class Linear(BaseModel):
                 )
                 self.state.set(block.name, outputs)
                 input = outputs
+                
+    def infer(self, test_dataset: pd.DataFrame) -> None:
+        self.state.set("global", test_dataset)
+
+        input = test_dataset
+        for block in self.blocks:
+            cls = block.get_parent_class()
+            if cls == BaseAdapter:
+                input = block.connect(self.state)
+            elif cls == BaseModel:
+                outputs = block.predict(input[Const.input_col].astype(str))
+                outputs = pd.DataFrame(
+                    {
+                        Const.input_col: [output[0] for output in outputs],
+                        Const.prob_col: [output[1] for output in outputs],
+                        Const.label_col: test_dataset[Const.label_col],
+                    }
+                )
+                self.state.set(block.name, outputs)
+                input = outputs
 
     
         
