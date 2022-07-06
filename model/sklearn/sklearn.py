@@ -19,8 +19,10 @@ class SKLearnModel(BaseModel):
 
     config: SKLearnConfig
 
-    def __init__(self, config: SKLearnConfig):
+    def __init__(self, config: SKLearnConfig, train: bool, name: str):
         self.config = config
+        self.train = train
+        self.name = name
 
     def preload(self):
         download("en_core_web_lg")

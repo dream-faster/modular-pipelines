@@ -23,3 +23,7 @@ class BaseModel(ABC):
 
     def is_fitted(self) -> bool:
         raise NotImplementedError()
+
+    def get_parent_class(self) -> type:
+        for base in self.__class__.__bases__:
+            return base
