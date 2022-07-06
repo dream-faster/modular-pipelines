@@ -23,11 +23,18 @@ class Pipeline(Block):
             model.preload()
 
     def fit(self, store: Store) -> None:
-        print(f"Training {self.id}")
         last_output = self.datasource.deplate(store)
         for model in self.models:
             train_model(model, last_output)
-            last_output = model.predict(last_output)
+            last_output = pd.concat(
+                [
+                    model.predict(last_output),
+                    pd.DataFrame(
+                        {Const.label_col: last_output[Const.label_col]}
+                    ).reset_index(drop=True),
+                ],
+                axis=1,
+            )
             store.set_data(model.id, last_output)
 
     def predict(self, store: Store) -> pd.DataFrame:

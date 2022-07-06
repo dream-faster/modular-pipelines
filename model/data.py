@@ -1,9 +1,9 @@
-from abc import ABC
 from .base import DataSource
 import pandas as pd
-from typing import Callable, List, Union
+from typing import List, Union
 from .pipeline import Pipeline
 from runner.store import Store
+from configs.constants import Const
 
 
 class BaseConcat(DataSource):
@@ -29,7 +29,17 @@ class BaseConcat(DataSource):
 
 class StrConcat(BaseConcat):
     def transform(self, data: List[pd.DataFrame]) -> pd.DataFrame:
-        return pd.concat(data, axis=1)
+        dataframes = [df[Const.input_col].reset_index(drop=True) for df in data]
+        concatenated = pd.concat(dataframes, axis=1).agg("-".join, axis=1)
+        if Const.label_col in data[0].columns:
+            return pd.DataFrame(
+                {
+                    Const.input_col: concatenated,
+                    Const.label_col: data[0][Const.label_col].reset_index(drop=True),
+                }
+            )
+        else:
+            return pd.DataFrame({Const.input_col: concatenated})
 
 
 def process_block(block: Union[DataSource, Pipeline], store: Store) -> pd.DataFrame:

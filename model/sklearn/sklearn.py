@@ -60,7 +60,7 @@ class SKLearnModel(Model):
         self.pipeline.fit(X_train, y_train)
 
     def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
-        dataset = dataset.swifter.apply(self.preprocess)
+        dataset = dataset[Const.input_col].swifter.apply(self.preprocess)
         predictions = self.pipeline.predict(dataset)
         probabilities = [tuple(row) for row in self.pipeline.predict_proba(dataset)]
 
@@ -69,7 +69,7 @@ class SKLearnModel(Model):
         )
 
     def is_fitted(self) -> bool:
-        return False
+        return hasattr(self, 'pipeline')
 
 
 def create_classifier(
