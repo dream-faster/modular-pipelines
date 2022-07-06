@@ -4,7 +4,7 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.metrics import f1_score
 from sklearn.base import ClassifierMixin
 from imblearn.over_sampling import RandomOverSampler
-from imblearn.pipeline import Pipeline
+from imblearn.pipeline import Pipeline as ImbPipeline
 from model.base import Model
 from type import SKLearnConfig, Label, Probabilities
 from .preprocess import preprocess
@@ -32,7 +32,7 @@ class SKLearnModel(Model):
         X_train = train_dataset[Const.input_col].swifter.apply(preprocess)
         y_train = train_dataset[Const.label_col]
 
-        self.pipeline = Pipeline(
+        self.pipeline = ImbPipeline(
             [
                 (
                     "tfidf",
@@ -53,11 +53,14 @@ class SKLearnModel(Model):
 
         self.pipeline.fit(X_train, y_train)
 
-    def predict(self, test_dataset: List[Any]) -> List[Any]:
+    def predict(self, test_dataset: pd.DataFrame) -> pd.DataFrame:
         prerocessed_dataset = [preprocess(line) for line in test_dataset]
         predictions = self.pipeline.predict(prerocessed_dataset)
         probabilities = self.pipeline.predict_proba(prerocessed_dataset)
-        return list(zip(predictions, probabilities))
+
+        return pd.DataFrame(
+            {Const.preds_col: predictions, Const.probs_col: probabilities}
+        )
 
     def is_fitted(self) -> bool:
         return False

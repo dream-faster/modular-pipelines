@@ -44,7 +44,7 @@ class HuggingfaceModel(Block):
         )
         self.model = load_pipeline(model)
 
-    def predict(self, test_dataset: List[Any]) -> List[Any]:
+    def predict(self, test_dataset: pd.DataFrame) -> pd.DataFrame:
         if self.model:
             model = self.model
         else:

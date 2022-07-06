@@ -17,6 +17,7 @@ from model.augmenters.identity import IdentityAugmenter
 from model.data import DataSource, Concat
 from runner.train import train_model
 import pandas as pd
+from runner.run import train_pipeline
 
 train_dataset, test_dataset = load_data("data/original", global_preprocess_config)
 
@@ -44,26 +45,31 @@ train_dataset, test_dataset = load_data("data/original", global_preprocess_confi
 
 ####
 
-global_data = DataSource("global")
+input_data = DataSource("input")
 
-model1 = Pipeline("model1", global_data, [SKLearnModel(config=sklearn_config)])
-model1_alt = Pipeline("model1_alt", model1, [XYTRansformation())])
-
-pipeline1 = SKLearnModel(config=sklearn_config)
-pipeline2 = Pipeline(
-    "model2", Concat([global_data, model1_alt]), [pipeline1]
+pipeline1 = Pipeline(
+    "pipeline1", input_data, [SKLearnModel(config=sklearn_config)], cache=True
 )
-model3 = Pipeline(
-    "model3", Concat([global_data, pipeline2]), [SKLearnModel(config=sklearn_config)]
+
+pipeline2 = Pipeline(
+    "pipeline2",
+    Concat([input_data, pipeline1]),
+    [SKLearnModel(config=sklearn_config)],
+    cache=False,
+)
+pipeline3 = Pipeline(
+    "pipeline3",
+    Concat([input_data, pipeline2]),
+    [SKLearnModel(config=sklearn_config)],
+    cache=False,
 )
 
 
 end_to_end_pipeline = Pipeline(
     "end-to-end",
-    Concat([model1, model2, model3, global_data]),
+    Concat([pipeline2, pipeline2, pipeline3, input_data]),
     [SKLearnModel(config=sklearn_config)],
+    cache=False,
 )
 
-def run_pipeline(pipeline: Pipeline, data: Dict[pd.DataFrame]) -> pd.DataFrame:
-    pipeline.run(data)
-    return data
+train_pipeline(end_to_end_pipeline, {"input": train_dataset})

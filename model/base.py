@@ -21,7 +21,7 @@ class Model(Block):
     def fit(self, train_dataset: pd.DataFrame) -> None:
         raise NotImplementedError()
 
-    def predict(self, test_dataset: List[Any]) -> List[Any]:
+    def predict(self, test_dataset: pd.DataFrame) -> pd.DataFrame:
         raise NotImplementedError()
 
     def is_fitted(self) -> bool:
@@ -36,4 +36,4 @@ class DataSource(Block):
         self.id = id
 
     def deplate(self, get_data: Callable) -> pd.DataFrame:
-        return get_data(self.id)
+        return get_data[self.id]

@@ -16,7 +16,7 @@ class IdentityAugmenter(Model):
     def fit(self, train_dataset: pd.DataFrame):
         pass
 
-    def predict(self, test_dataset: List[Any]) -> List[Any]:
+    def predict(self, test_dataset: pd.DataFrame) -> pd.DataFrame:
         return test_dataset
 
     def is_fitted(self) -> bool:

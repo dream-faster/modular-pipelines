@@ -1,21 +1,20 @@
-from typing import Callable, Tuple, List
+from typing import Callable
 
 from configs.config import HuggingfaceConfig
 from datasets import Dataset
 import numpy as np
-from type import Label, Probabilities
 from configs.constants import Const
-
+import pandas as pd
 
 def run_inference_pipeline(
     model: Callable, test_data: Dataset, config: HuggingfaceConfig
-) -> List[Tuple[Label, Probabilities]]:
+) -> pd.DataFrame:
 
     predictions = model(test_data[Const.input_col], top_k=config.num_classes)
-    scores = [
+    probs = [
         [label_score["score"] for label_score in prediction]
         for prediction in predictions
     ]
-    labels = [np.argmax(score) for score in scores]
+    predicitions = [np.argmax(prob) for prob in probs]
 
-    return list(zip(labels, scores))
+    return pd.DataFrame({Const.preds_col: predicitions, Const.probs_col: probs})

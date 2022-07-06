@@ -10,11 +10,15 @@ class Pipeline(Block):
     id: str
     datasource: DataSource
     models: List[Model]
+    cache: bool
 
-    def __init__(self, id: str, datasource: DataSource, models: List[Model]):
+    def __init__(
+        self, id: str, datasource: DataSource, models: List[Model], cache: bool
+    ):
         self.id = id
         self.models = models
         self.datasource = datasource
+        self.cache = cache
 
     def preload(self):
         for model in self.models:
