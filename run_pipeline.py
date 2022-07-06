@@ -14,7 +14,8 @@ from configs.config import (
 from model.base import Block
 from model.pipeline import Pipeline
 from model.augmenters.identity import IdentityAugmenter
-from model.data import DataSource, Concat
+from model.data import DataSource, StrConcat
+from model.transformations.predicitions_to_text import PredictionsToText
 from runner.train import train_model
 import pandas as pd
 from runner.run import train_pipeline
@@ -48,28 +49,27 @@ train_dataset, test_dataset = load_data("data/original", global_preprocess_confi
 input_data = DataSource("input")
 
 pipeline1 = Pipeline(
-    "pipeline1", input_data, [SKLearnModel(config=sklearn_config)], cache=True
+    "pipeline1",
+    input_data,
+    [SKLearnModel("model1", sklearn_config), PredictionsToText()],
 )
 
 pipeline2 = Pipeline(
     "pipeline2",
-    Concat([input_data, pipeline1]),
-    [SKLearnModel(config=sklearn_config)],
-    cache=False,
+    StrConcat([input_data, pipeline1]),
+    [SKLearnModel("model2", sklearn_config), PredictionsToText()],
 )
 pipeline3 = Pipeline(
     "pipeline3",
-    Concat([input_data, pipeline2]),
-    [SKLearnModel(config=sklearn_config)],
-    cache=False,
+    StrConcat([input_data, pipeline2]),
+    [SKLearnModel("model3", sklearn_config), PredictionsToText()],
 )
 
 
 end_to_end_pipeline = Pipeline(
     "end-to-end",
-    Concat([pipeline2, pipeline2, pipeline3, input_data]),
-    [SKLearnModel(config=sklearn_config)],
-    cache=False,
+    StrConcat([pipeline1, pipeline2, pipeline3, input_data]),
+    [SKLearnModel("decoder", sklearn_config)],
 )
 
 train_pipeline(end_to_end_pipeline, {"input": train_dataset})

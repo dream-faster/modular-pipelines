@@ -1,3 +1,4 @@
+from abc import ABC
 from .base import DataSource
 import pandas as pd
 from typing import Callable, List, Union
@@ -5,19 +6,30 @@ from .pipeline import Pipeline
 from runner.store import Store
 
 
-class Concat(DataSource):
-    def __init__(self, pipelines_or_datablocks: List[Union[Pipeline, DataSource]]):
-        self.pipelines_or_datablocks = pipelines_or_datablocks
+class BaseConcat(DataSource):
+
+    blocks: List[Union[DataSource, Pipeline]]
+
+    def __init__(self, blocks: List[Union[DataSource, Pipeline]]):
+        self.blocks = blocks
 
     def deplate(self, store: Store) -> pd.DataFrame:
-        collected = [
-            process_block(block, store) for block in self.pipelines_or_datablocks
-        ]
+        collected = self.transform(
+            [process_block(block, store) for block in self.blocks]
+        )
         return pd.DataFrame(collected)
 
     def preload(self):
-        for block in self.pipelines_or_datablocks:
+        for block in self.blocks:
             block.preload()
+
+    def transform(self, data: List[pd.DataFrame]) -> pd.DataFrame:
+        raise NotImplementedError()
+
+
+class StrConcat(BaseConcat):
+    def transform(self, data: List[pd.DataFrame]) -> pd.DataFrame:
+        return pd.concat(data, axis=1)
 
 
 def process_block(block: Union[DataSource, Pipeline], store: Store) -> pd.DataFrame:

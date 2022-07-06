@@ -11,17 +11,14 @@ class Pipeline(Block):
     id: str
     datasource: DataSource
     models: List[Model]
-    cache: bool
 
-    def __init__(
-        self, id: str, datasource: DataSource, models: List[Model], cache: bool
-    ):
+    def __init__(self, id: str, datasource: DataSource, models: List[Model]):
         self.id = id
         self.models = models
         self.datasource = datasource
-        self.cache = cache
 
     def preload(self):
+        self.datasource.preload()
         for model in self.models:
             model.preload()
 
@@ -30,16 +27,11 @@ class Pipeline(Block):
         last_output = self.datasource.deplate(store)
         for model in self.models:
             train_model(model, last_output)
-            last_output = pd.DataFrame(
-                {
-                    Const.input_col: model.predict(last_output[Const.input_col]),
-                    Const.label_col: train_dataset[Const.label_col],
-                }
-            )
+            last_output = model.predict(last_output)
             store.set_data(model.id, last_output)
 
     def predict(self, store: Store) -> pd.DataFrame:
-        last_output = self.datasource.deplate(store.get_data)
+        last_output = self.datasource.deplate(store)
         for model in self.models:
             last_output = model.predict(last_output)
             store.set_data(model.id, last_output)

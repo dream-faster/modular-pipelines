@@ -12,7 +12,7 @@ def run_inference_pipeline(
 
     predictions = model(test_data[Const.input_col], top_k=config.num_classes)
     probs = [
-        [label_score["score"] for label_score in prediction]
+        tuple([label_score["score"] for label_score in prediction])
         for prediction in predictions
     ]
     predicitions = [np.argmax(prob) for prob in probs]

@@ -20,7 +20,8 @@ class HuggingfaceModel(Block):
 
     config: HuggingfaceConfig
 
-    def __init__(self, config: HuggingfaceConfig):
+    def __init__(self, id: str, config: HuggingfaceConfig):
+        self.id = id
         self.config: HuggingfaceConfig = config
         self.model: Optional[Union[Callable, Trainer]] = None
 
@@ -31,10 +32,10 @@ class HuggingfaceModel(Block):
         except:
             print("❌ No model found in huggingface repository")
 
-    def fit(self, train_dataset: pd.DataFrame) -> None:
+    def fit(self, dataset: pd.DataFrame) -> None:
 
         train_dataset, val_dataset = train_test_split(
-            train_dataset, test_size=self.config.val_size
+            dataset, test_size=self.config.val_size
         )
 
         model = run_training_pipeline(

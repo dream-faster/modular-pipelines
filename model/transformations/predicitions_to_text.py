@@ -1,7 +1,9 @@
-from .base import SimpleAugmenter
 import pandas as pd
+from .base import SimpleTransformation
 
-class IdentityAugmenter(SimpleAugmenter):
+
+class PredictionsToText(SimpleTransformation):
 
     def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
         return dataset
+

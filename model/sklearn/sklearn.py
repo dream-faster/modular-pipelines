@@ -7,7 +7,7 @@ from imblearn.over_sampling import RandomOverSampler
 from imblearn.pipeline import Pipeline as ImbPipeline
 from model.base import Model
 from type import SKLearnConfig, Label, Probabilities
-from .preprocess import preprocess
+from .preprocess import create_preprocess
 import spacy
 from spacy.cli.download import download
 from typing import Tuple, List, Any
@@ -19,22 +19,24 @@ class SKLearnModel(Model):
 
     config: SKLearnConfig
 
-    def __init__(self, config: SKLearnConfig):
+    def __init__(self, id: str, config: SKLearnConfig):
+        self.id = id
         self.config = config
 
     def preload(self):
-        # try:
-        nlp = spacy.load("en_core_web_lg")
-        # except:
-        #     download("en_core_web_lg")
-        #     nlp = spacy.load("en_core_web_lg")
+        try:
+            self.nlp = spacy.load("en_core_web_lg")
+        except:
+            download("en_core_web_lg")
+            self.nlp = spacy.load("en_core_web_lg")
 
         self.spacy_stopwords = spacy.lang.en.stop_words.STOP_WORDS
+        self.preprocess = create_preprocess(self.nlp)
 
-    def fit(self, train_dataset: pd.DataFrame) -> None:
+    def fit(self, dataset: pd.DataFrame) -> None:
 
-        X_train = train_dataset[Const.input_col].swifter.apply(preprocess)
-        y_train = train_dataset[Const.label_col]
+        X_train = dataset[Const.input_col].swifter.apply(self.preprocess)
+        y_train = dataset[Const.label_col]
 
         self.pipeline = ImbPipeline(
             [
@@ -57,10 +59,10 @@ class SKLearnModel(Model):
 
         self.pipeline.fit(X_train, y_train)
 
-    def predict(self, test_dataset: pd.DataFrame) -> pd.DataFrame:
-        prerocessed_dataset = [preprocess(line) for line in test_dataset]
-        predictions = self.pipeline.predict(prerocessed_dataset)
-        probabilities = self.pipeline.predict_proba(prerocessed_dataset)
+    def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
+        dataset = dataset.swifter.apply(self.preprocess)
+        predictions = self.pipeline.predict(dataset)
+        probabilities = [tuple(row) for row in self.pipeline.predict_proba(dataset)]
 
         return pd.DataFrame(
             {Const.preds_col: predictions, Const.probs_col: probabilities}
