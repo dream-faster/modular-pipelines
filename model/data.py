@@ -31,11 +31,14 @@ class StrConcat(BaseConcat):
     def transform(self, data: List[pd.DataFrame]) -> pd.DataFrame:
         dataframes = [df[Const.input_col].reset_index(drop=True) for df in data]
         concatenated = pd.concat(dataframes, axis=1).agg("-".join, axis=1)
-        if Const.label_col in data[0].columns:
+        if any([Const.label_col in df.columns for df in data]):
+            df_with_label = next(df for df in data if Const.label_col in df.columns)
             return pd.DataFrame(
                 {
                     Const.input_col: concatenated,
-                    Const.label_col: data[0][Const.label_col].reset_index(drop=True),
+                    Const.label_col: df_with_label[Const.label_col].reset_index(
+                        drop=True
+                    ),
                 }
             )
         else:

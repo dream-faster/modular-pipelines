@@ -68,7 +68,7 @@ pipeline3 = Pipeline(
 
 end_to_end_pipeline = Pipeline(
     "end-to-end",
-    StrConcat([pipeline1, pipeline2, pipeline3, input_data]),
+    StrConcat([input_data, pipeline1, pipeline2, pipeline3]),
     [SKLearnModel("decoder", sklearn_config)],
 )
 

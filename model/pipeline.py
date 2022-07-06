@@ -36,12 +36,14 @@ class Pipeline(Block):
                 axis=1,
             )
             store.set_data(model.id, last_output)
+        store.set_data(self.id, last_output)
 
     def predict(self, store: Store) -> pd.DataFrame:
         last_output = self.datasource.deplate(store)
         for model in self.models:
             last_output = model.predict(last_output)
             store.set_data(model.id, last_output)
+        store.set_data(self.id, last_output)
         return last_output
 
     def is_fitted(self) -> bool:
