@@ -60,7 +60,7 @@ class Linear(BaseModel):
                 self.state.set(block.name, outputs)
                 input = outputs
                 
-    def infer(self, test_dataset: pd.DataFrame) -> None:
+    def predict(self, test_dataset: pd.DataFrame) -> None:
         self.state.set("global", test_dataset)
 
         input = test_dataset
