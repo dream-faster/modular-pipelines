@@ -1,23 +1,27 @@
 from configs.constants import Const
-from .base import BaseModel
+from .base import Block, Model, DataSource
 import pandas as pd
-from type import BaseConfig
-from typing import List, Any
-import numpy as np
-from training.train import train_model
+from typing import List, Any, Callable
+from runner.train import train_model
 
 
-class Sequential(BaseModel):
-    def __init__(self, models: List[BaseModel]):
+class Pipeline(Block):
+
+    id: str
+    datasource: DataSource
+    models: List[Model]
+
+    def __init__(self, id: str, datasource: DataSource, models: List[Model]):
+        self.id = id
         self.models = models
-        self.config = BaseConfig(force_fit=False)
+        self.datasource = datasource
 
     def preload(self):
         for model in self.models:
             model.preload()
 
-    def fit(self, train_dataset: pd.DataFrame) -> None:
-        last_output = train_dataset
+    def fit(self, get_data: Callable) -> None:
+        last_output = self.datasource.deplate(get_data)
         for model in self.models:
             train_model(model, last_output)
             last_output = pd.DataFrame(
@@ -27,10 +31,10 @@ class Sequential(BaseModel):
                 }
             )
 
-    def predict(self, test_dataset: List[Any]) -> List[Any]:
-        last_output = test_dataset
+    def predict(self, get_data: Callable) -> List[Any]:
+        last_output = self.datasource.deplate(get_data)
         for model in self.models:
-            last_output = model.predict(test_dataset)
+            last_output = model.predict(last_output)
         return last_output
 
     def is_fitted(self) -> bool:

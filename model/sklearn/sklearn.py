@@ -5,7 +5,7 @@ from sklearn.metrics import f1_score
 from sklearn.base import ClassifierMixin
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.pipeline import Pipeline
-from model.base import BaseModel
+from model.base import Model
 from type import SKLearnConfig, Label, Probabilities
 from .preprocess import preprocess
 import spacy
@@ -15,7 +15,7 @@ import swifter
 from configs.constants import Const
 
 
-class SKLearnModel(BaseModel):
+class SKLearnModel(Model):
 
     config: SKLearnConfig
 

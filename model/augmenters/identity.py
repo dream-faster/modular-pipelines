@@ -1,12 +1,12 @@
 from configs.constants import Const
-from model.base import BaseModel
+from model.base import Model
 from typing import List, Any
 import pandas as pd
 
 from type import BaseConfig
 
 
-class IdentityAugmenter(BaseModel):
+class IdentityAugmenter(Model):
     def __init__(self):
         self.config = BaseConfig(force_fit=False)
 
