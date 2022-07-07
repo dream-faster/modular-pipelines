@@ -1,4 +1,4 @@
-from configs.constants import Const, ModelTypes
+from configs.constants import Const
 
 from data.dataloader import load_data
 from configs.config import global_preprocess_config
