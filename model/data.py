@@ -4,6 +4,7 @@ from typing import List, Union
 from .pipeline import Pipeline
 from runner.store import Store
 from configs.constants import Const
+import numpy as np
 
 
 class BaseConcat(DataSource):
@@ -32,6 +33,12 @@ class StrConcat(BaseConcat):
     def transform(self, data: List[pd.DataFrame]) -> pd.Series:
         dataframes = [df[Const.input_col] for df in data]
         return pd.concat(dataframes, axis=1).agg("-".join, axis=1)
+
+
+class VectorConcat(BaseConcat):
+    def transform(self, data: List[pd.DataFrame]) -> pd.Series:
+        dataframes = [df[Const.input_col] for df in data]
+        return pd.concat(dataframes, axis=1).agg(np.concatenate, axis=1)
 
 
 def process_block(block: Union[DataSource, Pipeline], store: Store) -> pd.DataFrame:

@@ -10,37 +10,55 @@ from configs.config import (
     sklearn_config,
     GlobalPreprocessConfig,
 )
-from model.base import Block
 from model.pipeline import Pipeline
-from model.augmenters.identity import IdentityAugmenter
-from model.data import DataSource, StrConcat
+from model.ensemble import Ensemble
+from model.data import DataSource, StrConcat, VectorConcat
 from model.transformations.predicitions_to_text import PredictionsToText
-from runner.train import train_predict
 import pandas as pd
 from runner.run import train_pipeline
 
 train_dataset, test_dataset = load_data("data/original", global_preprocess_config)
 
-# augmenter = IdentityAugmenter()
-# graph_augmenter =
-# model = SKLearnModel(config=sklearn_config)
-# graph_model =
 
-# nlp_input = DataBlock("text")
-# graph_input = DataBlock("graph")
-# tabular_input = DataBlock("tabular")
-# nlp_pipeline = Pipeline("nlp", nlp_input, [augmenter, model])
+nlp_input = DataSource("text")
+image_input = DataSource("image")
 
-# graph_pipeline = Pipeline("graph", graph_input, [graph_augmenter, graph_model])
+nlp_pipeline = Pipeline(
+    "nlp", nlp_input, HuggingfaceModel("transformer1", huggingface_config)
+)
+image_pipeline = Pipeline(
+    "image", image_input, HuggingfaceModel("cnn1", huggingface_config)
+)
 
-# decoder = PytorchModel()
+multimodal_pipeline = Pipeline(
+    "multimodal",
+    VectorConcat(
+        [
+            Pipeline(
+                "multimodal-nlp",
+                nlp_input,
+                HuggingfaceModel("transformer1", huggingface_config),
+            ),
+            Pipeline(
+                "multimodal-image",
+                image_input,
+                HuggingfaceModel("cnn2", huggingface_config),
+            ),
+        ]
+    ),
+    PytorchModel("decoder"),
+)
 
 
-# end_to_end_pipeline = Pipeline(
-#     "end-to-end", Concat([nlp_pipeline, graph_pipeline, tabular_input]), [decoder]
-# )
-
-# pipeline.run(dict: Dict[pd.DataFrame])
+end_to_end_pipeline = Ensemble(
+    "end-to-end",
+    VectorConcat([nlp_pipeline, image_pipeline, multimodal_pipeline]),
+    [
+        PytorchModel("last_model_1"),
+        PytorchModel("last_model_2"),
+        PytorchModel("last_model_3"),
+    ],
+)
 
 
 ####

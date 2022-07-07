@@ -16,7 +16,7 @@ def load_pipeline(module: Union[str, PreTrainedModel]) -> Callable:
     return pipeline(task="sentiment-analysis", model=module)
 
 
-class HuggingfaceModel(Block):
+class HuggingfaceModel(Model):
 
     config: HuggingfaceConfig
 
@@ -45,7 +45,7 @@ class HuggingfaceModel(Block):
         )
         self.model = load_pipeline(model)
 
-    def predict(self, test_dataset: pd.DataFrame) -> pd.DataFrame:
+    def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
         if self.model:
             model = self.model
         else:
@@ -56,7 +56,7 @@ class HuggingfaceModel(Block):
 
         return run_inference_pipeline(
             model,
-            from_pandas(test_dataset, self.config.num_classes),
+            from_pandas(dataset, self.config.num_classes),
             huggingface_config,
         )
 
