@@ -17,32 +17,21 @@ class BaseConcat(DataSource):
         collected = self.transform(
             [process_block(block, store) for block in self.blocks]
         )
-        return pd.DataFrame(collected)
+
+        return pd.DataFrame({Const.input_col: collected})
 
     def preload(self):
         for block in self.blocks:
             block.preload()
 
-    def transform(self, data: List[pd.DataFrame]) -> pd.DataFrame:
+    def transform(self, data: List[pd.DataFrame]) -> pd.Series:
         raise NotImplementedError()
 
 
 class StrConcat(BaseConcat):
-    def transform(self, data: List[pd.DataFrame]) -> pd.DataFrame:
-        dataframes = [df[Const.input_col].reset_index(drop=True) for df in data]
-        concatenated = pd.concat(dataframes, axis=1).agg("-".join, axis=1)
-        if any([Const.label_col in df.columns for df in data]):
-            df_with_label = next(df for df in data if Const.label_col in df.columns)
-            return pd.DataFrame(
-                {
-                    Const.input_col: concatenated,
-                    Const.label_col: df_with_label[Const.label_col].reset_index(
-                        drop=True
-                    ),
-                }
-            )
-        else:
-            return pd.DataFrame({Const.input_col: concatenated})
+    def transform(self, data: List[pd.DataFrame]) -> pd.Series:
+        dataframes = [df[Const.input_col] for df in data]
+        return pd.concat(dataframes, axis=1).agg("-".join, axis=1)
 
 
 def process_block(block: Union[DataSource, Pipeline], store: Store) -> pd.DataFrame:

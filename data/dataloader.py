@@ -11,7 +11,7 @@ def load_data(
     df_val = pd.read_json(f"{folder}/val.jsonl", lines=True)[: config.val_size]
     df_test = pd.read_json(f"{folder}/test.jsonl", lines=True)[: config.test_size]
 
-    df_train = pd.concat([df_train, df_val])
+    df_train = pd.concat([df_train, df_val], axis=0).reset_index(drop=True)
 
     df_train = df_train.rename(
         columns={

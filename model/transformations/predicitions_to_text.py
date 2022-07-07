@@ -13,16 +13,4 @@ class PredictionsToText(SimpleTransformation):
                 map(str, dataset[Const.probs_col]),
             ),
         )
-        if Const.label_col in dataset.columns:
-            return pd.DataFrame(
-                {
-                    Const.input_col: agg_text,
-                    Const.label_col: dataset[Const.label_col],
-                }
-            )
-        else:
-            return pd.DataFrame(
-                {
-                    Const.input_col: agg_text,
-                }
-            )
+        return pd.DataFrame({Const.input_col: agg_text})

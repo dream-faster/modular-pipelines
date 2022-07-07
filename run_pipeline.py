@@ -1,5 +1,4 @@
-from typing import Dict, List
-
+from configs import Const
 from model.pipeline import Pipeline
 from model.huggingface import HuggingfaceModel
 
@@ -16,7 +15,7 @@ from model.pipeline import Pipeline
 from model.augmenters.identity import IdentityAugmenter
 from model.data import DataSource, StrConcat
 from model.transformations.predicitions_to_text import PredictionsToText
-from runner.train import train_model
+from runner.train import train_predict
 import pandas as pd
 from runner.run import train_pipeline
 
@@ -72,4 +71,6 @@ end_to_end_pipeline = Pipeline(
     [SKLearnModel("decoder", sklearn_config)],
 )
 
-train_pipeline(end_to_end_pipeline, {"input": train_dataset})
+train_pipeline(
+    end_to_end_pipeline, {"input": train_dataset}, train_dataset[Const.label_col]
+)

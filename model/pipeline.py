@@ -2,7 +2,7 @@ from configs.constants import Const
 from .base import Block, Model, DataSource
 import pandas as pd
 from typing import List, Any, Callable
-from runner.train import train_model
+from runner.train import train_predict
 from runner.store import Store
 
 
@@ -25,16 +25,7 @@ class Pipeline(Block):
     def fit(self, store: Store) -> None:
         last_output = self.datasource.deplate(store)
         for model in self.models:
-            train_model(model, last_output)
-            last_output = pd.concat(
-                [
-                    model.predict(last_output),
-                    pd.DataFrame(
-                        {Const.label_col: last_output[Const.label_col]}
-                    ).reset_index(drop=True),
-                ],
-                axis=1,
-            )
+            last_output = train_predict(model, last_output, store)
             store.set_data(model.id, last_output)
         store.set_data(self.id, last_output)
 
