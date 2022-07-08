@@ -16,7 +16,7 @@ def load_pipeline(module: Union[str, PreTrainedModel]) -> Callable:
     return pipeline(task="sentiment-analysis", model=module)
 
 
-class HuggingfaceModel(Block):
+class HuggingfaceModel(Model):
 
     config: HuggingfaceConfig
 
