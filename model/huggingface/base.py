@@ -1,11 +1,10 @@
-from numpy import True_
-from model.base import Block
+from model.base import Model
 from .infer import run_inference_pipeline
 from .train import run_training_pipeline
 from configs.config import HuggingfaceConfig, huggingface_config
 import pandas as pd
 from datasets import Dataset, Features, Value, ClassLabel
-from typing import List, Tuple, Callable, Optional, Union, Any
+from typing import List, Tuple, Callable, Optional, Union
 from transformers import pipeline, Trainer, PreTrainedModel
 from sklearn.model_selection import train_test_split
 
