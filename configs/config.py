@@ -34,4 +34,4 @@ gb = GradientBoostingClassifier(n_estimators=100, max_depth=20, random_state=0)
 
 sklearn_config = SKLearnConfig(classifier=nb, one_vs_rest=False, force_fit=False)
 
-pytorch_decoder_config = PytorchConfig(hidden_size=768, output_size=2)
+pytorch_decoder_config = PytorchConfig(hidden_size=768, output_size=2, val_size=0.1)

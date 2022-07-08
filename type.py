@@ -47,3 +47,4 @@ class GlobalPreprocessConfig:
 class PytorchConfig:
     hidden_size: int
     output_size: int
+    val_size: float

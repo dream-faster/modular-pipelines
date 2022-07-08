@@ -7,8 +7,8 @@ from type import PytorchConfig
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-class Decoder(nn.Module, Block):
-    def __init__(self, id: str, config: PytorchConfig):
+class Decoder(nn.Module):
+    def __init__(self, config: PytorchConfig):
         super(Decoder, self).__init__()
 
         self.id = id

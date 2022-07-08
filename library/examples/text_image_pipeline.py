@@ -14,7 +14,7 @@ from model.pipeline import Pipeline
 from model.ensemble import Ensemble
 from model.data import DataSource, StrConcat, VectorConcat
 from model.transformations.predicitions_to_text import PredictionsToText
-from model.pytorch.decoder import Decoder
+from model.pytorch.base import PytorchModel
 
 
 def text_image_pipeline() -> Pipeline:
@@ -44,7 +44,7 @@ def text_image_pipeline() -> Pipeline:
                 ),
             ]
         ),
-        Decoder("pytroch-decoder", pytorch_decoder_config),
+        PytorchModel(id="pytorch-decoder", config=pytorch_decoder_config),
     )
 
     # end_to_end_pipeline = Ensemble(
