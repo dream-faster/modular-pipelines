@@ -1,4 +1,4 @@
-from type import HuggingfaceConfig, GlobalPreprocessConfig, SKLearnConfig
+from type import HuggingfaceConfig, GlobalPreprocessConfig, SKLearnConfig, PytorchConfig
 
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
@@ -32,10 +32,6 @@ nb = MultinomialNB()
 lg = LogisticRegression()
 gb = GradientBoostingClassifier(n_estimators=100, max_depth=20, random_state=0)
 
-# sklearn_config = SKLearnConfig(
-#     classifier=VotingClassifier(
-#         estimators=[("nb", nb), ("lg", lg), ("gb", gb)], voting="soft"
-#     ),
-#     one_vs_rest=False,
-# )
 sklearn_config = SKLearnConfig(classifier=nb, one_vs_rest=False, force_fit=False)
+
+pytorch_decoder_config = PytorchConfig(hidden_size=768, output_size=2)

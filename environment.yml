@@ -26,5 +26,6 @@ dependencies:
   - swifter
   - huggingface_hub
   - pip
+  - pytorch_lightning
 
 prefix: /usr/local/anaconda3/envs/nlp

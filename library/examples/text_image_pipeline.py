@@ -8,11 +8,13 @@ from configs.config import (
     global_preprocess_config,
     huggingface_config,
     sklearn_config,
+    pytorch_decoder_config,
 )
 from model.pipeline import Pipeline
 from model.ensemble import Ensemble
 from model.data import DataSource, StrConcat, VectorConcat
 from model.transformations.predicitions_to_text import PredictionsToText
+from model.pytorch.decoder import Decoder
 
 
 def text_image_pipeline() -> Pipeline:
@@ -42,17 +44,17 @@ def text_image_pipeline() -> Pipeline:
                 ),
             ]
         ),
-        HuggingfaceModel("decoder"),
+        Decoder("pytroch-decoder", pytorch_decoder_config),
     )
 
-    end_to_end_pipeline = Ensemble(
-        "end-to-end",
-        VectorConcat([nlp_pipeline, image_pipeline, multimodal_pipeline]),
-        [
-            PytorchModel("last_model_1"),
-            PytorchModel("last_model_2"),
-            PytorchModel("last_model_3"),
-        ],
-    )
+    # end_to_end_pipeline = Ensemble(
+    #     "end-to-end",
+    #     VectorConcat([nlp_pipeline, image_pipeline, multimodal_pipeline]),
+    #     [
+    #         PytorchModel("last_model_1"),
+    #         PytorchModel("last_model_2"),
+    #         PytorchModel("last_model_3"),
+    #     ],
+    # )
 
-    return end_to_end_pipeline
+    return multimodal_pipeline

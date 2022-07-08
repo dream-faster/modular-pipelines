@@ -1,5 +1,5 @@
 from numpy import True_
-from model.base import Block
+from model.base import Model
 from .infer import run_inference_pipeline
 from .train import run_training_pipeline
 from configs.config import HuggingfaceConfig, huggingface_config
@@ -16,7 +16,7 @@ def load_pipeline(module: Union[str, PreTrainedModel]) -> Callable:
     return pipeline(task="sentiment-analysis", model=module)
 
 
-class HuggingfaceModel(Block):
+class HuggingfaceModel(Model):
 
     config: HuggingfaceConfig
 

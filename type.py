@@ -41,3 +41,9 @@ class GlobalPreprocessConfig:
     data_from_huggingface: bool
     input_col: str
     label_col: str
+
+
+@dataclass
+class PytorchConfig:
+    hidden_size: int
+    output_size: int

@@ -7,6 +7,6 @@ from library.getter import get_full_pipeline
 
 train_dataset, test_dataset = load_data("data/original", global_preprocess_config)
 
-full_pipeline = get_full_pipeline(ModelTypes.simple)
+full_pipeline = get_full_pipeline(ModelTypes.text_image)
 
 train_pipeline(full_pipeline, {"input": train_dataset}, train_dataset[Const.label_col])
