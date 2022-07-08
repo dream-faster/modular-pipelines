@@ -18,7 +18,8 @@ from model.pytorch.base import PytorchModel
 
 
 def text_image_pipeline() -> Pipeline:
-    nlp_input = DataSource("text")
+
+    nlp_input = DataSource("input")
     image_input = DataSource("image")
 
     nlp_pipeline = Pipeline(

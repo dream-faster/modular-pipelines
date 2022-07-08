@@ -40,4 +40,5 @@ class DataSource(Block):
         return store.get_data(self.id)
 
     def preload(self):
+        """ This is on-purposely left blank """
         pass
