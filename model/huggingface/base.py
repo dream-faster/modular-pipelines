@@ -1,5 +1,5 @@
 from numpy import True_
-from model.base import BaseModel
+from model.base import Block
 from .infer import run_inference_pipeline
 from .train import run_training_pipeline
 from configs.config import HuggingfaceConfig, huggingface_config
@@ -16,11 +16,12 @@ def load_pipeline(module: Union[str, PreTrainedModel]) -> Callable:
     return pipeline(task="sentiment-analysis", model=module)
 
 
-class HuggingfaceModel(BaseModel):
+class HuggingfaceModel(Model):
 
     config: HuggingfaceConfig
 
-    def __init__(self, config: HuggingfaceConfig):
+    def __init__(self, id: str, config: HuggingfaceConfig):
+        self.id = id
         self.config: HuggingfaceConfig = config
         self.model: Optional[Union[Callable, Trainer]] = None
 
@@ -31,10 +32,10 @@ class HuggingfaceModel(BaseModel):
         except:
             print("❌ No model found in huggingface repository")
 
-    def fit(self, train_dataset: pd.DataFrame) -> None:
+    def fit(self, dataset: pd.DataFrame) -> None:
 
         train_dataset, val_dataset = train_test_split(
-            train_dataset, test_size=self.config.val_size
+            dataset, test_size=self.config.val_size
         )
 
         model = run_training_pipeline(
@@ -44,7 +45,7 @@ class HuggingfaceModel(BaseModel):
         )
         self.model = load_pipeline(model)
 
-    def predict(self, test_dataset: List[Any]) -> List[Any]:
+    def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
         if self.model:
             model = self.model
         else:
@@ -55,7 +56,7 @@ class HuggingfaceModel(BaseModel):
 
         return run_inference_pipeline(
             model,
-            from_pandas(test_dataset, self.config.num_classes),
+            from_pandas(dataset, self.config.num_classes),
             huggingface_config,
         )
 

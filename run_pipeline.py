@@ -1,36 +1,12 @@
-from typing import List
-from model.sequential import Sequential
-from model.huggingface import HuggingfaceModel
+from configs.constants import Const, ModelTypes
 
-from model.sklearn import SKLearnModel
 from data.dataloader import load_data
-from configs.config import (
-    global_preprocess_config,
-    huggingface_config,
-    sklearn_config,
-    GlobalPreprocessConfig,
+from configs.config import global_preprocess_config
+from runner.run import train_pipeline
+from library import simple_pipeline
+
+train_dataset, test_dataset = load_data("data/original", global_preprocess_config)
+
+train_pipeline(
+    simple_pipeline, {"input": train_dataset}, train_dataset[Const.label_col]
 )
-from model.base import BaseModel
-from model.sequential import Sequential
-from model.augmenters.identity import IdentityAugmenter
-from training.train import train_model
-
-models = Sequential(
-    [
-        IdentityAugmenter(),
-        SKLearnModel(config=sklearn_config),
-        # HuggingfaceModel(config=huggingface_config),
-    ]
-)
-
-
-def run_pipeline(preprocess_config: GlobalPreprocessConfig, model: BaseModel = models):
-    train_dataset, test_dataset = load_data("data/original", preprocess_config)
-
-    model.preload()
-    train_model(model, train_dataset)
-    return model.predict(test_dataset)
-
-
-if __name__ == "__main__":
-    run_pipeline(global_preprocess_config, models)
