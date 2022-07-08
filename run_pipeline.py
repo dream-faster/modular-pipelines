@@ -8,5 +8,5 @@ from library import simple_pipeline
 train_dataset, test_dataset = load_data("data/original", global_preprocess_config)
 
 train_pipeline(
-    simple_pipeline, {"input": train_dataset}, train_dataset[Const.label_col]
+    simple_pipeline(), {"input": train_dataset}, train_dataset[Const.label_col]
 )
