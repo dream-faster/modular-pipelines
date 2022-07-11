@@ -64,5 +64,5 @@ class LightningWrapper(pl.LightningModule):
         x, y = val_batch
         x = x.view(x.size(0), -1)
         x_hat = self.model(x)
-        loss = F.mse_loss(x_hat, x)
+        loss = F.mse_loss(x_hat, y)
         self.log("val_loss", loss)
