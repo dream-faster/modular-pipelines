@@ -7,6 +7,7 @@ import spacy
 from type import BaseConfig
 from configs.constants import Const
 from collections import Counter
+from urlextract import URLExtract
 
 
 class StatisticAugmenter(BaseModel):
@@ -44,15 +45,28 @@ def get_outliers(word_freq: dict) -> dict:
     ratio = 0.1
 
     for word, freq in word_freq.items():
-        if freq > len(word_freq.keys() * ratio):
+        if freq >= (len(word_freq.keys()) * ratio):
             outliers[word] = freq
 
     return outliers
 
 
-def get_statistic(words: list[str]) -> List[str]:
+def get_num_of_urls(string: str) -> int:
+    extractor = URLExtract()
+    urls = extractor.find_urls(string)
+    return len(urls)
+
+
+def get_non_alphanumeric(string: str) -> int:
+    return len([char for char in string if not char.isalnum()])
+
+
+def get_statistic(words: list[str]) -> str:
+    words_fused = " ".join(words)
     num_words = get_num_words(words)
     word_freq = get_word_freq(words)
     outliers = get_outliers(word_freq)
+    num_urls = get_num_of_urls(words_fused)
+    num_non_alphanumeric = get_non_alphanumeric(words_fused)
 
-    return num_words, word_freq, outliers
+    return " ".join([num_words, word_freq, outliers, num_urls, num_non_alphanumeric])
