@@ -29,8 +29,7 @@ def simple_decoder() -> Pipeline:
         nlp_input,
         models=[
             SpacyTokenizer(),
-            # StatisticAugmenter(),
-            SynonymAugmenter(num_synonyms=2),
+            StatisticAugmenter(),
             # HuggingfaceModel("transformer1", huggingface_config),
             PytorchModel(id="pytorch-decoder", config=pytorch_decoder_config),
         ],
