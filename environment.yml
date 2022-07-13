@@ -26,5 +26,8 @@ dependencies:
   - swifter
   - huggingface_hub
   - pip
+  - pip:
+      - URLExtract
+      - emoji
 
 prefix: /usr/local/anaconda3/envs/nlp

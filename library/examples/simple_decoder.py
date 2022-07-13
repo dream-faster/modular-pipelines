@@ -15,6 +15,9 @@ from model.ensemble import Ensemble
 from model.data import DataSource, StrConcat, VectorConcat
 from model.transformations.predicitions_to_text import PredictionsToText
 from model.pytorch.base import PytorchModel
+from model.augmenters import StatisticAugmenter, SynonymAugmenter
+
+from model.transformations import PredictionsToText, SpacyTokenizer
 
 
 def simple_decoder() -> Pipeline:
@@ -25,7 +28,10 @@ def simple_decoder() -> Pipeline:
         "stacked",
         nlp_input,
         models=[
-            HuggingfaceModel("transformer1", huggingface_config),
+            SpacyTokenizer(),
+            # StatisticAugmenter(),
+            SynonymAugmenter(num_synonyms=2),
+            # HuggingfaceModel("transformer1", huggingface_config),
             PytorchModel(id="pytorch-decoder", config=pytorch_decoder_config),
         ],
     )

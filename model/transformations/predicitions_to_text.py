@@ -1,9 +1,9 @@
 import pandas as pd
-from .base import SimpleTransformation
+from .base import Transformation
 from configs.constants import Const
 
 
-class PredictionsToText(SimpleTransformation):
+class PredictionsToText(Transformation):
     def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
 
         agg_text = map(

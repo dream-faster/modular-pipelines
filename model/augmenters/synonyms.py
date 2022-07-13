@@ -1,32 +1,33 @@
 import nltk
 from nltk.corpus import wordnet as wn
-from model.base import BaseModel
+from .base import Augmenter
 from typing import List, Any
 import pandas as pd
 import spacy
 from type import BaseConfig
+from configs.constants import Const
 
 
-class SynonymAugmenter(BaseModel):
+class SynonymAugmenter(Augmenter):
     def __init__(self, num_synonyms: int):
         self.config = BaseConfig(force_fit=False)
         self.num_synonyms = num_synonyms
+        self.id = id
 
     def preload(self):
         nltk.download("wordnet")
         nltk.download("omw-1.4")
-        self.nlp = spacy.load("en_core_web_lg")
 
-    def fit(self, train_dataset: pd.DataFrame):
+    def fit(self, dataset: pd.DataFrame):
         pass
 
-    def predict(self, test_dataset: pd.DataFrame) -> List[str]:
-        return [
-            " ".join(
-                [process_token(token, self.num_synonyms) for token in self.nlp(line)]
-            )
-            for line in test_dataset["input"]
-        ]
+    def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
+
+        dataset[Const.input_col] = dataset[Const.input_col].apply(
+            lambda x: " ".join([process_token(token, self.num_synonyms) for token in x])
+        )
+
+        return dataset
 
     def is_fitted(self) -> bool:
         return True

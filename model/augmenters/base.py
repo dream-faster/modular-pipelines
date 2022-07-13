@@ -2,11 +2,15 @@ from model.base import Model
 import pandas as pd
 
 from type import BaseConfig
+from utils.random import random_string
+from typing import Optional
 
-
-class SimpleAugmenter(Model):
-    def __init__(self):
+class Augmenter(Model):
+    def __init__(self, id: Optional[str] = None):
         self.config = BaseConfig(force_fit=False)
+        self.id = (
+            self.__class__.__name__ + "-" + random_string(5) if id is not None else id
+        )
 
     def preload(self):
         pass
