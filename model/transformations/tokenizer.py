@@ -1,16 +1,13 @@
-import pandas as pd
 from .base import Transformation
 from configs.constants import Const
+import pandas as pd
+from utils.spacy import get_spacy
 
 
-class PredictionsToText(Transformation):
+class SpacyTokenizer(Transformation):
+    def preload(self):
+        self.nlp = get_spacy()
+
     def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
-
-        agg_text = map(
-            str,
-            zip(
-                map(str, dataset[Const.preds_col]),
-                map(str, dataset[Const.probs_col]),
-            ),
-        )
-        return pd.DataFrame({Const.input_col: agg_text})
+        dataset[Const.input_col] = dataset[Const.input_col].apply(lambda x: self.nlp(x))
+        return dataset

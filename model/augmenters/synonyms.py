@@ -9,7 +9,7 @@ from configs.constants import Const
 
 
 class SynonymAugmenter(Augmenter):
-    def __init__(self, id: str, num_synonyms: int):
+    def __init__(self, num_synonyms: int):
         self.config = BaseConfig(force_fit=False)
         self.num_synonyms = num_synonyms
         self.id = id
@@ -17,16 +17,13 @@ class SynonymAugmenter(Augmenter):
     def preload(self):
         nltk.download("wordnet")
         nltk.download("omw-1.4")
-        self.nlp = spacy.load("en_core_web_lg")
 
     def fit(self, train_dataset: pd.DataFrame):
         pass
 
     def predict(self, test_dataset: pd.DataFrame) -> List[str]:
         return [
-            " ".join(
-                [process_token(token, self.num_synonyms) for token in self.nlp(line)]
-            )
+            " ".join([process_token(token, self.num_synonyms) for token in line])
             for line in test_dataset[Const.input_col]
         ]
 

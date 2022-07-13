@@ -13,6 +13,7 @@ from spacy.cli.download import download
 from typing import Tuple, List, Any
 import swifter
 from configs.constants import Const
+from utils.spacy import get_spacy
 
 
 class SKLearnModel(Model):
@@ -24,12 +25,7 @@ class SKLearnModel(Model):
         self.config = config
 
     def preload(self):
-        try:
-            self.nlp = spacy.load("en_core_web_lg")
-        except:
-            download("en_core_web_lg")
-            self.nlp = spacy.load("en_core_web_lg")
-
+        self.nlp = get_spacy()
         self.spacy_stopwords = spacy.lang.en.stop_words.STOP_WORDS
         self.preprocess = create_preprocess(self.nlp)
 
@@ -69,7 +65,7 @@ class SKLearnModel(Model):
         )
 
     def is_fitted(self) -> bool:
-        return hasattr(self, 'pipeline')
+        return hasattr(self, "pipeline")
 
 
 def create_classifier(

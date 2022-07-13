@@ -13,21 +13,15 @@ import re
 
 
 class StatisticAugmenter(Augmenter):
-    def __init__(self, id: str):
+    def __init__(self):
         self.config = BaseConfig(force_fit=False)
-        self.id = id
-
-    def preload(self):
-        nltk.download("wordnet")
-        nltk.download("omw-1.4")
-        self.nlp = spacy.load("en_core_web_lg")
 
     def fit(self, dataset: pd.DataFrame):
         pass
 
     def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
         dataset[Const.input_col] = dataset[Const.input_col].apply(
-            lambda x: get_statistic([token.text for token in self.nlp(x)])
+            lambda x: get_statistic([token.text for token in x])
         )
         return dataset
 
