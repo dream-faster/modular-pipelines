@@ -18,14 +18,16 @@ class SynonymAugmenter(Augmenter):
         nltk.download("wordnet")
         nltk.download("omw-1.4")
 
-    def fit(self, train_dataset: pd.DataFrame):
+    def fit(self, dataset: pd.DataFrame):
         pass
 
-    def predict(self, test_dataset: pd.DataFrame) -> List[str]:
-        return [
-            " ".join([process_token(token, self.num_synonyms) for token in line])
-            for line in test_dataset[Const.input_col]
-        ]
+    def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
+
+        dataset[Const.input_col] = dataset[Const.input_col].apply(
+            lambda x: " ".join([process_token(token, self.num_synonyms) for token in x])
+        )
+
+        return dataset
 
     def is_fitted(self) -> bool:
         return True
