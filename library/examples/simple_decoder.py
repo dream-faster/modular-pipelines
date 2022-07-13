@@ -26,7 +26,7 @@ def simple_decoder() -> Pipeline:
         "stacked",
         nlp_input,
         models=[
-            StatisticAugmenter("statistic-augmenter", config=None),
+            StatisticAugmenter("statistic-augmenter"),
             # HuggingfaceModel("transformer1", huggingface_config),
             PytorchModel(id="pytorch-decoder", config=pytorch_decoder_config),
         ],

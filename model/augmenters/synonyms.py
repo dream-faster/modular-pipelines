@@ -1,6 +1,6 @@
 import nltk
 from nltk.corpus import wordnet as wn
-from model.base import BaseModel
+from .base import BaseAugmenter
 from typing import List, Any
 import pandas as pd
 import spacy
@@ -8,10 +8,11 @@ from type import BaseConfig
 from configs.constants import Const
 
 
-class SynonymAugmenter(BaseModel):
-    def __init__(self, num_synonyms: int):
+class SynonymAugmenter(BaseAugmenter):
+    def __init__(self, id: str, num_synonyms: int):
         self.config = BaseConfig(force_fit=False)
         self.num_synonyms = num_synonyms
+        self.id = id
 
     def preload(self):
         nltk.download("wordnet")

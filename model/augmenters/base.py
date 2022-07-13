@@ -4,9 +4,10 @@ import pandas as pd
 from type import BaseConfig
 
 
-class SimpleAugmenter(Model):
-    def __init__(self):
+class BaseAugmenter(Model):
+    def __init__(self, id: str):
         self.config = BaseConfig(force_fit=False)
+        self.id = id
 
     def preload(self):
         pass
