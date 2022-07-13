@@ -1,6 +1,6 @@
 import nltk
 from nltk.corpus import wordnet as wn
-from typing import List, Any, Union
+from typing import List, Union, Optional
 import pandas as pd
 import spacy
 from type import BaseConfig
@@ -16,7 +16,7 @@ class StatisticAugmenter(Augmenter):
     def __init__(self):
         self.config = BaseConfig(force_fit=False)
 
-    def fit(self, dataset: pd.DataFrame):
+    def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
         pass
 
     def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:

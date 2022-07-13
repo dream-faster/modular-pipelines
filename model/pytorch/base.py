@@ -8,6 +8,8 @@ from torch.nn import functional as F
 from torch.utils.data import DataLoader
 from torch.utils.data import random_split
 from .decoder import Decoder
+from typing import Optional
+from configs.constants import Const
 
 
 class PytorchModel(Model):
@@ -20,7 +22,10 @@ class PytorchModel(Model):
     def preload(self):
         pass
 
-    def fit(self, dataset: pd.DataFrame) -> None:
+    def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
+        dataset = pd.DataFrame(
+            {Const.input_col: dataset[Const.input_col], Const.label_col: labels}
+        )
         val_size = int(len(dataset) * self.config.val_size)
         train_size = len(dataset) - val_size
         train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
