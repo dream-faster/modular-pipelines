@@ -12,7 +12,7 @@ from model.pipeline import Pipeline
 from model.ensemble import Ensemble
 from model.data import DataSource, StrConcat, VectorConcat
 from model.transformations.predicitions_to_text import PredictionsToText
-from model.augmenters.spellcorrector import SpellCorrectorAugmenter
+from model.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
 
 
 def hate_speech_pipeline() -> Pipeline:
@@ -22,7 +22,7 @@ def hate_speech_pipeline() -> Pipeline:
         "pipeline1",
         input_data,
         [
-            SpellCorrectorAugmenter(fast=True),
+            SpellAutocorrectAugmenter(fast=True),
             SKLearnModel("model1", sklearn_config),
             PredictionsToText(),
         ],

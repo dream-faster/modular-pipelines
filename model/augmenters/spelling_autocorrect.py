@@ -5,13 +5,13 @@ import spacy
 from type import BaseConfig
 from autocorrect import Speller
 from configs import Const
+from utils.random import random_string
 
-
-class SpellCorrectorAugmenter(Model):
+class SpellAutocorrectAugmenter(Model):
     def __init__(self, fast: bool):
         self.config = BaseConfig(force_fit=False)
         self.fast = fast
-        self.id = "spellcorrector"
+        self.id = "spellcorrector" + random_string(5)
 
     def preload(self):
         self.spell = Speller(fast=self.fast)
