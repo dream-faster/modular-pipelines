@@ -1,1 +1,1 @@
-# nlp-ensembles
+# modular-pipelines
