@@ -1,7 +1,7 @@
 from .base import Block, Model, DataSource
 import pandas as pd
 from typing import List, Union
-from runner.train import train_predict
+from runner.train import train_predict, predict
 from runner.store import Store
 
 
@@ -35,7 +35,7 @@ class Pipeline(Block):
     def predict(self, store: Store) -> pd.DataFrame:
         last_output = self.datasource.deplate(store)
         for model in self.models:
-            last_output = model.predict(last_output)
+            last_output = predict(model, last_output)
         store.set_data(self.id, last_output)
         return last_output
 

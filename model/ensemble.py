@@ -3,7 +3,7 @@ from .base import Block, Model
 from .data import DataSource
 import pandas as pd
 from typing import List
-from runner.train import train_predict
+from runner.train import train_predict, predict
 from runner.store import Store
 import numpy as np
 
@@ -34,7 +34,7 @@ class Ensemble(Block):
         input = self.datasource.deplate(store)
         outputs: List[pd.DataFrame] = []
         for model in self.models:
-            output = model.predict(input)
+            output = predict(model, input)
             outputs.append(output)
 
         averaged = average_output(outputs)
