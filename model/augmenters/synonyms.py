@@ -5,6 +5,7 @@ from typing import List, Any
 import pandas as pd
 import spacy
 from type import BaseConfig
+from configs.constants import Const
 
 
 class SynonymAugmenter(BaseModel):
@@ -25,7 +26,7 @@ class SynonymAugmenter(BaseModel):
             " ".join(
                 [process_token(token, self.num_synonyms) for token in self.nlp(line)]
             )
-            for line in test_dataset["input"]
+            for line in test_dataset[Const.input_col]
         ]
 
     def is_fitted(self) -> bool:
