@@ -4,7 +4,7 @@ import pandas as pd
 from type import BaseConfig
 
 
-class BaseAugmenter(Model):
+class Augmenter(Model):
     def __init__(self, id: str):
         self.config = BaseConfig(force_fit=False)
         self.id = id

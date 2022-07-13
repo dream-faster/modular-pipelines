@@ -5,7 +5,7 @@ from type import BaseConfig
 from utils.random import random_string
 
 
-class SimpleTransformation(Model):
+class Transformation(Model):
     def __init__(self):
         self.config = BaseConfig(force_fit=False)
         self.id = self.__class__.__name__ + "-" + random_string(5)

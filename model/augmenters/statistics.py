@@ -7,11 +7,12 @@ from type import BaseConfig
 from configs.constants import Const
 from collections import Counter
 from urlextract import URLExtract
-from .base import BaseAugmenter
+from .base import Augmenter
 from emoji import UNICODE_EMOJI_ENGLISH
+import re
 
 
-class StatisticAugmenter(BaseAugmenter):
+class StatisticAugmenter(Augmenter):
     def __init__(self, id: str):
         self.config = BaseConfig(force_fit=False)
         self.id = id
@@ -63,6 +64,14 @@ def get_non_alphanumeric(string: str) -> int:
     return len([char for char in string if not char.isalnum()])
 
 
+pattern_same_punctuation = re.compile("(([-/\\\\()!\"+,&'.])\\2+)")
+
+
+def get_num_aggressive_char(words_fused: str) -> int:
+    match = pattern_same_punctuation.findall(words_fused)
+    return len(match) if match is not None else 0
+
+
 def get_num_emoji(words_fused: str) -> int:
     return len([char for char in words_fused if char in UNICODE_EMOJI_ENGLISH])
 
@@ -86,6 +95,7 @@ def get_statistic(words: list[str]) -> List[Union[int, dict]]:
     num_non_alphanumeric = get_non_alphanumeric(words_fused)
     num_uppercase = get_num_uppercase(words)
     num_emoji = get_num_emoji(words_fused)
+    num_aggressive_char = get_num_aggressive_char(words_fused)
 
     return [
         num_words,
@@ -95,4 +105,5 @@ def get_statistic(words: list[str]) -> List[Union[int, dict]]:
         num_non_alphanumeric,
         num_uppercase,
         num_emoji,
+        num_aggressive_char,
     ]
