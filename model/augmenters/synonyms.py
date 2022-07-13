@@ -3,7 +3,6 @@ from nltk.corpus import wordnet as wn
 from .base import Augmenter
 from typing import List, Any
 import pandas as pd
-import spacy
 from type import BaseConfig
 from configs.constants import Const
 

@@ -25,9 +25,11 @@ dependencies:
   - imbalanced-learn
   - swifter
   - huggingface_hub
+  - pytorch-lightning
   - pip
   - pip:
-      - URLExtract
-      - emoji
+    - URLExtract
+    - emoji
+    - autocorrect
 
 prefix: /usr/local/anaconda3/envs/nlp

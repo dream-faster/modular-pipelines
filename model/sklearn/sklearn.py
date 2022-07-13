@@ -9,8 +9,6 @@ from model.base import Model
 from type import SKLearnConfig, Label, Probabilities
 from .preprocess import create_preprocess
 import spacy
-from spacy.cli.download import download
-from typing import Tuple, List, Any
 import swifter
 from configs.constants import Const
 from utils.spacy import get_spacy
