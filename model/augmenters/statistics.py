@@ -58,11 +58,11 @@ def get_non_alphanumeric(string: str) -> int:
     return len([char for char in string if not char.isalnum()])
 
 
-pattern_same_punctuation = re.compile("(([-/\\\\()!\"+,&'.])\\2+)")
-
+pattern_same_punctuation = re.compile("(([-/\\\\()!\"+,&'])\\2+)")
+pattern_any_punctuation = re.compile('([-/\\\\!?\']{2,})')
 
 def get_num_aggressive_char(words_fused: str) -> int:
-    match = pattern_same_punctuation.findall(words_fused)
+    match = pattern_any_punctuation.findall(words_fused)
     return len(match) if match is not None else 0
 
 
