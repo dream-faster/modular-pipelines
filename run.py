@@ -15,5 +15,5 @@ run_pipeline(
     hate_speech_detection_pipeline(),
     {"input": train_dataset[Const.input_col]},
     train_dataset[Const.label_col],
-    train=False,
+    train=True,
 )

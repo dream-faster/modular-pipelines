@@ -16,7 +16,9 @@ class Model(Block):
         pass
 
     def load(self, pipeline_id: str) -> None:
-        self.model = safe_loading(pipeline_id, self.id)
+        model = safe_loading(pipeline_id, self.id)
+        if model is not None:
+            self.model = model
 
     def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
         raise NotImplementedError()

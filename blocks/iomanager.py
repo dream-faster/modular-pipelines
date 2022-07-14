@@ -21,5 +21,6 @@ def safe_saving(
     if os.path.exists(path) is False:
         os.makedirs(path)
 
+    print(f"| Saving model {pipeline_id}/{id}")
     with open(path + f"/{id}.pkl", "wb") as f:
         joblib.dump(object, f, compress=9)

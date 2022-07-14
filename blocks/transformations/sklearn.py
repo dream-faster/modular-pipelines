@@ -11,11 +11,11 @@ import numpy as np
 
 class SKLearnTransformation(Transformation):
 
-    transformation: BaseEstimator
+    model: BaseEstimator
 
     def __init__(self, sklearn_transformation: BaseEstimator):
         super().__init__()
-        self.transformation = sklearn_transformation
+        self.model = sklearn_transformation
         self.id += "-" + sklearn_transformation.__class__.__name__
 
     def preload(self):
@@ -26,17 +26,18 @@ class SKLearnTransformation(Transformation):
         dataset: Union[list, np.ndarray],
         labels: Optional[Union[list, np.ndarray]],
     ) -> None:
-        self.transformation.fit(dataset)
+        self.model.fit(dataset)
+        self.trained = True
 
     def predict(self, dataset: Union[list, np.ndarray]) -> np.ndarray:
         # TODO: this is not returning a dataframe, but a sparse vector
-        return self.transformation.transform(dataset)
+        return self.model.transform(dataset)
 
     def is_fitted(self) -> bool:
+        if self.model is None:
+            return False
         # source: https://stackoverflow.com/a/63839394
         attrs = [
-            v
-            for v in vars(self.transformation)
-            if v.endswith("_") and not v.startswith("__")
+            v for v in vars(self.model) if v.endswith("_") and not v.startswith("__")
         ]
         return len(attrs) != 0

@@ -45,6 +45,7 @@ class HuggingfaceModel(Model):
             self.config,
         )
         self.model = load_pipeline(model)
+        self.trained = True
 
     def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
         if self.model:
