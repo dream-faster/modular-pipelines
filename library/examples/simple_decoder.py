@@ -11,9 +11,13 @@ from model.pytorch.base import PytorchModel
 from model.augmenters import StatisticAugmenter, SynonymAugmenter
 
 from model.transformations import PredictionsToText, SpacyTokenizer
+from model.transformations.sklearn import SKLearnTransformation
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.preprocessing import MinMaxScaler
+from model.adaptors import DfToNumpy
 
 
-def simple_decoder() -> Pipeline:
+def all_transformations() -> Pipeline:
 
     pytorch_decoder_config = PytorchConfig(hidden_size=768, output_size=2, val_size=0.1)
 
@@ -25,8 +29,8 @@ def simple_decoder() -> Pipeline:
         models=[
             SpacyTokenizer(),
             StatisticAugmenter(),
-            # HuggingfaceModel("transformer1", huggingface_config),
-            PytorchModel(id="pytorch-decoder", config=pytorch_decoder_config),
+            DfToNumpy(),
+            SKLearnTransformation(MinMaxScaler(feature_range=(0, 1), clip=True)),
         ],
     )
 

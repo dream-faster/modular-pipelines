@@ -1,12 +1,12 @@
+from configs.constants import Const
 from model.base import Model
 import pandas as pd
-
 from type import BaseConfig
 from utils.random import random_string
 from typing import Optional
 
 
-class Augmenter(Model):
+class Adaptor(Model):
     def __init__(self, id: Optional[str] = None, config: BaseConfig = None):
         self.config = BaseConfig(force_fit=False) if config is None else config
         self.id = self.__class__.__name__ + "-" + random_string(5) if id is None else id

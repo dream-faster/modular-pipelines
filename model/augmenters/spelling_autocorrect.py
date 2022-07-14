@@ -6,13 +6,13 @@ from type import BaseConfig
 from autocorrect import Speller
 from configs import Const
 from utils.random import random_string
+from .base import Augmenter
 
 
-class SpellAutocorrectAugmenter(Model):
+class SpellAutocorrectAugmenter(Augmenter):
     def __init__(self, fast: bool):
-        self.config = BaseConfig(force_fit=False)
+        super().__init__()
         self.fast = fast
-        self.id = "spellcorrector" + random_string(5)
 
     def preload(self):
         self.spell = Speller(fast=self.fast)

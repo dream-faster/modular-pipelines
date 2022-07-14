@@ -6,12 +6,12 @@ from type import BaseConfig
 from spello.model import SpellCorrectionModel
 from configs import Const
 from utils.random import random_string
+from .base import Augmenter
 
 
-class SpellingSpelloAugmenter(Model):
+class SpellingSpelloAugmenter(Augmenter):
     def __init__(self):
-        self.config = BaseConfig(force_fit=False)
-        self.id = "spelling-spello" + random_string(5)
+        super().__init__()
 
     def preload(self):
         self.sp = SpellCorrectionModel(language="en")
