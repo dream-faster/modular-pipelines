@@ -1,7 +1,7 @@
 from model.base import Model
 from .infer import run_inference_pipeline
 from .train import run_training_pipeline
-from configs.config import HuggingfaceConfig, huggingface_config
+from type import HuggingfaceConfig
 from configs.constants import Const
 import pandas as pd
 from datasets import Dataset, Features, Value, ClassLabel
@@ -22,7 +22,7 @@ class HuggingfaceModel(Model):
 
     def __init__(self, id: str, config: HuggingfaceConfig):
         self.id = id
-        self.config: HuggingfaceConfig = config
+        self.config = config
         self.model: Optional[Union[Callable, Trainer]] = None
 
     def preload(self):
@@ -60,7 +60,7 @@ class HuggingfaceModel(Model):
         return run_inference_pipeline(
             model,
             from_pandas(dataset, self.config.num_classes),
-            huggingface_config,
+            self.huggingface_config,
         )
 
     def is_fitted(self) -> bool:
