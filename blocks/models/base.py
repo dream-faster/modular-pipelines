@@ -2,6 +2,7 @@ from type import BaseConfig
 import pandas as pd
 from typing import Optional
 from blocks.base import Block
+from blocks.iomanager import safe_loading, safe_saving
 
 
 class Model(Block):
@@ -15,7 +16,7 @@ class Model(Block):
         pass
 
     def load(self, pipeline_id: str) -> None:
-        pass
+        self.model = safe_loading(pipeline_id, self.id)
 
     def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
         raise NotImplementedError()
@@ -27,4 +28,5 @@ class Model(Block):
         raise NotImplementedError()
 
     def save(self, pipeline_id: str) -> None:
-        pass
+        if hasattr(self, "trained") and self.trained:
+            safe_saving(self.model, pipeline_id, self.id)

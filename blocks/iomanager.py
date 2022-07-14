@@ -1,11 +1,9 @@
-from .models.base import Model
 import os
 import joblib
-from .pipeline import Pipeline
 from typing import Union
 
 
-def safe_loading(pipeline_id: str, id: str) -> Model:
+def safe_loading(pipeline_id: str, id: str) -> "Model":
     path = f"output/pipelines/{pipeline_id}/{id}.pkl"
 
     if os.path.exists(path):
@@ -17,7 +15,7 @@ def safe_loading(pipeline_id: str, id: str) -> Model:
 
 
 def safe_saving(
-    object: Union[Model, Pipeline, None], pipeline_id: str, id: str
+    object: Union["Model", "Pipeline", None], pipeline_id: str, id: str
 ) -> None:
     path = f"output/pipelines/{pipeline_id}"
     if os.path.exists(path) is False:
