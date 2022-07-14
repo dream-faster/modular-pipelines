@@ -2,6 +2,7 @@ from model.base import Model
 from .infer import run_inference_pipeline
 from .train import run_training_pipeline
 from configs.config import HuggingfaceConfig, huggingface_config
+from configs.constants import Const
 import pandas as pd
 from datasets import Dataset, Features, Value, ClassLabel
 from typing import List, Tuple, Callable, Optional, Union
@@ -31,10 +32,13 @@ class HuggingfaceModel(Model):
         except:
             print("❌ No model found in huggingface repository")
 
-    def fit(self, dataset: pd.DataFrame) -> None:
+    def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
 
         train_dataset, val_dataset = train_test_split(
-            dataset, test_size=self.config.val_size
+            pd.DataFrame(
+                {Const.input_col: dataset[Const.input_col], Const.label_col: labels}
+            ),
+            test_size=self.config.val_size,
         )
 
         model = run_training_pipeline(

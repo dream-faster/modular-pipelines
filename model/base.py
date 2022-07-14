@@ -1,7 +1,7 @@
 from type import BaseConfig
 from abc import ABC
 import pandas as pd
-from typing import Any, List, Callable
+from typing import Optional
 from runner.store import Store
 
 
@@ -19,7 +19,7 @@ class Model(Block):
     def preload(self):
         pass
 
-    def fit(self, dataset: pd.DataFrame) -> None:
+    def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
         raise NotImplementedError()
 
     def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:

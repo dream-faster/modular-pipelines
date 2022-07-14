@@ -1,9 +1,8 @@
 import nltk
 from nltk.corpus import wordnet as wn
 from .base import Augmenter
-from typing import List, Any
+from typing import List, Any, Optional
 import pandas as pd
-import spacy
 from type import BaseConfig
 from configs.constants import Const
 
@@ -18,7 +17,7 @@ class SynonymAugmenter(Augmenter):
         nltk.download("wordnet")
         nltk.download("omw-1.4")
 
-    def fit(self, dataset: pd.DataFrame):
+    def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
         pass
 
     def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
