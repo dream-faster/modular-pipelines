@@ -12,7 +12,6 @@ def train_pipeline(
     print("| Training pipeline")
     pipeline.fit(store)
     print("| Predicting pipeline")
-    # store.reset()
     return pipeline.predict(store)
 
 
