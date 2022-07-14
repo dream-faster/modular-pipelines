@@ -9,5 +9,5 @@ class SpacyTokenizer(Transformation):
         self.nlp = get_spacy()
 
     def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
-        dataset[Const.input_col] = dataset[Const.input_col].apply(lambda x: self.nlp(x))
+        dataset[Const.input_col] = dataset[Const.input_col].apply(self.nlp)
         return dataset

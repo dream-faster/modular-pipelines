@@ -1,11 +1,11 @@
 from typing import Tuple
 import pandas as pd
-from type import GlobalPreprocessConfig
+from type import PreprocessConfig
 from configs.constants import Const
 
 
 def load_data(
-    folder: str, config: GlobalPreprocessConfig
+    folder: str, config: PreprocessConfig
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     df_train = pd.read_json(f"{folder}/train.jsonl", lines=True)[: config.train_size]
     df_val = pd.read_json(f"{folder}/val.jsonl", lines=True)[: config.val_size]

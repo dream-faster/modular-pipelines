@@ -1,15 +1,8 @@
 from configs import Const
 from model.pipeline import Pipeline
-
+from type import PytorchConfig
 from model.huggingface import HuggingfaceModel
 from model.sklearn import SKLearnModel
-
-from configs.config import (
-    global_preprocess_config,
-    huggingface_config,
-    sklearn_config,
-    pytorch_decoder_config,
-)
 from model.pipeline import Pipeline
 from model.ensemble import Ensemble
 from model.data import DataSource, StrConcat, VectorConcat
@@ -21,6 +14,8 @@ from model.transformations import PredictionsToText, SpacyTokenizer
 
 
 def simple_decoder() -> Pipeline:
+
+    pytorch_decoder_config = PytorchConfig(hidden_size=768, output_size=2, val_size=0.1)
 
     nlp_input = DataSource("input")
 

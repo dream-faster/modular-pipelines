@@ -8,7 +8,7 @@ from transformers import (
 )
 import numpy as np
 from datasets import load_metric, Dataset
-from configs.config import HuggingfaceConfig
+from type import HuggingfaceConfig
 from configs.constants import Const
 
 
