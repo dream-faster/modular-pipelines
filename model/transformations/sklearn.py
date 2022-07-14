@@ -16,6 +16,7 @@ class SKLearnTransformation(Transformation):
     def __init__(self, sklearn_transformation: BaseEstimator):
         super().__init__()
         self.transformation = sklearn_transformation
+        self.id += "-" + sklearn_transformation.__class__.__name__
 
     def preload(self):
         pass
