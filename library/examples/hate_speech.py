@@ -13,6 +13,8 @@ from model.ensemble import Ensemble
 from model.data import DataSource, StrConcat, VectorConcat
 from model.transformations.predicitions_to_text import PredictionsToText
 from model.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
+from model.transformations.sklearn import SKLearnTransformation
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 def hate_speech_pipeline() -> Pipeline:
@@ -22,7 +24,13 @@ def hate_speech_pipeline() -> Pipeline:
         "pipeline1",
         input_data,
         [
-            SpellAutocorrectAugmenter(fast=True),
+            # SpellAutocorrectAugmenter(fast=True),
+            SKLearnTransformation(
+                TfidfVectorizer(
+                    max_features=100000,
+                    ngram_range=(1, 3),
+                )
+            ),
             SKLearnModel("model1", sklearn_config),
             PredictionsToText(),
         ],

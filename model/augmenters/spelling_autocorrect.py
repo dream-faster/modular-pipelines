@@ -1,11 +1,12 @@
 from model.base import Model
-from typing import List, Any
+from typing import Optional
 import pandas as pd
 import spacy
 from type import BaseConfig
 from autocorrect import Speller
 from configs import Const
 from utils.random import random_string
+
 
 class SpellAutocorrectAugmenter(Model):
     def __init__(self, fast: bool):
@@ -16,7 +17,7 @@ class SpellAutocorrectAugmenter(Model):
     def preload(self):
         self.spell = Speller(fast=self.fast)
 
-    def fit(self, dataset: pd.DataFrame):
+    def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
         pass
 
     def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
