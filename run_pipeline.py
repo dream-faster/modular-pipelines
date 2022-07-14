@@ -7,6 +7,7 @@ from library.examples.hate_speech import (
     preprocess_config,
 )
 from library.examples.all_transformations import all_transformations
+from library.examples.simple_sklearn import simple_sklearn
 
 train_dataset, test_dataset = load_data("data/original", preprocess_config)
 

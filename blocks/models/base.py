@@ -8,10 +8,13 @@ class Model(Block):
 
     config: BaseConfig
 
-    def __init__(self, id: str, config: BaseConfig):
+    def __init__(self, id: str, config: BaseConfig) -> None:
         raise NotImplementedError()
 
-    def preload(self):
+    def preload(self) -> None:
+        pass
+
+    def load(self, pipeline_id: str) -> None:
         pass
 
     def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
@@ -22,3 +25,6 @@ class Model(Block):
 
     def is_fitted(self) -> bool:
         raise NotImplementedError()
+
+    def save(self, pipeline_id: str) -> None:
+        pass

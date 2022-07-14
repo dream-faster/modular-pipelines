@@ -28,9 +28,10 @@ dependencies:
   - pytorch-lightning
   - pip
   - pip:
-    - URLExtract
-    - emoji
-    - autocorrect
-    - spello
+      - URLExtract
+      - emoji
+      - autocorrect
+      - spello
+      - joblib
 
 prefix: /usr/local/anaconda3/envs/nlp

@@ -5,9 +5,10 @@ from imblearn.over_sampling import RandomOverSampler
 from imblearn.pipeline import Pipeline as ImbPipeline
 from blocks.models.base import Model
 from type import SKLearnConfig
-import swifter
 from configs.constants import Const
 from typing import Optional
+import os
+import joblib
 
 
 class SKLearnModel(Model):
@@ -17,9 +18,17 @@ class SKLearnModel(Model):
     def __init__(self, id: str, config: SKLearnConfig):
         self.id = id
         self.config = config
+        self.pipeline = None
 
     def preload(self):
         pass
+
+    def load(self, pipeline_id) -> None:
+        path = f"output/pipelines/{pipeline_id}/{self.id}.pkl"
+        if os.path.exists(path):
+            print(f"| Loading model {pipeline_id}/{self.id}")
+            with open(path, "rb") as f:
+                self.pipeline = joblib.load(f)
 
     def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
 
@@ -43,7 +52,15 @@ class SKLearnModel(Model):
         )
 
     def is_fitted(self) -> bool:
-        return hasattr(self, "pipeline")
+        return hasattr(self, "pipeline") and self.pipeline is not None
+
+    def save(self, pipeline_id: str) -> None:
+        path = f"output/pipelines/{pipeline_id}"
+        if os.path.exists(path) is False:
+            os.makedirs(path)
+
+        with open(path + f"/{self.id}.pkl", "wb") as f:
+            joblib.dump(self.pipeline, f, compress=9)
 
 
 def create_classifier(

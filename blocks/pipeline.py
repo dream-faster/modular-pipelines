@@ -1,7 +1,7 @@
 from .base import Block, DataSource
 from blocks.models.base import Model
 import pandas as pd
-from typing import List, Union
+from typing import List, Union, Optional
 from runner.train import train_predict, predict
 from runner.store import Store
 
@@ -30,6 +30,10 @@ class Pipeline(Block):
         for model in self.models:
             model.preload()
 
+    def load(self) -> None:
+        for model in self.models:
+            model.load(self.id)
+
     def fit(self, store: Store) -> None:
         last_output = process_block(self.datasource, store)
         for model in self.models:
@@ -45,6 +49,10 @@ class Pipeline(Block):
 
     def is_fitted(self) -> bool:
         return all([model.is_fitted() for model in self.models])
+
+    def save(self) -> None:
+        for model in self.models:
+            model.save(self.id)
 
 
 def process_block(block: Union[DataSource, Pipeline], store: Store) -> pd.DataFrame:
