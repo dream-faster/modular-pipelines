@@ -1,7 +1,7 @@
 from .base import DataSource
 import pandas as pd
 from typing import List, Union
-from .pipeline import Pipeline
+from .pipeline import Pipeline, process_block
 from runner.store import Store
 from configs.constants import Const
 import numpy as np
@@ -41,12 +41,3 @@ class VectorConcat(BaseConcat):
         return pd.concat(dataframes, axis=1).agg(np.concatenate, axis=1)
 
 
-def process_block(block: Union[DataSource, Pipeline], store: Store) -> pd.DataFrame:
-    if isinstance(block, DataSource):
-        return block.deplate(store)
-    elif isinstance(block, Pipeline):
-        if not block.is_fitted():
-            block.fit(store)
-        return block.predict(store)
-    else:
-        raise ValueError("Expected DataBlock or Pipeline")
