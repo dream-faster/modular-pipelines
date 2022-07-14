@@ -19,13 +19,11 @@ class SynonymAugmenter(Augmenter):
     def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
         pass
 
-    def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
-
-        dataset[Const.input_col] = dataset[Const.input_col].apply(
-            lambda x: " ".join([process_token(token, self.num_synonyms) for token in x])
-        )
-
-        return dataset
+    def predict(self, dataset: List) -> List[str]:
+        return [
+            " ".join([process_token(token, self.num_synonyms) for token in item])
+            for item in dataset
+        ]
 
     def is_fitted(self) -> bool:
         return True

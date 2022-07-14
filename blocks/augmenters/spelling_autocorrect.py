@@ -1,5 +1,5 @@
 from blocks.models.base import Model
-from typing import Optional
+from typing import List, Optional
 import pandas as pd
 import spacy
 from type import BaseConfig
@@ -20,9 +20,8 @@ class SpellAutocorrectAugmenter(Augmenter):
     def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
         pass
 
-    def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
-        dataset[Const.input_col] = dataset[Const.input_col].apply(self.spell)
-        return dataset
+    def predict(self, dataset: List[str]) -> List[str]:
+        return [self.spell(text) for text in dataset]
 
     def is_fitted(self) -> bool:
         return True

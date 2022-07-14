@@ -4,6 +4,7 @@ from blocks.models.huggingface import HuggingfaceModel
 from blocks.models.sklearn import SKLearnModel
 from type import PreprocessConfig, HuggingfaceConfig, SKLearnConfig
 from blocks.pipeline import Pipeline
+from blocks.adaptors import DfToList
 from blocks.transformations import Lemmatizer, SpacyTokenizer
 from blocks.data import DataSource, StrConcat, VectorConcat
 from blocks.transformations.predicitions_to_text import PredictionsToText
@@ -52,28 +53,39 @@ sklearn_config = SKLearnConfig(
 input_data = DataSource("input")
 
 
-sklearn_model_seq = [
-    SpacyTokenizer(),
-    Lemmatizer(),
-    SKLearnTransformation(
-        TfidfVectorizer(
-            max_features=100000,
-            ngram_range=(1, 3),
-        )
-    ),
-    SKLearnModel("model1", sklearn_config),
-    PredictionsToText(),
-]
-
 nlp_sklearn = Pipeline(
     "nlp_sklearn",
     input_data,
-    sklearn_model_seq,
+    [
+        DfToList(),
+        SpacyTokenizer(),
+        Lemmatizer(),
+        SKLearnTransformation(
+            TfidfVectorizer(
+                max_features=100000,
+                ngram_range=(1, 3),
+            )
+        ),
+        SKLearnModel("model1", sklearn_config),
+    ],
 )
+
 nlp_sklearn_autocorrect = Pipeline(
     "nlp_sklearn_autocorrect",
     input_data,
-    [SpellAutocorrectAugmenter(fast=True)] + sklearn_model_seq,
+    [
+        DfToList(),
+        SpellAutocorrectAugmenter(fast=True),
+        SpacyTokenizer(),
+        Lemmatizer(),
+        SKLearnTransformation(
+            TfidfVectorizer(
+                max_features=100000,
+                ngram_range=(1, 3),
+            )
+        ),
+        SKLearnModel("model1", sklearn_config),
+    ],
 )
 
 
