@@ -51,38 +51,29 @@ sklearn_config = SKLearnConfig(
 
 input_data = DataSource("input")
 
+
+sklearn_model_seq = [
+    SpacyTokenizer(),
+    Lemmatizer(),
+    SKLearnTransformation(
+        TfidfVectorizer(
+            max_features=100000,
+            ngram_range=(1, 3),
+        )
+    ),
+    SKLearnModel("model1", sklearn_config),
+    PredictionsToText(),
+]
+
 nlp_sklearn = Pipeline(
     "nlp_sklearn",
     input_data,
-    [
-        SpacyTokenizer(),
-        Lemmatizer(),
-        SKLearnTransformation(
-            TfidfVectorizer(
-                max_features=100000,
-                ngram_range=(1, 3),
-            )
-        ),
-        SKLearnModel("model1", sklearn_config),
-        PredictionsToText(),
-    ],
+    sklearn_model_seq,
 )
 nlp_sklearn_autocorrect = Pipeline(
     "nlp_sklearn_autocorrect",
     input_data,
-    [
-        SpellAutocorrectAugmenter(fast=True),
-        SpacyTokenizer(),
-        Lemmatizer(),
-        SKLearnTransformation(
-            TfidfVectorizer(
-                max_features=100000,
-                ngram_range=(1, 3),
-            )
-        ),
-        SKLearnModel("model1", sklearn_config),
-        PredictionsToText(),
-    ],
+    [SpellAutocorrectAugmenter(fast=True)] + sklearn_model_seq,
 )
 
 
