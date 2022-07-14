@@ -15,7 +15,7 @@ import numpy as np
 
 class StatisticAugmenter(Augmenter):
     def __init__(self):
-        self.config = BaseConfig(force_fit=False)
+        super().__init__()
 
     def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
         pass

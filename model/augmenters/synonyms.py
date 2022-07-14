@@ -9,9 +9,8 @@ from configs.constants import Const
 
 class SynonymAugmenter(Augmenter):
     def __init__(self, num_synonyms: int):
-        self.config = BaseConfig(force_fit=False)
+        super().__init__()
         self.num_synonyms = num_synonyms
-        self.id = id
 
     def preload(self):
         nltk.download("wordnet")

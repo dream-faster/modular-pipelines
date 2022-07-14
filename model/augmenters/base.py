@@ -7,8 +7,8 @@ from typing import Optional
 
 
 class Augmenter(Model):
-    def __init__(self, id: Optional[str] = None):
-        self.config = BaseConfig(force_fit=False)
+    def __init__(self, id: Optional[str] = None, config: BaseConfig = None):
+        self.config = BaseConfig(force_fit=False) if config is None else config
         self.id = self.__class__.__name__ + "-" + random_string(5) if id is None else id
 
     def preload(self):
