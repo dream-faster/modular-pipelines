@@ -1,4 +1,4 @@
-from model.base import Model
+from blocks.models.base import Model
 import pandas as pd
 from .store import Store
 from configs.constants import Const

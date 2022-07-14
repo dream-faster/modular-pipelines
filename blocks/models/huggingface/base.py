@@ -1,4 +1,4 @@
-from model.base import Model
+from blocks.models.base import Model
 from .infer import run_inference_pipeline
 from .train import run_training_pipeline
 from type import HuggingfaceConfig

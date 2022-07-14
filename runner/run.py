@@ -1,6 +1,6 @@
 from typing import Dict
 import pandas as pd
-from model.pipeline import Pipeline
+from blocks.pipeline import Pipeline
 from .store import Store
 
 

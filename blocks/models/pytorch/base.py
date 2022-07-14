@@ -1,7 +1,7 @@
 from type import PytorchConfig
 import pandas as pd
 import pytorch_lightning as pl
-from model.base import Model
+from blocks.models.base import Model
 import torch
 from torch import nn
 from torch.nn import functional as F

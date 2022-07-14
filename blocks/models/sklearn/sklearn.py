@@ -3,7 +3,7 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.base import ClassifierMixin
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.pipeline import Pipeline as ImbPipeline
-from model.base import Model
+from blocks.models.base import Model
 from type import SKLearnConfig
 import swifter
 from configs.constants import Const
