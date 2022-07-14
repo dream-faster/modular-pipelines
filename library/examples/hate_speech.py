@@ -1,14 +1,14 @@
-from model.pipeline import Pipeline
-from model.huggingface import HuggingfaceModel
+from blocks.pipeline import Pipeline
+from blocks.models.huggingface import HuggingfaceModel
 
-from model.sklearn import SKLearnModel
+from blocks.models.sklearn import SKLearnModel
 from type import PreprocessConfig, HuggingfaceConfig, SKLearnConfig
-from model.pipeline import Pipeline
-from model.transformations import Lemmatizer, SpacyTokenizer
-from model.data import DataSource, StrConcat, VectorConcat
-from model.transformations.predicitions_to_text import PredictionsToText
-from model.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
-from model.transformations.sklearn import SKLearnTransformation
+from blocks.pipeline import Pipeline
+from blocks.transformations import Lemmatizer, SpacyTokenizer
+from blocks.data import DataSource, StrConcat, VectorConcat
+from blocks.transformations.predicitions_to_text import PredictionsToText
+from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
+from blocks.transformations.sklearn import SKLearnTransformation
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression

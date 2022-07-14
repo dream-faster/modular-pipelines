@@ -1,5 +1,5 @@
 from configs.constants import Const
-from model.base import Model
+from blocks.models.base import Model
 import pandas as pd
 from type import BaseConfig
 from utils.random import random_string

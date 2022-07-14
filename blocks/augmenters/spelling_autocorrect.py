@@ -1,4 +1,4 @@
-from model.base import Model
+from blocks.models.base import Model
 from typing import Optional
 import pandas as pd
 import spacy

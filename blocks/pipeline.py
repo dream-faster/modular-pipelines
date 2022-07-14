@@ -1,8 +1,10 @@
-from .base import Block, Model, DataSource
+from .base import Block, DataSource
+from blocks.models.base import Model
 import pandas as pd
 from typing import List, Union
 from runner.train import train_predict, predict
 from runner.store import Store
+
 
 class Pipeline(Block):
 

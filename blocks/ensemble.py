@@ -1,5 +1,6 @@
 from configs.constants import Const
-from .base import Block, Model
+from .base import Block
+from blocks.models.base import Model
 from .data import DataSource
 import pandas as pd
 from typing import List
