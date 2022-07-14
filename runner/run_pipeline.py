@@ -15,17 +15,17 @@ def run_pipeline(
     store = Store(data, labels)
     pipeline.preload()
 
-    print("| Loading existing models")
+    print("⏬ Loading existing models")
     pipeline.load()
 
     if train:
-        print("| Training pipeline")
+        print("🔁 Training pipeline")
         pipeline.fit(store)
 
-        print("| Saving models in pipeline")
+        print("⏫ Saving models in pipeline")
         pipeline.save()
 
-    print("| Predicting pipeline")
+    print("🪄 Predicting with pipeline")
     return pipeline.predict(store)
 
 

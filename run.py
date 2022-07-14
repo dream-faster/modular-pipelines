@@ -1,7 +1,7 @@
 from configs.constants import Const
 
 from data.dataloader import load_data
-from runner.run import run_pipeline
+from runner.run_pipeline import run_pipeline
 from library.examples.hate_speech import (
     hate_speech_detection_pipeline,
     preprocess_config,
