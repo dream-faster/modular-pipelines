@@ -5,8 +5,6 @@ from configs.constants import Const
 
 
 class DfToNumpy(Adaptor):
-    def __init__(self):
-        super().__init__()
 
     def predict(self, dataset: pd.DataFrame) -> np.ndarray:
         assert len(dataset) > 0, "Dataset is empty"
@@ -18,5 +16,3 @@ class DfToNumpy(Adaptor):
         else:
             assert False, "Unsupported conversion type"
 
-    def is_fitted(self) -> bool:
-        return True

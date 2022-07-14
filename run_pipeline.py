@@ -11,7 +11,7 @@ from library.examples.all_transformations import all_transformations
 train_dataset, test_dataset = load_data("data/original", preprocess_config)
 
 train_pipeline(
-    all_transformations(),
-    {"input": train_dataset},
+    hate_speech_detection_pipeline(),
+    {"input": train_dataset[Const.input_col]},
     train_dataset[Const.label_col],
 )

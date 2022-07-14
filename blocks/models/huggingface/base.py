@@ -32,12 +32,10 @@ class HuggingfaceModel(Model):
         except:
             print("❌ No model found in huggingface repository")
 
-    def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
+    def fit(self, dataset: List[str], labels: Optional[pd.Series]) -> None:
 
         train_dataset, val_dataset = train_test_split(
-            pd.DataFrame(
-                {Const.input_col: dataset[Const.input_col], Const.label_col: labels}
-            ),
+            pd.DataFrame({Const.input_col: dataset, Const.label_col: labels}),
             test_size=self.config.val_size,
         )
 
