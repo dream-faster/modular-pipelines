@@ -20,7 +20,6 @@ from model.augmenters import StatisticAugmenter, SynonymAugmenter
 from model.transformations import PredictionsToText, SpacyTokenizer
 from model.transformations.sklearn import SKLearnTransformation
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.preprocessing import MinMaxScaler
 
 
 def all_transformations() -> Pipeline:
@@ -33,7 +32,6 @@ def all_transformations() -> Pipeline:
         models=[
             SpacyTokenizer(),
             StatisticAugmenter(),
-            SKLearnTransformation(MinMaxScaler(feature_range=(0, 1), clip=True)),
             SKLearnTransformation(
                 TfidfVectorizer(
                     max_features=100000,

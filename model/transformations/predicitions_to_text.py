@@ -4,6 +4,9 @@ from configs.constants import Const
 
 
 class PredictionsToText(Transformation):
+    def __init__(self):
+        super().__init__()
+
     def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
 
         agg_text = map(

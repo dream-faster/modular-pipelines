@@ -13,8 +13,7 @@ class SKLearnTransformation(Transformation):
     transformation: BaseEstimator
 
     def __init__(self, sklearn_transformation: BaseEstimator):
-        self.config = BaseConfig(force_fit=False)
-        self.id = sklearn_transformation.__class__.__name__ + "-" + random_string(5)
+        super().__init__()
         self.transformation = sklearn_transformation
 
     def preload(self):

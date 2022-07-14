@@ -5,6 +5,9 @@ from utils.spacy import get_spacy
 
 
 class SpacyTokenizer(Transformation):
+    def __init__(self):
+        super().__init__()
+
     def preload(self):
         self.nlp = get_spacy()
 
