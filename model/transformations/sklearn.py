@@ -21,7 +21,11 @@ class SKLearnTransformation(Transformation):
     def preload(self):
         pass
 
-    def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
+    def fit(
+        self,
+        dataset: Union[list, np.ndarray],
+        labels: Optional[Union[list, np.ndarray]],
+    ) -> None:
         self.transformation.fit(dataset)
 
     def predict(self, dataset: Union[list, np.ndarray]) -> np.ndarray:
