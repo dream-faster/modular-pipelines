@@ -34,11 +34,10 @@ class SKLearnConfig(BaseConfig):
 
 
 @dataclass
-class GlobalPreprocessConfig:
+class PreprocessConfig:
     train_size: int
     val_size: int
     test_size: int
-    data_from_huggingface: bool
     input_col: str
     label_col: str
 

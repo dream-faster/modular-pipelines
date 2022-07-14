@@ -1,16 +1,12 @@
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.multiclass import OneVsRestClassifier
-from sklearn.metrics import f1_score
 from sklearn.base import ClassifierMixin
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.pipeline import Pipeline as ImbPipeline
 from model.base import Model
-from type import SKLearnConfig, Label, Probabilities
-import spacy
+from type import SKLearnConfig
 import swifter
 from configs.constants import Const
-from utils.spacy import get_spacy
 from typing import Optional
 
 
@@ -23,9 +19,7 @@ class SKLearnModel(Model):
         self.config = config
 
     def preload(self):
-        self.nlp = get_spacy()
-        self.spacy_stopwords = spacy.lang.en.stop_words.STOP_WORDS
-        # self.preprocess = create_preprocess(self.nlp)
+        pass
 
     def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
 

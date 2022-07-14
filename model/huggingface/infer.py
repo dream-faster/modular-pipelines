@@ -1,6 +1,6 @@
 from typing import Callable
 
-from configs.config import HuggingfaceConfig
+from type import HuggingfaceConfig
 from datasets import Dataset
 import numpy as np
 from configs.constants import Const
