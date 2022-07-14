@@ -3,10 +3,16 @@ import pandas as pd
 from model.pipeline import Pipeline
 from .store import Store
 
-def train_pipeline(pipeline: Pipeline, data: Dict[str, pd.DataFrame], labels: pd.Series) -> pd.DataFrame:
+
+def train_pipeline(
+    pipeline: Pipeline, data: Dict[str, pd.DataFrame], labels: pd.Series
+) -> pd.DataFrame:
     store = Store(data, labels)
     pipeline.preload()
+    print("| Training pipeline")
     pipeline.fit(store)
+    print("| Predicting pipeline")
+    # store.reset()
     return pipeline.predict(store)
 
 
