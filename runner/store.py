@@ -1,10 +1,11 @@
 import pandas as pd
 from typing import Dict
 from utils.random import random_string
+from typing import List, Union
 
 
 class Store:
-    def __init__(self, data: Dict[str, pd.DataFrame], labels: pd.Series):
+    def __init__(self, data: Dict[str, Union[List, pd.Series]], labels: pd.Series):
         self.data = data
         self.labels = labels
         self.id = "store-" + random_string(5)

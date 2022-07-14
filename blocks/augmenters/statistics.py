@@ -20,11 +20,8 @@ class StatisticAugmenter(Augmenter):
     def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
         pass
 
-    def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
-        dataset[Const.input_col] = dataset[Const.input_col].apply(
-            lambda x: get_statistic([token.text for token in x])
-        )
-        return dataset
+    def predict(self, dataset: List) -> List:
+        return [get_statistic([token.text for token in item]) for item in dataset] 
 
     def is_fitted(self) -> bool:
         return True
