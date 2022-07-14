@@ -9,6 +9,7 @@ from configs.constants import Const
 from typing import Optional
 import os
 import joblib
+from blocks.iomanager import safe_loading, safe_saving
 
 
 class SKLearnModel(Model):
@@ -24,11 +25,7 @@ class SKLearnModel(Model):
         pass
 
     def load(self, pipeline_id) -> None:
-        path = f"output/pipelines/{pipeline_id}/{self.id}.pkl"
-        if os.path.exists(path):
-            print(f"| Loading model {pipeline_id}/{self.id}")
-            with open(path, "rb") as f:
-                self.pipeline = joblib.load(f)
+        self.pipeline = safe_loading(pipeline_id, self.id)
 
     def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
 
@@ -55,12 +52,7 @@ class SKLearnModel(Model):
         return hasattr(self, "pipeline") and self.pipeline is not None
 
     def save(self, pipeline_id: str) -> None:
-        path = f"output/pipelines/{pipeline_id}"
-        if os.path.exists(path) is False:
-            os.makedirs(path)
-
-        with open(path + f"/{self.id}.pkl", "wb") as f:
-            joblib.dump(self.pipeline, f, compress=9)
+        safe_saving(self.pipeline, pipeline_id, self.id)
 
 
 def create_classifier(
