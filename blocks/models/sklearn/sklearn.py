@@ -19,9 +19,6 @@ class SKLearnModel(Model):
         self.model = None
         self.trained = False
 
-    def preload(self):
-        pass
-
     def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
 
         self.model = ImbPipeline(

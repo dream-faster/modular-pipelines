@@ -7,13 +7,12 @@ import spacy
 
 
 class Lemmatizer(Transformation):
-    def preload(self):
+    def load_remote(self):
         self.nlp = get_spacy()
         self.spacy_stopwords = spacy.lang.en.stop_words.STOP_WORDS
 
     def predict(self, dataset: List) -> List[str]:
         return [preprocess(item) for item in dataset]
-
 
 
 def preprocess(tokens: List[Any]) -> str:

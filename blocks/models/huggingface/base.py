@@ -25,7 +25,7 @@ class HuggingfaceModel(Model):
         self.config = config
         self.model: Optional[Union[Callable, Trainer]] = None
 
-    def preload(self):
+    def load_remote(self):
         repo_name = self.config.user_name + "/" + self.config.repo_name
         try:
             self.model = load_pipeline(repo_name)

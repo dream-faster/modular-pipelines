@@ -19,5 +19,5 @@ class DataSource(Block):
     def deplate(self, store: Store) -> pd.DataFrame:
         return store.get_data(self.id)
 
-    def preload(self):
+    def load_remote(self):
         pass
