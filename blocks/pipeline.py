@@ -31,8 +31,12 @@ class Pipeline(Block):
             model.load_remote()
 
     def load(self) -> None:
+        last_i = 0
+        if isinstance(self.datasource, Pipeline):
+            last_i = self.datasource.load(f"{self.datasource.id}/{self.id}", 0)
+
         for i, model in enumerate(self.models):
-            model.load(f"{self.datasource.id}/{self.id}", i)
+            model.load(f"{self.datasource.id}/{self.id}", i + last_i)
 
     def fit(self, store: Store) -> None:
         last_output = process_block(self.datasource, store)

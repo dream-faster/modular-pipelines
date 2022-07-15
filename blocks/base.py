@@ -21,13 +21,15 @@ class Block(Element):
             BaseConfig(force_fit=False, save=True) if config is None else config
         )
 
-    def load(self, pipeline_id: str, execution_order: int) -> None:
+    def load(self, pipeline_id: str, execution_order: int) -> int:
         self.pipeline_id = pipeline_id
         self.id += f"-{str(execution_order)}"
 
         model = safe_loading(pipeline_id, self.id)
         if model is not None:
             self.model = model
+
+        return execution_order + 1
 
     def load_remote(self) -> None:
         pass
@@ -59,5 +61,5 @@ class DataSource(Element):
     def deplate(self, store: Store) -> pd.DataFrame:
         return store.get_data(self.id)
 
-    def load_remote(self):
+    def load_remote(self) -> None:
         pass
