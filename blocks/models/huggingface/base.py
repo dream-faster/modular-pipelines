@@ -16,7 +16,7 @@ def safe_load_pipeline(module: Union[str, PreTrainedModel]) -> Optional[Callable
     try:
         loaded_pipeline = pipeline(task="sentiment-analysis", model=module)
     except:
-        print("Couldn't load pipeline. Skipping.")
+        print("     ├ Couldn't load pipeline. Skipping.")
         loaded_pipeline = None
 
     return loaded_pipeline
@@ -31,12 +31,15 @@ class HuggingfaceModel(Model):
         self.config = config
         self.model: Optional[Union[Callable, Trainer]] = None
 
-    def load(self):
-        model = safe_load_pipeline(f"{Const.output_path}/{self.id}")
+    def load(self, pipeline_id: str, execution_order: int) -> None:
+        self.pipeline_id = pipeline_id
+        self.id += f"-{str(execution_order)}"
+
+        model = safe_load_pipeline(f"{Const.output_path}/{self.pipeline_id}/{self.id}")
         if model:
             self.model = model
         else:
-            print("     |- ℹ️ No local model found")
+            print("     ├ ℹ️ No local model found")
 
     def load_remote(self):
         if self.model is None:
@@ -45,7 +48,7 @@ class HuggingfaceModel(Model):
                 self.model = model
             else:
                 print(
-                    f"     |- ℹ️ No fitted model found remotely, loading pretrained foundational model: {self.config.pretrained_model}"
+                    f"     ├ ℹ️ No fitted model found remotely, loading pretrained foundational model: {self.config.pretrained_model}"
                 )
                 self.model = safe_load_pipeline(self.config.pretrained_model)
 
@@ -85,6 +88,9 @@ class HuggingfaceModel(Model):
 
 
 def from_pandas(df: pd.DataFrame, num_classes: int) -> Dataset:
+
+    if isinstance(df, pd.Series):
+        df = df.to_frame()
     return Dataset.from_pandas(
         df,
         features=Features(

@@ -8,7 +8,7 @@ def safe_loading(pipeline_id: str, id: str) -> "Model":
     path = f"{Const.output_path}/{pipeline_id}/{id}.pkl"
 
     if os.path.exists(path):
-        print(f"    |- Loading model {pipeline_id}/{id}")
+        print(f"    ├ Loading model {pipeline_id}/{id}")
         with open(path, "rb") as f:
             return joblib.load(f)
     else:
