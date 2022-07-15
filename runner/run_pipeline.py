@@ -13,22 +13,24 @@ def run_pipeline(
 ) -> pd.DataFrame:
 
     store = Store(data, labels)
-    pipeline.load_remote()
 
-    print("⏬ Loading existing models")
+    print("💈 Loading existing models")
     pipeline.load()
 
+    print("📡 Looking for remote models")
+    pipeline.load_remote()
+
     if train:
-        print("🔁 Training pipeline")
+        print("🏋️ Training pipeline")
         pipeline.fit(store)
 
-        print("⏫ Saving models in pipeline")
+        print("💽 Saving models in pipeline")
         pipeline.save()
 
-        print("⏫ Saving models in pipeline")
+        print("📡 Uploading models")
         pipeline.save_remote()
 
-    print("🪄 Predicting with pipeline")
+    print("🔮 Predicting with pipeline")
     return pipeline.predict(store)
 
 
