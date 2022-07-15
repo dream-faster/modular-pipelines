@@ -7,7 +7,6 @@ from library.examples.hate_speech import (
     preprocess_config,
 )
 from library.examples.all_transformations import all_transformations
-from pprint import pprint
 
 train_dataset, test_dataset = load_data("data/original", preprocess_config)
 
@@ -19,7 +18,3 @@ run_pipeline(
     train=True,
     upload=False,
 )
-
-hierarchy = pipeline.children()
-print("Hierarchy:")
-pprint(hierarchy)

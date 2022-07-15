@@ -1,5 +1,4 @@
-from .base import Block, DataSource
-from blocks.models.base import Model
+from .base import Block, DataSource, Element
 import pandas as pd
 from typing import List, Union, Optional
 from runner.train import train_predict, predict
@@ -58,7 +57,7 @@ class Pipeline(Block):
         for model in self.models:
             model.save_remote(self.id)
 
-    def children(self) -> List["Element"]:
+    def children(self) -> List[Element]:
         return self.datasource.children() + [self] + [self.models]
 
 

@@ -9,15 +9,15 @@ from blocks.iomanager import safe_loading, safe_saving
 class Element(ABC):
     id: str
 
+    inputTypes: Union[List[DataType], DataType]
+    outputType: DataType
+
     def children(self) -> List["Element"]:
         raise NotImplementedError()
 
 
 class Block(Element):
     config: BaseConfig
-
-    inputTypes: Union[List[DataType], DataType]
-    outputType: DataType
 
     def __init__(self, id: Optional[str] = None) -> None:
         self.id = self.__class__.__name__ if id is None else id
@@ -55,6 +55,9 @@ class Block(Element):
 class DataSource(Element):
 
     id: str
+
+    inputTypes = DataType.Any
+    outputType = DataType.Series
 
     def __init__(self, id: str):
         self.id = id

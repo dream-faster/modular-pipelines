@@ -7,7 +7,7 @@ from type import DataType
 
 class DfToNumpy(Adaptor):
 
-    inputTypes = DataType.DataFrame
+    inputTypes = DataType.Series
     outputType = DataType.NpArray
 
     def predict(self, dataset: pd.DataFrame) -> np.ndarray:

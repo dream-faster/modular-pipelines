@@ -1,6 +1,5 @@
 from configs.constants import Const
-from .base import Block
-from blocks.models.base import Model
+from .base import Block, Element
 from .data import DataSource
 import pandas as pd
 from typing import List
@@ -45,7 +44,7 @@ class Ensemble(Block):
     def is_fitted(self) -> bool:
         return all([model.is_fitted() for model in self.models])
 
-    def children(self) -> List["Element"]:
+    def children(self) -> List[Element]:
         return [self.datasource] + [self] + [self.models]
 
 

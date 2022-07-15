@@ -7,8 +7,8 @@ from type import DataType
 
 class SpellAutocorrectAugmenter(Augmenter):
 
-    inputTypes = DataType.List_str
-    outputType = DataType.List_str
+    inputTypes = [DataType.List, DataType.Series]
+    outputType = DataType.List
 
     def __init__(self, fast: bool):
         super().__init__()
@@ -16,7 +16,6 @@ class SpellAutocorrectAugmenter(Augmenter):
 
     def load_remote(self):
         self.spell = Speller(fast=self.fast)
-
 
     def predict(self, dataset: List[str]) -> List[str]:
         return [self.spell(text) for text in dataset]
