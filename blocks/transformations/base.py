@@ -1,12 +1,12 @@
 from configs.constants import Const
-from blocks.models.base import Model
+from blocks.base import Block
 import pandas as pd
 from type import BaseConfig
 from utils.random import random_string
 from typing import Optional
 
 
-class Transformation(Model):
+class Transformation(Block):
     def __init__(self, id: Optional[str] = None, config: BaseConfig = None):
         super().__init__()
         self.config = BaseConfig(force_fit=False) if config is None else config
