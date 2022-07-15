@@ -1,7 +1,7 @@
 from blocks.base import Block
 import pandas as pd
 from type import BaseConfig
-from typing import Optional
+from typing import Optional, List
 
 
 class Transformation(Block):
@@ -20,3 +20,6 @@ class Transformation(Block):
 
     def is_fitted(self) -> bool:
         return True
+
+    def children(self) -> List["Element"]:
+        return [self]

@@ -10,13 +10,13 @@ class Pipeline(Block):
 
     id: str
     datasource: Union[DataSource, "Pipeline"]
-    models: List[Model]
+    models: List[Block]
 
     def __init__(
         self,
         id: str,
         datasource: Union[DataSource, "Pipeline"],
-        models: Union[List[Model], Model],
+        models: Union[List[Block], Block],
     ):
         self.id = id
         if isinstance(models, list):
@@ -57,6 +57,9 @@ class Pipeline(Block):
     def save_remote(self) -> None:
         for model in self.models:
             model.save_remote(self.id)
+
+    def children(self) -> List["Element"]:
+        return self.datasource.children() + [self] + [self.models]
 
 
 def process_block(block: Union[DataSource, Pipeline], store: Store) -> pd.DataFrame:

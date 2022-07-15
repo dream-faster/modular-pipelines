@@ -9,6 +9,9 @@ from blocks.iomanager import safe_loading, safe_saving
 class Element(ABC):
     id: str
 
+    def children(self) -> List["Element"]:
+        raise NotImplementedError()
+
 
 class Block(Element):
     config: BaseConfig
@@ -61,3 +64,6 @@ class DataSource(Element):
 
     def load_remote(self):
         pass
+
+    def children(self) -> List["Element"]:
+        return [self]

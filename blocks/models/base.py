@@ -1,9 +1,11 @@
 from type import BaseConfig
-import pandas as pd
-from typing import Optional
 from blocks.base import Block
+from typing import List
 
 
 class Model(Block):
 
     config: BaseConfig
+
+    def children(self) -> List["Element"]:
+        return [self]
