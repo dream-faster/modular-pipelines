@@ -31,8 +31,8 @@ class Pipeline(Block):
             model.load_remote()
 
     def load(self) -> None:
-        for model in self.models:
-            model.load(self.id)
+        for i, model in enumerate(self.models):
+            model.load(self.id, i)
 
     def fit(self, store: Store) -> None:
         last_output = process_block(self.datasource, store)

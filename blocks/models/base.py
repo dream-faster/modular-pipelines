@@ -9,10 +9,11 @@ class Model(Block):
 
     config: BaseConfig
 
-    def __init__(self, id: str, config: BaseConfig) -> None:
-        raise NotImplementedError()
+    def __init__(self, id: Optional[str] = None) -> None:
+        self.id = self.__class__.__name__ if id is None else id
 
-    def load(self, pipeline_id: str) -> None:
+    def load(self, pipeline_id: str, execution_order: int) -> None:
+        self.id += f"-{str(execution_order)}"
         model = safe_loading(pipeline_id, self.id)
         if model is not None:
             self.model = model
