@@ -14,7 +14,7 @@ from configs.constants import Const
 
 class PytorchModel(Model):
 
-    inputTypes = DataType.DataFrame
+    inputTypes = DataType.Series
     outputType = DataType.PredictionsWithProbs
 
     def __init__(self, id: str, config: PytorchConfig):

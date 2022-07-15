@@ -9,7 +9,6 @@ Probabilities = List[float]
 
 class DataType(Enum):
     Any = "Any"
-    DataFrame = "DataFrame"
     NpArray = "ndarray"
     List = "List"
     PredictionsWithProbs = "PredictionsWithProbs"

@@ -13,7 +13,7 @@ from blocks.transformations import SpacyTokenizer
 from blocks.transformations.sklearn import SKLearnTransformation
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import MinMaxScaler
-from blocks.adaptors import DfToNumpy
+from blocks.adaptors import ListOfListsToNumpy
 
 
 def all_transformations() -> Pipeline:
@@ -25,7 +25,7 @@ def all_transformations() -> Pipeline:
         models=[
             SpacyTokenizer(),
             StatisticAugmenter(),
-            DfToNumpy(),
+            ListOfListsToNumpy(),
             SKLearnTransformation(MinMaxScaler(feature_range=(0, 1), clip=True)),
         ],
     )
