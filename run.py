@@ -16,4 +16,5 @@ run_pipeline(
     {"input": train_dataset[Const.input_col]},
     train_dataset[Const.label_col],
     train=True,
+    upload=False,
 )

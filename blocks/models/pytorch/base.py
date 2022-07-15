@@ -1,4 +1,4 @@
-from type import PytorchConfig
+from type import PytorchConfig, DataType
 import pandas as pd
 import pytorch_lightning as pl
 from blocks.models.base import Model
@@ -13,6 +13,10 @@ from configs.constants import Const
 
 
 class PytorchModel(Model):
+
+    inputTypes = DataType.DataFrame
+    outputType = DataType.PredictionsWithProbs
+
     def __init__(self, id: str, config: PytorchConfig):
         self.config = config
         self.id = id

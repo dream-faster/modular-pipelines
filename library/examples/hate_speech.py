@@ -7,7 +7,6 @@ from blocks.pipeline import Pipeline
 from blocks.adaptors import DfToList
 from blocks.transformations import Lemmatizer, SpacyTokenizer
 from blocks.data import DataSource, StrConcat, VectorConcat
-from blocks.transformations.predicitions_to_text import PredictionsToText
 from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
 from blocks.transformations.sklearn import SKLearnTransformation
 from sklearn.feature_extraction.text import TfidfVectorizer

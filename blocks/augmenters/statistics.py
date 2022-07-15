@@ -1,9 +1,7 @@
 import nltk
 from nltk.corpus import wordnet as wn
 from typing import List, Any, Union, Tuple, Optional
-import pandas as pd
-import spacy
-from type import BaseConfig
+from type import DataType
 from configs.constants import Const
 from collections import Counter
 from urlextract import URLExtract
@@ -14,14 +12,12 @@ import numpy as np
 
 
 class StatisticAugmenter(Augmenter):
-    def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
-        pass
+
+    inputTypes = DataType.List_str
+    outputType = DataType.List_int
 
     def predict(self, dataset: List) -> List:
         return [get_statistic([token.text for token in item]) for item in dataset]
-
-    def is_fitted(self) -> bool:
-        return True
 
 
 def get_num_words(words: list[str]) -> int:

@@ -2,9 +2,13 @@ from .base import Adaptor
 import pandas as pd
 import numpy as np
 from configs.constants import Const
+from type import DataType
 
 
 class DfToNumpy(Adaptor):
+
+    inputTypes = DataType.DataFrame
+    outputType = DataType.NpArray
 
     def predict(self, dataset: pd.DataFrame) -> np.ndarray:
         assert len(dataset) > 0, "Dataset is empty"
@@ -15,4 +19,3 @@ class DfToNumpy(Adaptor):
             return dataset[Const.input_col].to_numpy()
         else:
             assert False, "Unsupported conversion type"
-

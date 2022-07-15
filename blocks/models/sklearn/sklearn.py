@@ -4,7 +4,7 @@ from sklearn.base import ClassifierMixin
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.pipeline import Pipeline as ImbPipeline
 from blocks.models.base import Model
-from type import SKLearnConfig
+from type import SKLearnConfig, DataType
 from configs.constants import Const
 from typing import Optional
 
@@ -12,6 +12,9 @@ from typing import Optional
 class SKLearnModel(Model):
 
     config: SKLearnConfig
+
+    inputTypes = [DataType.Series, DataType.List, DataType.NpArray]
+    outputType = DataType.PredictionsWithProbs
 
     def __init__(self, id: str, config: SKLearnConfig):
         self.id = id
