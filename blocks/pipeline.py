@@ -32,7 +32,7 @@ class Pipeline(Block):
 
     def load(self) -> None:
         for i, model in enumerate(self.models):
-            model.load(self.id, i)
+            model.load(f"{self.datasource.id}/{self.id}", i)
 
     def fit(self, store: Store) -> None:
         last_output = process_block(self.datasource, store)
@@ -51,12 +51,11 @@ class Pipeline(Block):
         return all([model.is_fitted() for model in self.models])
 
     def save(self) -> None:
-        for model in self.models:
-            model.save(self.id)
+        pass
 
     def save_remote(self) -> None:
         for model in self.models:
-            model.save_remote(self.id)
+            model.save_remote()
 
 
 def process_block(block: Union[DataSource, Pipeline], store: Store) -> pd.DataFrame:

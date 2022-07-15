@@ -24,8 +24,8 @@ def run_pipeline(
         print("🏋️ Training pipeline")
         pipeline.fit(store)
 
-        print("💽 Saving models in pipeline")
-        pipeline.save()
+        # print("💽 Saving models in pipeline")
+        # pipeline.save()
 
         print("📡 Uploading models")
         pipeline.save_remote()

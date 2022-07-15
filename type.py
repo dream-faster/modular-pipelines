@@ -11,6 +11,7 @@ Probabilities = List[float]
 @dataclass
 class BaseConfig:
     force_fit: bool
+    save: bool
 
 
 @dataclass
@@ -21,7 +22,7 @@ class HuggingfaceConfig(BaseConfig):
     repo_name: str
     num_classes: int
     val_size: float
-    push_to_hub: bool = False
+    save_remote: bool
 
 
 @dataclass

@@ -7,10 +7,6 @@ from typing import Optional
 
 
 class Transformation(Block):
-    def __init__(self, id: Optional[str] = None, config: BaseConfig = None):
-        super().__init__()
-        self.config = BaseConfig(force_fit=False) if config is None else config
-
     def load_remote(self):
         pass
 
