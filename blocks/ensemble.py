@@ -20,10 +20,10 @@ class Ensemble(Block):
         self.models = models
         self.datasource = datasource
 
-    def preload(self):
-        self.datasource.preload()
+    def load_remote(self):
+        self.datasource.load_remote()
         for model in self.models:
-            model.preload()
+            model.load_remote()
 
     def fit(self, store: Store) -> None:
         input = self.datasource.deplate(store)

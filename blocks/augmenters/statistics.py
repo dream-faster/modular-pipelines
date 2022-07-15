@@ -14,14 +14,11 @@ import numpy as np
 
 
 class StatisticAugmenter(Augmenter):
-    def __init__(self):
-        super().__init__()
-
     def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
         pass
 
     def predict(self, dataset: List) -> List:
-        return [get_statistic([token.text for token in item]) for item in dataset] 
+        return [get_statistic([token.text for token in item]) for item in dataset]
 
     def is_fitted(self) -> bool:
         return True

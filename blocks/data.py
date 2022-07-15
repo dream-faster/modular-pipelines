@@ -21,9 +21,9 @@ class BaseConcat(DataSource):
 
         return pd.DataFrame({Const.input_col: collected})
 
-    def preload(self):
+    def load_remote(self):
         for block in self.blocks:
-            block.preload()
+            block.load_remote()
 
     def transform(self, data: List[pd.DataFrame]) -> pd.Series:
         raise NotImplementedError()
@@ -39,5 +39,3 @@ class VectorConcat(BaseConcat):
     def transform(self, data: List[pd.DataFrame]) -> pd.Series:
         dataframes = [df[Const.input_col] for df in data]
         return pd.concat(dataframes, axis=1).agg(np.concatenate, axis=1)
-
-

@@ -8,10 +8,10 @@ from typing import Optional
 
 class Transformation(Model):
     def __init__(self, id: Optional[str] = None, config: BaseConfig = None):
+        super().__init__()
         self.config = BaseConfig(force_fit=False) if config is None else config
-        self.id = self.__class__.__name__ if id is None else id
 
-    def preload(self):
+    def load_remote(self):
         pass
 
     def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:

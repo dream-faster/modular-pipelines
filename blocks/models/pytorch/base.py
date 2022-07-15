@@ -19,7 +19,7 @@ class PytorchModel(Model):
 
         self.model = LightningWrapper(Decoder(config))
 
-    def preload(self):
+    def load_remote(self):
         pass
 
     def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:

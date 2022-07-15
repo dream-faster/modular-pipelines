@@ -10,10 +10,7 @@ from .base import Augmenter
 
 
 class SpellingSpelloAugmenter(Augmenter):
-    def __init__(self):
-        super().__init__()
-
-    def preload(self):
+    def load_remote(self):
         self.sp = SpellCorrectionModel(language="en")
 
     def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:

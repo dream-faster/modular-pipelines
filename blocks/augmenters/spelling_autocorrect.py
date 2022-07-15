@@ -14,7 +14,7 @@ class SpellAutocorrectAugmenter(Augmenter):
         super().__init__()
         self.fast = fast
 
-    def preload(self):
+    def load_remote(self):
         self.spell = Speller(fast=self.fast)
 
     def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:

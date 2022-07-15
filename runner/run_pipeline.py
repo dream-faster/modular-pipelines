@@ -13,7 +13,7 @@ def run_pipeline(
 ) -> pd.DataFrame:
 
     store = Store(data, labels)
-    pipeline.preload()
+    pipeline.load_remote()
 
     print("⏬ Loading existing models")
     pipeline.load()
@@ -24,6 +24,9 @@ def run_pipeline(
 
         print("⏫ Saving models in pipeline")
         pipeline.save()
+
+        print("⏫ Saving models in pipeline")
+        pipeline.save_remote()
 
     print("🪄 Predicting with pipeline")
     return pipeline.predict(store)
