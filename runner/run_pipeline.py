@@ -10,6 +10,7 @@ def run_pipeline(
     data: Dict[str, Union[pd.Series, List]],
     labels: pd.Series,
     train: bool,
+    upload: bool,
 ) -> pd.DataFrame:
 
     store = Store(data, labels)
@@ -27,8 +28,9 @@ def run_pipeline(
         print("💽 Saving models in pipeline")
         pipeline.save()
 
-        print("📡 Uploading models")
-        pipeline.save_remote()
+        if upload:
+            print("📡 Uploading models")
+            pipeline.save_remote()
 
     print("🔮 Predicting with pipeline")
     return pipeline.predict(store)

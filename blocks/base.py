@@ -1,7 +1,7 @@
-from type import BaseConfig
+from type import BaseConfig, DataType
 from abc import ABC
 import pandas as pd
-from typing import Optional
+from typing import Optional, Union, List
 from runner.store import Store
 from blocks.iomanager import safe_loading, safe_saving
 
@@ -13,8 +13,15 @@ class Element(ABC):
 class Block(Element):
     config: BaseConfig
 
+    inputTypes: Union[List[DataType], DataType]
+    outputType: DataType
+
     def __init__(self, id: Optional[str] = None) -> None:
         self.id = self.__class__.__name__ if id is None else id
+        if self.inputTypes is None:
+            print("inputTypes must be set")
+        if self.outputType is None:
+            print("outputType must be set")
 
     def load(self, pipeline_id: str, execution_order: int) -> None:
         self.id += f"-{str(execution_order)}"

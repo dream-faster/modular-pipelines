@@ -1,10 +1,13 @@
 from typing import List
 from .base import Adaptor
 import pandas as pd
-import numpy as np
-from configs.constants import Const
+from type import DataType
 
 
 class DfToList(Adaptor):
-    def predict(self, dataset: pd.DataFrame) -> List:
+
+    inputTypes = DataType.Series
+    outputType = DataType.List
+
+    def predict(self, dataset: pd.Series) -> List:
         return dataset.to_list()

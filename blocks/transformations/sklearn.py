@@ -1,17 +1,16 @@
-import pandas as pd
 from .base import Transformation
-from configs.constants import Const
-from type import BaseConfig
 from sklearn.base import BaseEstimator
-from utils.random import random_string
 import pandas as pd
-from typing import Optional, Union
+from typing import Optional, Union, List
 import numpy as np
+from type import DataType
 
 
 class SKLearnTransformation(Transformation):
 
     model: BaseEstimator
+    inputTypes = [DataType.NpArray, DataType.Series, DataType.List]
+    outputType = DataType.NpArray
 
     def __init__(self, sklearn_transformation: BaseEstimator):
         super().__init__()
@@ -24,7 +23,7 @@ class SKLearnTransformation(Transformation):
     def fit(
         self,
         dataset: Union[list, np.ndarray],
-        labels: Optional[Union[list, np.ndarray]],
+        labels: Optional[Union[List, np.ndarray]],
     ) -> None:
         self.model.fit(dataset)
         self.trained = True

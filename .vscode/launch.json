@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "run_pipeline",
+            "name": "run",
             "type": "python",
             "request": "launch",
-            "module": "run_pipeline",
+            "module": "run",
             "args": []
         }
     ]
