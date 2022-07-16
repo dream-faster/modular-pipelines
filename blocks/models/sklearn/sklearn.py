@@ -22,7 +22,7 @@ class SKLearnModel(Model):
         self.model = None
         self.trained = False
 
-    def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
+    def fit(self, dataset: pd.Series, labels: Optional[pd.Series]) -> None:
 
         self.model = ImbPipeline(
             [
@@ -36,7 +36,7 @@ class SKLearnModel(Model):
         self.model.fit(dataset, labels)
         self.trained = True
 
-    def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
+    def predict(self, dataset: pd.Series) -> pd.Series:
         predictions = self.model.predict(dataset)
         probabilities = [tuple(row) for row in self.model.predict_proba(dataset)]
 

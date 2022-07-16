@@ -26,7 +26,7 @@ class PytorchModel(Model):
     def load_remote(self):
         pass
 
-    def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
+    def fit(self, dataset: pd.Series, labels: Optional[pd.Series]) -> None:
         dataset = pd.DataFrame(
             {Const.input_col: dataset[Const.input_col], Const.label_col: labels}
         )
@@ -40,7 +40,7 @@ class PytorchModel(Model):
         trainer.fit(self.model, train_dataloader, val_dataloader)
         self.trained = True
 
-    def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
+    def predict(self, dataset: pd.Series) -> pd.Series:
         test_dataset = DataLoader(dataset, batch_size=32)
 
         return self.model(test_dataset)
