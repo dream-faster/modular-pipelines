@@ -68,5 +68,5 @@ class DataSource(Element):
     def load_remote(self):
         pass
 
-    def children(self) -> List["Element"]:
+    def children(self) -> List[Element]:
         return [self]
