@@ -3,6 +3,7 @@ from enum import Enum
 from sklearn.base import ClassifierMixin
 from typing import Callable, List, Tuple
 
+
 Label = int
 Probabilities = List[float]
 

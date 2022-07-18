@@ -16,6 +16,7 @@ from transformers import (
 from sklearn.model_selection import train_test_split
 
 from configs.constants import Const
+import os
 
 
 def safe_load_pipeline(
@@ -29,9 +30,11 @@ def safe_load_pipeline(
             )
         else:
             loaded_pipeline = pipeline(task="sentiment-analysis", model=module)
-        print(f"     ├ Pipeline {module} loaded")
+        print(
+            f"    ├ Pipeline loaded: {module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}"
+        )
     except:
-        print(f"     ├ Couldn't load {module} pipeline. Skipping.")
+        print(f"    ├ Couldn't load {module} pipeline. Skipping.")
         loaded_pipeline = None
 
     return loaded_pipeline
@@ -47,7 +50,9 @@ class HuggingfaceModel(Model):
         self.id = id
         self.config = config
         self.model: Optional[Union[Callable, Trainer]] = None
-        self.pretrained: bool = False
+        self.trained: bool = False
+
+        os.environ["TOKENIZERS_PARALLELISM"] = "False"
 
     def load(self, pipeline_id: str, execution_order: int) -> None:
         self.pipeline_id = pipeline_id
@@ -73,7 +78,6 @@ class HuggingfaceModel(Model):
                     f"     ├ ℹ️ No fitted model found remotely, loading pretrained foundational model: {self.config.pretrained_model}"
                 )
                 self.model = safe_load_pipeline(self.config.pretrained_model)
-                self.pretrained = True
 
     def fit(self, dataset: List[str], labels: Optional[pd.Series]) -> None:
         train_dataset, val_dataset = train_test_split(
@@ -91,6 +95,7 @@ class HuggingfaceModel(Model):
         self.model = safe_load_pipeline(trainer.model, trainer.tokenizer)
 
         self.trainer = trainer
+        self.trained = True
 
     def predict(self, dataset: pd.Series) -> List[PredsWithProbs]:
         return run_inference_pipeline(
@@ -102,14 +107,14 @@ class HuggingfaceModel(Model):
         )
 
     def is_fitted(self) -> bool:
-        return self.pretrained is False
+        return self.trained
 
     def save(self) -> None:
         pass
 
     def save_remote(self) -> None:
-        if self.config.save_remote is True:
-            self.trainer.push_to_hub(overwrite_output_dir=True)
+        if all([self.config.save_remote, self.config.save]) is True:
+            self.trainer.push_to_hub()
 
 
 def from_pandas(df: pd.DataFrame, num_classes: int = None) -> Dataset:

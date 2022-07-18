@@ -58,7 +58,7 @@ class Pipeline(Block):
 
     def save_remote(self) -> None:
         for model in self.models:
-            if model.config.save_remote:
+            if model.config.save and model.config.save_remote:
                 model.save_remote()
 
     def children(self) -> List[Element]:
