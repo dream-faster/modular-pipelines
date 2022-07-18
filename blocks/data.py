@@ -19,23 +19,21 @@ class BaseConcat(DataSource):
             [process_block(block, store) for block in self.blocks]
         )
 
-        return pd.DataFrame({Const.input_col: collected})
+        return collected
 
     def load_remote(self):
         for block in self.blocks:
             block.load_remote()
 
-    def transform(self, data: List[pd.DataFrame]) -> pd.Series:
+    def transform(self, data: List[pd.Series]) -> pd.Series:
         raise NotImplementedError()
 
 
 class StrConcat(BaseConcat):
-    def transform(self, data: List[pd.DataFrame]) -> pd.Series:
-        dataframes = [df[Const.input_col] for df in data]
-        return pd.concat(dataframes, axis=1).agg("-".join, axis=1)
+    def transform(self, data: List[pd.Series]) -> pd.Series:
+        return pd.concat(data, axis=1).agg("-".join, axis=1)
 
 
 class VectorConcat(BaseConcat):
-    def transform(self, data: List[pd.DataFrame]) -> pd.Series:
-        dataframes = [df[Const.input_col] for df in data]
-        return pd.concat(dataframes, axis=1).agg(np.concatenate, axis=1)
+    def transform(self, data: List[pd.Series]) -> pd.Series:
+        return pd.concat(data, axis=1).agg(np.concatenate, axis=1)

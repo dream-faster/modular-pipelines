@@ -43,7 +43,7 @@ class Pipeline(Block):
             last_output = train_predict(model, last_output, store)
         store.set_data(self.id, last_output)
 
-    def predict(self, store: Store) -> pd.DataFrame:
+    def predict(self, store: Store) -> pd.Series:
         last_output = process_block(self.datasource, store)
         for model in self.models:
             last_output = predict(model, last_output)
@@ -65,7 +65,7 @@ class Pipeline(Block):
         return self.datasource.children() + [self] + [self.models]
 
 
-def process_block(block: Union[DataSource, Pipeline], store: Store) -> pd.DataFrame:
+def process_block(block: Union[DataSource, Pipeline], store: Store) -> pd.Series:
     if isinstance(block, DataSource):
         return block.deplate(store)
     elif isinstance(block, Pipeline):

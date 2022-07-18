@@ -73,7 +73,7 @@ class DataSource(Element):
     def __init__(self, id: str):
         self.id = id
 
-    def deplate(self, store: Store) -> pd.DataFrame:
+    def deplate(self, store: Store) -> pd.Series:
         return store.get_data(self.id)
 
     def load_remote(self) -> None:

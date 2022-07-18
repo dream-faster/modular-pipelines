@@ -4,9 +4,9 @@ from sklearn.base import ClassifierMixin
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.pipeline import Pipeline as ImbPipeline
 from blocks.models.base import Model
-from type import SKLearnConfig, DataType
+from type import PredsWithProbs, SKLearnConfig, DataType
 from configs.constants import Const
-from typing import Optional
+from typing import Optional, List
 
 
 class SKLearnModel(Model):
@@ -35,13 +35,11 @@ class SKLearnModel(Model):
 
         self.model.fit(dataset, labels)
 
-    def predict(self, dataset: pd.Series) -> pd.Series:
+    def predict(self, dataset: pd.Series) -> List[PredsWithProbs]:
         predictions = self.model.predict(dataset)
-        probabilities = [tuple(row) for row in self.model.predict_proba(dataset)]
+        probabilities = self.model.predict_proba(dataset)
 
-        return pd.DataFrame(
-            {Const.preds_col: predictions, Const.probs_col: probabilities}
-        )
+        return zip(predictions, probabilities)
 
     def is_fitted(self) -> bool:
         return self.model is not None

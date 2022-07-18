@@ -14,6 +14,5 @@ class SpellingSpelloAugmenter(Augmenter):
     def load_remote(self):
         self.sp = SpellCorrectionModel(language="en")
 
-    def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
-        dataset[Const.input_col] = dataset[Const.input_col].apply(self.sp)
-        return dataset
+    def predict(self, dataset: pd.Series) -> pd.Series:
+        return dataset.apply(self.sp)
