@@ -55,7 +55,7 @@ class Block(Element):
         raise NotImplementedError()
 
     def save(self) -> None:
-        if hasattr(self, "trained") and self.trained:
+        if hasattr(self, "trained") and self.trained and self.config.save:
             safe_saving(self.model, self.pipeline_id, self.id)
 
     def save_remote(self) -> None:
