@@ -4,10 +4,9 @@ from blocks.models.huggingface import HuggingfaceModel
 from blocks.models.sklearn import SKLearnModel
 from type import PreprocessConfig, HuggingfaceConfig, SKLearnConfig
 from blocks.pipeline import Pipeline
-from blocks.adaptors import DfToList
+from blocks.adaptors import SeriesToList
 from blocks.transformations import Lemmatizer, SpacyTokenizer
 from blocks.data import DataSource, StrConcat, VectorConcat
-from blocks.transformations.predicitions_to_text import PredictionsToText
 from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
 from blocks.transformations.sklearn import SKLearnTransformation
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -59,7 +58,7 @@ nlp_sklearn = Pipeline(
     "nlp_sklearn",
     input_data,
     [
-        DfToList(),
+        SeriesToList(),
         SpacyTokenizer(),
         Lemmatizer(),
         SKLearnTransformation(
@@ -76,7 +75,7 @@ nlp_sklearn_autocorrect = Pipeline(
     "nlp_sklearn_autocorrect",
     input_data,
     [
-        DfToList(),
+        SeriesToList(),
         SpellAutocorrectAugmenter(fast=True),
         SpacyTokenizer(),
         Lemmatizer(),

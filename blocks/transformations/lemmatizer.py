@@ -4,9 +4,14 @@ import pandas as pd
 from utils.spacy import get_spacy
 from typing import List, Any
 import spacy
+from type import DataType
 
 
 class Lemmatizer(Transformation):
+
+    inputTypes = DataType.List
+    outputType = DataType.List
+
     def load_remote(self):
         self.nlp = get_spacy()
         self.spacy_stopwords = spacy.lang.en.stop_words.STOP_WORDS

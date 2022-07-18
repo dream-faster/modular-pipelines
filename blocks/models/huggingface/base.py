@@ -1,7 +1,7 @@
 from blocks.models.base import Model
 from .infer import run_inference_pipeline
 from .train import run_training_pipeline
-from type import HuggingfaceConfig
+from type import HuggingfaceConfig, DataType
 from configs.constants import Const
 import pandas as pd
 from datasets import Dataset, Features, Value, ClassLabel
@@ -31,6 +31,8 @@ def safe_load_pipeline(module: Union[str, PreTrainedModel]) -> Optional[Callable
 class HuggingfaceModel(Model):
 
     config: HuggingfaceConfig
+    inputTypes = [DataType.Series, DataType.List]
+    outputType = DataType.PredictionsWithProbs
 
     def __init__(self, id: str, config: HuggingfaceConfig):
         self.id = id
@@ -81,7 +83,8 @@ class HuggingfaceModel(Model):
         self.trainer = trainer
         self.trained = True
 
-    def predict(self, dataset: pd.DataFrame) -> pd.DataFrame:
+
+    def predict(self, dataset: pd.Series) -> pd.DataFrame:
         return run_inference_pipeline(
             self.model,
             from_pandas(

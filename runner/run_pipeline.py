@@ -3,6 +3,8 @@ import pandas as pd
 from blocks.pipeline import Pipeline
 from .store import Store
 from typing import List, Union
+from .integrity import check_integrity
+from pprint import pprint
 
 
 def run_pipeline(
@@ -10,7 +12,15 @@ def run_pipeline(
     data: Dict[str, Union[pd.Series, List]],
     labels: pd.Series,
     train: bool,
+    upload: bool,
 ) -> pd.DataFrame:
+
+    print("🗼 Hierarchy of Models:")
+    pprint(pipeline.children())
+
+    print("🆔 Verifying pipeline integrity")
+    if not check_integrity(pipeline):
+        raise Exception("Pipeline integrity check failed")
 
     store = Store(data, labels)
 
@@ -27,8 +37,9 @@ def run_pipeline(
         # print("💽 Saving models in pipeline")
         # pipeline.save()
 
-        print("📡 Uploading models")
-        pipeline.save_remote()
+        if upload:
+            print("📡 Uploading models")
+            pipeline.save_remote()
 
     print("🔮 Predicting with pipeline")
     return pipeline.predict(store)

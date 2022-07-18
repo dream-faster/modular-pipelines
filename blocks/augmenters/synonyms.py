@@ -3,11 +3,14 @@ from nltk.corpus import wordnet as wn
 from .base import Augmenter
 from typing import List, Any, Optional
 import pandas as pd
-from type import BaseConfig
-from configs.constants import Const
+from type import DataType
 
 
 class SynonymAugmenter(Augmenter):
+
+    inputTypes = DataType.List
+    outputType = DataType.List
+
     def __init__(self, num_synonyms: int):
         super().__init__()
         self.num_synonyms = num_synonyms
@@ -16,17 +19,11 @@ class SynonymAugmenter(Augmenter):
         nltk.download("wordnet")
         nltk.download("omw-1.4")
 
-    def fit(self, dataset: pd.DataFrame, labels: Optional[pd.Series]) -> None:
-        pass
-
     def predict(self, dataset: List) -> List[str]:
         return [
             " ".join([process_token(token, self.num_synonyms) for token in item])
             for item in dataset
         ]
-
-    def is_fitted(self) -> bool:
-        return True
 
 
 def process_token(token: Any, num_synonyms: int) -> str:

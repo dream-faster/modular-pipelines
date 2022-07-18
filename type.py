@@ -1,9 +1,20 @@
 from dataclasses import dataclass
+from enum import Enum
 from sklearn.base import ClassifierMixin
 from typing import List
 
 Label = int
 Probabilities = List[float]
+
+
+class DataType(Enum):
+    Any = "Any"
+    NpArray = "ndarray"
+    List = "List"
+    PredictionsWithProbs = "PredictionsWithProbs"
+    Series = "Series"
+    Tensor = "Tensor"
+
 
 """ Model Configs """
 
@@ -44,7 +55,7 @@ class PreprocessConfig:
 
 
 @dataclass
-class PytorchConfig:
+class PytorchConfig(BaseConfig):
     hidden_size: int
     output_size: int
     val_size: float
