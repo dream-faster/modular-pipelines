@@ -35,10 +35,10 @@ def run_training_pipeline(
     id: str,
 ) -> Trainer:
 
-    tokenizer = AutoTokenizer.from_pretrained(config.pretrained_model)
     model = AutoModelForSequenceClassification.from_pretrained(
         config.pretrained_model, num_labels=config.num_classes
     )
+    tokenizer = AutoTokenizer.from_pretrained(config.pretrained_model)
 
     def preprocess_function(examples):
         return tokenizer(examples[Const.input_col], truncation=True)
