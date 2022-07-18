@@ -107,7 +107,7 @@ class HuggingfaceModel(Model):
 
     def save_remote(self) -> None:
         if self.config.save_remote is True:
-            self.trainer.push_to_hub()
+            self.trainer.push_to_hub(overwrite_output_dir=True)
 
 
 def from_pandas(df: pd.DataFrame, num_classes: int = None) -> Dataset:
