@@ -34,9 +34,6 @@ def run_pipeline(
         print("🏋️ Training pipeline")
         pipeline.fit(store)
 
-        # print("💽 Saving models in pipeline")
-        # pipeline.save()
-
         if upload:
             print("📡 Uploading models")
             pipeline.save_remote()

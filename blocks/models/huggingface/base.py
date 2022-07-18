@@ -105,9 +105,6 @@ class HuggingfaceModel(Model):
 
     def save(self) -> None:
         pass
-        # if self.config.save and self.trained:
-        #     path = f"{Const.output_path}/{self.pipeline_id}/{self.id}"
-        #     self.model.save_pretrained(save_directory=path)
 
     def save_remote(self) -> None:
         if (self.config.save_remote is not None) and self.trained:
