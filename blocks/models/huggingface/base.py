@@ -106,7 +106,7 @@ class HuggingfaceModel(Model):
         pass
 
     def save_remote(self) -> None:
-        if self.config.save_remote is not None:
+        if self.config.save_remote is True:
             self.trainer.push_to_hub()
 
 
