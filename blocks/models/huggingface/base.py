@@ -30,9 +30,11 @@ def safe_load_pipeline(
             )
         else:
             loaded_pipeline = pipeline(task="sentiment-analysis", model=module)
-        print(f"     ├ Pipeline {module} loaded")
+        print(
+            f"    ├ Pipeline loaded: {module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}"
+        )
     except:
-        print(f"     ├ Couldn't load {module} pipeline. Skipping.")
+        print(f"    ├ Couldn't load {module} pipeline. Skipping.")
         loaded_pipeline = None
 
     return loaded_pipeline

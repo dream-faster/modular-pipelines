@@ -57,6 +57,9 @@ def run_training_pipeline(
         weight_decay=0.01,
         save_strategy="epoch" if config.save else "NO",
         push_to_hub=False,
+        log_level="critical",
+        report_to="none",
+        optim="adamw_torch",
     )
 
     trainer = Trainer(

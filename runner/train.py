@@ -15,6 +15,6 @@ def train_predict(model: Block, dataset: pd.DataFrame, store: Store):
 
 
 def predict(model: Block, dataset: pd.DataFrame) -> pd.DataFrame:
-    print(f"    |- Predicting on {model.id}, {model.__class__.__name__}")
+    print(f"    ├ Predicting on {model.id}, {model.__class__.__name__}")
 
     return model.predict(dataset)

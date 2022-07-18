@@ -7,14 +7,7 @@ from library.examples.hate_speech import (
     preprocess_config,
 )
 from library.examples.all_transformations import all_transformations
-from utils.logging import set_global_logging_level
 
-import logging
-
-set_global_logging_level(
-    logging.ERROR,
-    ["transformers", "nlp", "torch", "tensorflow", "tensorboard", "wandb"],
-)
 
 train_dataset, test_dataset = load_data("data/original", preprocess_config)
 
