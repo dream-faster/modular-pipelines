@@ -19,7 +19,7 @@ from configs.constants import Const
 import os
 import torch
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
+device = 0 if torch.cuda.is_available() else -1
 
 
 def safe_load_pipeline(
@@ -29,10 +29,15 @@ def safe_load_pipeline(
     try:
         if tokenizer is not None:
             loaded_pipeline = pipeline(
-                task="sentiment-analysis", model=module, tokenizer=tokenizer
+                task="sentiment-analysis",
+                model=module,
+                tokenizer=tokenizer,
+                device=device,
             )
         else:
-            loaded_pipeline = pipeline(task="sentiment-analysis", model=module)
+            loaded_pipeline = pipeline(
+                task="sentiment-analysis", model=module, device=device
+            )
         print(
             f"    ├ Pipeline loaded: {module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}"
         )
@@ -67,7 +72,7 @@ class HuggingfaceModel(Model):
         if model:
             self.model = model
         else:
-            print("     ├ ℹ️ No local model found")
+            print("    ├ ℹ️ No local model found")
 
         return execution_order + 1
 
@@ -78,7 +83,7 @@ class HuggingfaceModel(Model):
                 self.model = model
             else:
                 print(
-                    f"     ├ ℹ️ No fitted model found remotely, loading pretrained foundational model: {self.config.pretrained_model}"
+                    f"    ├ ℹ️ No fitted model found remotely, loading pretrained foundational model: {self.config.pretrained_model}"
                 )
                 self.model = safe_load_pipeline(self.config.pretrained_model)
 
@@ -102,7 +107,7 @@ class HuggingfaceModel(Model):
 
     def predict(self, dataset: pd.Series) -> List[PredsWithProbs]:
         return run_inference_pipeline(
-            self.model.to(device),
+            self.model,
             from_pandas(
                 pd.DataFrame({Const.input_col: dataset}), self.config.num_classes
             ),
