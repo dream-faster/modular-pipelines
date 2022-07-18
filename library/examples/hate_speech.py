@@ -48,6 +48,7 @@ sklearn_config = SKLearnConfig(
         estimators=[("nb", nb), ("lg", lg), ("gb", gb)], voting="soft"
     ),
     one_vs_rest=False,
+    save_remote=False,
 )
 
 

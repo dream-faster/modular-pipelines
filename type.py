@@ -23,6 +23,7 @@ class DataType(Enum):
 class BaseConfig:
     force_fit: bool
     save: bool
+    save_remote: bool
 
 
 @dataclass
@@ -33,7 +34,6 @@ class HuggingfaceConfig(BaseConfig):
     repo_name: str
     num_classes: int
     val_size: float
-    save_remote: bool
 
 
 @dataclass
