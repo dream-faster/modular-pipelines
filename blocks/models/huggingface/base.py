@@ -17,6 +17,9 @@ from sklearn.model_selection import train_test_split
 
 from configs.constants import Const
 import os
+import torch
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 def safe_load_pipeline(
@@ -99,7 +102,7 @@ class HuggingfaceModel(Model):
 
     def predict(self, dataset: pd.Series) -> List[PredsWithProbs]:
         return run_inference_pipeline(
-            self.model,
+            self.model.to(device),
             from_pandas(
                 pd.DataFrame({Const.input_col: dataset}), self.config.num_classes
             ),
