@@ -38,7 +38,6 @@ class PytorchModel(Model):
 
         trainer = pl.Trainer(gpus=4, num_nodes=8, precision=16, limit_train_batches=0.5)
         trainer.fit(self.model, train_dataloader, val_dataloader)
-        self.trained = True
 
     def predict(self, dataset: pd.Series) -> pd.Series:
         test_dataset = DataLoader(dataset, batch_size=32)

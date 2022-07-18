@@ -89,7 +89,6 @@ class HuggingfaceModel(Model):
         self.model = safe_load_pipeline(trainer.model, trainer.tokenizer)
 
         self.trainer = trainer
-        self.trained = True
 
     def predict(self, dataset: pd.Series) -> pd.DataFrame:
         return run_inference_pipeline(
@@ -107,7 +106,7 @@ class HuggingfaceModel(Model):
         pass
 
     def save_remote(self) -> None:
-        if (self.config.save_remote is not None) and self.trained:
+        if self.config.save_remote is not None:
             self.trainer.push_to_hub()
 
 
