@@ -11,15 +11,24 @@ from transformers import (
     Trainer,
     PreTrainedModel,
     AutoModelForSequenceClassification,
+    PreTrainedTokenizerBase,
 )
 from sklearn.model_selection import train_test_split
 
 from configs.constants import Const
 
 
-def safe_load_pipeline(module: Union[str, PreTrainedModel]) -> Optional[Callable]:
+def safe_load_pipeline(
+    module: Union[str, PreTrainedModel],
+    tokenizer: Optional[PreTrainedTokenizerBase] = None,
+) -> Optional[Callable]:
     try:
-        loaded_pipeline = pipeline(task="sentiment-analysis", model=module)
+        if tokenizer is not None:
+            loaded_pipeline = pipeline(
+                task="sentiment-analysis", model=module, tokenizer=tokenizer
+            )
+        else:
+            loaded_pipeline = pipeline(task="sentiment-analysis", model=module)
         print(f"     ├ Pipeline {module} loaded")
     except:
         print(f"     ├ Couldn't load {module} pipeline. Skipping.")
@@ -77,12 +86,10 @@ class HuggingfaceModel(Model):
             self.pipeline_id,
             self.id,
         )
-        self.model = safe_load_pipeline(trainer.model)
-        #     AutoModelForSequenceClassification.from_pretrained(trainer.model)
-        # )
+        self.model = safe_load_pipeline(trainer.model, trainer.tokenizer)
+
         self.trainer = trainer
         self.trained = True
-
 
     def predict(self, dataset: pd.Series) -> pd.DataFrame:
         return run_inference_pipeline(
