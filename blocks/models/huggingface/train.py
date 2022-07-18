@@ -35,10 +35,10 @@ def run_training_pipeline(
     id: str,
 ) -> Trainer:
 
-    tokenizer = AutoTokenizer.from_pretrained(config.pretrained_model)
     model = AutoModelForSequenceClassification.from_pretrained(
         config.pretrained_model, num_labels=config.num_classes
     )
+    tokenizer = AutoTokenizer.from_pretrained(config.pretrained_model)
 
     def preprocess_function(examples):
         return tokenizer(examples[Const.input_col], truncation=True)
@@ -57,6 +57,9 @@ def run_training_pipeline(
         weight_decay=0.01,
         save_strategy="epoch" if config.save else "NO",
         push_to_hub=False,
+        log_level="critical",
+        report_to="none",
+        optim="adamw_torch",
     )
 
     trainer = Trainer(
