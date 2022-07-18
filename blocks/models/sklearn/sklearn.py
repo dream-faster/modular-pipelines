@@ -34,7 +34,6 @@ class SKLearnModel(Model):
         )
 
         self.model.fit(dataset, labels)
-        self.trained = True
 
     def predict(self, dataset: pd.Series) -> pd.Series:
         predictions = self.model.predict(dataset)

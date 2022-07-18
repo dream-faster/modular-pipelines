@@ -30,8 +30,12 @@ class Pipeline(Block):
             model.load_remote()
 
     def load(self) -> None:
+        last_i = 0
+        if isinstance(self.datasource, Pipeline):
+            last_i = self.datasource.load(f"{self.datasource.id}/{self.id}", 0)
+
         for i, model in enumerate(self.models):
-            model.load(self.id, i)
+            model.load(f"{self.datasource.id}/{self.id}", i + last_i)
 
     def fit(self, store: Store) -> None:
         last_output = process_block(self.datasource, store)
@@ -50,12 +54,12 @@ class Pipeline(Block):
         return all([model.is_fitted() for model in self.models])
 
     def save(self) -> None:
-        for model in self.models:
-            model.save(self.id)
+        pass
 
     def save_remote(self) -> None:
         for model in self.models:
-            model.save_remote(self.id)
+            if model.config.save_remote:
+                model.save_remote()
 
     def children(self) -> List[Element]:
         return self.datasource.children() + [self] + [self.models]

@@ -30,7 +30,8 @@ huggingface_config = HuggingfaceConfig(
     epochs=2,
     user_name="itchingpixels",
     repo_name="finetuning-tweeteval-hate-speech",
-    push_to_hub=True,
+    save_remote=True,
+    save=True,
     num_classes=2,
     val_size=0.1,
     force_fit=False,
@@ -42,10 +43,12 @@ gb = GradientBoostingClassifier(n_estimators=100, max_depth=20, random_state=0)
 
 sklearn_config = SKLearnConfig(
     force_fit=False,
+    save=True,
     classifier=VotingClassifier(
         estimators=[("nb", nb), ("lg", lg), ("gb", gb)], voting="soft"
     ),
     one_vs_rest=False,
+    save_remote=False,
 )
 
 
@@ -107,4 +110,4 @@ nlp_huggingface_autocorrect = Pipeline(
 
 
 def hate_speech_detection_pipeline() -> Pipeline:
-    return nlp_sklearn_autocorrect
+    return nlp_huggingface

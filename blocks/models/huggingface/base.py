@@ -6,14 +6,35 @@ from configs.constants import Const
 import pandas as pd
 from datasets import Dataset, Features, Value, ClassLabel
 from typing import List, Tuple, Callable, Optional, Union
-from transformers import pipeline, Trainer, PreTrainedModel
+from transformers import (
+    pipeline,
+    Trainer,
+    PreTrainedModel,
+    AutoModelForSequenceClassification,
+    PreTrainedTokenizerBase,
+)
 from sklearn.model_selection import train_test_split
 
 from configs.constants import Const
 
 
-def load_pipeline(module: Union[str, PreTrainedModel]) -> Callable:
-    return pipeline(task="sentiment-analysis", model=module)
+def safe_load_pipeline(
+    module: Union[str, PreTrainedModel],
+    tokenizer: Optional[PreTrainedTokenizerBase] = None,
+) -> Optional[Callable]:
+    try:
+        if tokenizer is not None:
+            loaded_pipeline = pipeline(
+                task="sentiment-analysis", model=module, tokenizer=tokenizer
+            )
+        else:
+            loaded_pipeline = pipeline(task="sentiment-analysis", model=module)
+        print(f"     ├ Pipeline {module} loaded")
+    except:
+        print(f"     ├ Couldn't load {module} pipeline. Skipping.")
+        loaded_pipeline = None
+
+    return loaded_pipeline
 
 
 class HuggingfaceModel(Model):
@@ -26,55 +47,87 @@ class HuggingfaceModel(Model):
         self.id = id
         self.config = config
         self.model: Optional[Union[Callable, Trainer]] = None
+        self.pretrained: bool = False
+
+    def load(self, pipeline_id: str, execution_order: int) -> None:
+        self.pipeline_id = pipeline_id
+        self.id += f"-{str(execution_order)}"
+
+        model = safe_load_pipeline(f"{Const.output_path}/{self.pipeline_id}/{self.id}")
+        if model:
+            self.model = model
+        else:
+            print("     ├ ℹ️ No local model found")
+
+        return execution_order + 1
 
     def load_remote(self):
-        repo_name = self.config.user_name + "/" + self.config.repo_name
-        try:
-            self.model = load_pipeline(repo_name)
-        except:
-            print("❌ No model found in huggingface repository")
+        if self.model is None:
+            model = safe_load_pipeline(f"{self.config.user_name}/{self.id}")
+            if model:
+                self.model = model
+            else:
+                print(
+                    f"     ├ ℹ️ No fitted model found remotely, loading pretrained foundational model: {self.config.pretrained_model}"
+                )
+                self.model = safe_load_pipeline(self.config.pretrained_model)
+                self.pretrained = True
 
     def fit(self, dataset: List[str], labels: Optional[pd.Series]) -> None:
-
         train_dataset, val_dataset = train_test_split(
             pd.DataFrame({Const.input_col: dataset, Const.label_col: labels}),
             test_size=self.config.val_size,
         )
 
-        model = run_training_pipeline(
+        trainer = run_training_pipeline(
             from_pandas(train_dataset, self.config.num_classes),
             from_pandas(val_dataset, self.config.num_classes),
             self.config,
+            self.pipeline_id,
+            self.id,
         )
-        self.model = load_pipeline(model)
-        self.trained = True
+        self.model = safe_load_pipeline(trainer.model, trainer.tokenizer)
 
-    def predict(self, dataset: pd.Series) -> pd.Series:
-        if self.model:
-            model = self.model
-        else:
-            print(
-                f"❌ No fitted model, using inference on pretrained foundational model :{self.config.pretrained_model}"
-            )
-            model = load_pipeline(self.config.pretrained_model)
+        self.trainer = trainer
 
+    def predict(self, dataset: pd.Series) -> pd.DataFrame:
         return run_inference_pipeline(
-            model,
-            from_pandas(dataset, self.config.num_classes),
-            self.huggingface_config,
+            self.model,
+            from_pandas(
+                pd.DataFrame({Const.input_col: dataset}), self.config.num_classes
+            ),
+            self.config,
         )
 
     def is_fitted(self) -> bool:
-        return self.model is not None
+        return self.pretrained is False
+
+    def save(self) -> None:
+        pass
+
+    def save_remote(self) -> None:
+        if self.config.save_remote is True:
+            self.trainer.push_to_hub(overwrite_output_dir=True)
 
 
-def from_pandas(df: pd.DataFrame, num_classes: int) -> Dataset:
-    return Dataset.from_pandas(
-        df,
-        features=Features(
-            {
-                Const.input_col: Value("string"),
-                Const.label_col: ClassLabel(num_classes),
-            }
-        ),
-    )
+def from_pandas(df: pd.DataFrame, num_classes: int = None) -> Dataset:
+
+    if Const.label_col in df.columns:
+        return Dataset.from_pandas(
+            df,
+            features=Features(
+                {
+                    Const.input_col: Value("string"),
+                    Const.label_col: ClassLabel(num_classes),
+                }
+            ),
+        )
+    else:
+        return Dataset.from_pandas(
+            df,
+            features=Features(
+                {
+                    Const.input_col: Value("string"),
+                }
+            ),
+        )

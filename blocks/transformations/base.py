@@ -5,10 +5,6 @@ from typing import Optional, List
 
 
 class Transformation(Block):
-    def __init__(self, id: Optional[str] = None, config: Optional[BaseConfig] = None):
-        super().__init__()
-        self.config = BaseConfig(force_fit=False) if config is None else config
-
     def load_remote(self):
         pass
 
