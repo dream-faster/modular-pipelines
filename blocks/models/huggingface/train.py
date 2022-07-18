@@ -49,7 +49,7 @@ def run_training_pipeline(
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
     training_args = TrainingArguments(
-        output_dir=f"{Const.output_path}/pipelines/{pipeline_id}/{id}",
+        output_dir=f"{Const.output_pipelines_path}/{pipeline_id}/{id}",
         learning_rate=2e-5,
         per_device_train_batch_size=16,
         per_device_eval_batch_size=16,

@@ -6,6 +6,7 @@ from typing import List
 from runner.train import train_predict, predict
 from runner.store import Store
 import numpy as np
+from type import PredsWithProbs
 
 
 class Ensemble(Block):
@@ -30,7 +31,7 @@ class Ensemble(Block):
             output = train_predict(model, input, store)
             store.set_data(model.id, output)
 
-    def predict(self, store: Store) -> pd.Series:
+    def predict(self, store: Store) -> List[PredsWithProbs]:
         input = self.datasource.deplate(store)
         outputs: List[pd.Series] = []
         for model in self.models:
@@ -48,10 +49,10 @@ class Ensemble(Block):
         return [self.datasource] + [self] + [self.models]
 
 
-def average_output(outputs: List[pd.Series]) -> pd.DataFrame:
+def average_output(outputs: List[pd.Series]) -> List[PredsWithProbs]:
     probabilities = np.average(
         np.array([item[1] for item in outputs]),
         axis=0,
     )
     predictions = [np.argmax(probs) for probs in probabilities]
-    return pd.DataFrame({Const.preds_col: predictions, Const.probs_col: probabilities})
+    return zip(predictions, probabilities)

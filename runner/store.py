@@ -16,5 +16,5 @@ class Store:
     def get_labels(self) -> pd.Series:
         return self.labels.copy()
 
-    def set_data(self, id: str, data: pd.Series) -> None:
+    def set_data(self, id: str, data: Union[pd.Series, List]) -> None:
         self.data[id] = data

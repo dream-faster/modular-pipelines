@@ -21,8 +21,7 @@ def run_pipeline(
 ) -> List:
 
     path = (
-        Const.output_path
-        + "/runs/"
+        Const.output_runs_path
         + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         + "/"
     )

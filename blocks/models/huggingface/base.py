@@ -59,7 +59,7 @@ class HuggingfaceModel(Model):
         self.id += f"-{str(execution_order)}"
 
         model = safe_load_pipeline(
-            f"{Const.output_path}/pipelines/{self.pipeline_id}/{self.id}"
+            f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}"
         )
         if model:
             self.model = model
