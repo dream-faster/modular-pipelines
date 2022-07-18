@@ -1,2 +1,2 @@
-from .df_numpy import DfToNumpy
-from .df_list import DfToList
+from .listoflist_numpy import ListOfListsToNumpy
+from .series_list import SeriesToList

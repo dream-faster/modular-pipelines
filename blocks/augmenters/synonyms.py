@@ -8,8 +8,8 @@ from type import DataType
 
 class SynonymAugmenter(Augmenter):
 
-    inputTypes = DataType.List_str
-    outputType = DataType.List_str
+    inputTypes = DataType.List
+    outputType = DataType.List
 
     def __init__(self, num_synonyms: int):
         super().__init__()

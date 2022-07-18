@@ -13,8 +13,8 @@ import numpy as np
 
 class StatisticAugmenter(Augmenter):
 
-    inputTypes = DataType.List_str
-    outputType = DataType.List_int
+    inputTypes = DataType.List
+    outputType = DataType.List
 
     def predict(self, dataset: List) -> List:
         return [get_statistic([token.text for token in item]) for item in dataset]

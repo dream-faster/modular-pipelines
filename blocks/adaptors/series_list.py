@@ -4,7 +4,7 @@ import pandas as pd
 from type import DataType
 
 
-class DfToList(Adaptor):
+class SeriesToList(Adaptor):
 
     inputTypes = DataType.Series
     outputType = DataType.List

@@ -29,7 +29,6 @@ class SKLearnTransformation(Transformation):
         self.trained = True
 
     def predict(self, dataset: Union[list, np.ndarray]) -> np.ndarray:
-        # TODO: this is not returning a dataframe, but a sparse vector
         return self.model.transform(dataset)
 
     def is_fitted(self) -> bool:

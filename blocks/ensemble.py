@@ -1,6 +1,5 @@
 from configs.constants import Const
-from .base import Block
-from blocks.models.base import Model
+from .base import Block, Element
 from .data import DataSource
 import pandas as pd
 from typing import List
@@ -13,9 +12,9 @@ class Ensemble(Block):
 
     id: str
     datasource: DataSource
-    models: List[Model]
+    models: List[Block]
 
-    def __init__(self, id: str, datasource: DataSource, models: List[Model]):
+    def __init__(self, id: str, datasource: DataSource, models: List[Block]):
         self.id = id
         self.models = models
         self.datasource = datasource
@@ -44,6 +43,9 @@ class Ensemble(Block):
 
     def is_fitted(self) -> bool:
         return all([model.is_fitted() for model in self.models])
+
+    def children(self) -> List[Element]:
+        return [self.datasource] + [self] + [self.models]
 
 
 def average_output(outputs: List[pd.DataFrame]) -> pd.DataFrame:

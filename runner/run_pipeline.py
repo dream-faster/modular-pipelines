@@ -3,6 +3,8 @@ import pandas as pd
 from blocks.pipeline import Pipeline
 from .store import Store
 from typing import List, Union
+from .integrity import check_integrity
+from pprint import pprint
 
 
 def run_pipeline(
@@ -12,6 +14,13 @@ def run_pipeline(
     train: bool,
     upload: bool,
 ) -> pd.DataFrame:
+
+    print("🗼 Hierarchy of Models:")
+    pprint(pipeline.children())
+
+    print("🆔 Verifying pipeline integrity")
+    if not check_integrity(pipeline):
+        raise Exception("Pipeline integrity check failed")
 
     store = Store(data, labels)
 
