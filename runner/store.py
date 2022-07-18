@@ -10,11 +10,11 @@ class Store:
         self.labels = labels
         self.id = "store-" + random_string(5)
 
-    def get_data(self, id: str) -> pd.DataFrame:
+    def get_data(self, id: str) -> pd.Series:
         return self.data[id].copy()
 
     def get_labels(self) -> pd.Series:
         return self.labels.copy()
 
-    def set_data(self, id: str, data: pd.DataFrame) -> None:
+    def set_data(self, id: str, data: pd.Series) -> None:
         self.data[id] = data

@@ -1,11 +1,12 @@
 from dataclasses import dataclass
 from enum import Enum
 from sklearn.base import ClassifierMixin
-from typing import List
+from typing import Callable, List, Tuple
 
 Label = int
 Probabilities = List[float]
 
+PredsWithProbs = Tuple[Label, Probabilities]
 
 class DataType(Enum):
     Any = "Any"
@@ -14,6 +15,11 @@ class DataType(Enum):
     PredictionsWithProbs = "PredictionsWithProbs"
     Series = "Series"
     Tensor = "Tensor"
+
+
+EvaluatorId = str
+Evaluator = Tuple[EvaluatorId, Callable]
+Evaluators = List[Evaluator]
 
 
 """ Model Configs """

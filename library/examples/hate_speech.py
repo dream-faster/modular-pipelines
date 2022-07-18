@@ -110,4 +110,4 @@ nlp_huggingface_autocorrect = Pipeline(
 
 
 def hate_speech_detection_pipeline() -> Pipeline:
-    return nlp_huggingface
+    return nlp_sklearn_autocorrect

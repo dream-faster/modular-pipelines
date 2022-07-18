@@ -30,9 +30,9 @@ class Ensemble(Block):
             output = train_predict(model, input, store)
             store.set_data(model.id, output)
 
-    def predict(self, store: Store) -> pd.DataFrame:
+    def predict(self, store: Store) -> pd.Series:
         input = self.datasource.deplate(store)
-        outputs: List[pd.DataFrame] = []
+        outputs: List[pd.Series] = []
         for model in self.models:
             output = predict(model, input)
             outputs.append(output)
@@ -48,7 +48,7 @@ class Ensemble(Block):
         return [self.datasource] + [self] + [self.models]
 
 
-def average_output(outputs: List[pd.DataFrame]) -> pd.DataFrame:
+def average_output(outputs: List[pd.Series]) -> pd.DataFrame:
     probabilities = np.average(
         np.array([item[1] for item in outputs]),
         axis=0,

@@ -1,7 +1,7 @@
 from blocks.models.base import Model
 from .infer import run_inference_pipeline
 from .train import run_training_pipeline
-from type import HuggingfaceConfig, DataType
+from type import HuggingfaceConfig, DataType, PredsWithProbs
 from configs.constants import Const
 import pandas as pd
 from datasets import Dataset, Features, Value, ClassLabel
@@ -53,7 +53,9 @@ class HuggingfaceModel(Model):
         self.pipeline_id = pipeline_id
         self.id += f"-{str(execution_order)}"
 
-        model = safe_load_pipeline(f"{Const.output_path}/{self.pipeline_id}/{self.id}")
+        model = safe_load_pipeline(
+            f"{Const.output_path}/pipelines/{self.pipeline_id}/{self.id}"
+        )
         if model:
             self.model = model
         else:
@@ -90,7 +92,7 @@ class HuggingfaceModel(Model):
 
         self.trainer = trainer
 
-    def predict(self, dataset: pd.Series) -> pd.DataFrame:
+    def predict(self, dataset: pd.Series) -> List[PredsWithProbs]:
         return run_inference_pipeline(
             self.model,
             from_pandas(

@@ -7,4 +7,4 @@ class Const:
     label_col = "label"
     preds_col = "predictions"
     probs_col = "probabilities"
-    output_path = "output/pipelines"
+    output_path = "output/"
