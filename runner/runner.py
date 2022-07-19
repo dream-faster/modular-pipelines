@@ -37,7 +37,10 @@ class Runner:
             raise Exception("Pipeline integrity check failed")
 
         print("💈 Loading existing models")
-        self.pipeline.load()
+        self.pipeline.load(
+            [plugin.on_load_begin for plugin in self.plugins],
+            [plugin.on_load_end for plugin in self.plugins],
+        )
 
         print("📡 Looking for remote models")
         self.pipeline.load_remote()
@@ -57,6 +60,7 @@ class Runner:
         preds_probs = self.pipeline.predict(self.store)
         predictions = [pred[0] for pred in preds_probs]
 
-        evaluate(predictions, self.store, self.evaluators, self.run_path)
+        stats = evaluate(predictions, self.store, self.evaluators, self.run_path)
+        self.store.set_stats(self.id, stats)
 
         return predictions

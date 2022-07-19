@@ -29,13 +29,22 @@ class Pipeline(Block):
         for model in self.models:
             model.load_remote()
 
-    def load(self) -> None:
+    def load(self, on_load_begin: List[Callable], on_load_end: List[Callable]) -> None:
+        """Begin"""
+        for hook in on_load_begin:
+            hook()
+
+        """ Core """
         last_i = 0
         if isinstance(self.datasource, Pipeline):
             last_i = self.datasource.load(f"{self.datasource.id}/{self.id}", 0)
 
         for i, model in enumerate(self.models):
             model.load(f"{self.datasource.id}/{self.id}", i + last_i)
+
+        """ End """
+        for hook in on_load_end:
+            hook()
 
     def fit(
         self,
@@ -46,7 +55,7 @@ class Pipeline(Block):
         """Begin"""
         last_output = process_block(self.datasource, store)
         for hook in on_fit_begin:
-            last_output = hook(store, last_output)
+            store, last_output = hook(store, last_output)
 
         """ Core """
         for model in self.models:
@@ -54,7 +63,7 @@ class Pipeline(Block):
 
         """ End """
         for hook in on_fit_end:
-            last_output = hook(store, last_output)
+            store, last_output = hook(store, last_output)
 
         """ Save data """
         store.set_data(self.id, last_output)

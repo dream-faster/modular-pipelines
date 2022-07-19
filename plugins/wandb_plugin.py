@@ -1,0 +1,59 @@
+from .base import Plugin
+import wandb
+from typing import Optional, Union, Tuple
+import os
+from runner.store import Store
+
+
+class WandbPlugin(Plugin):
+    def __init__(self):
+        super().__init__()
+        self.wandb = launch_wandb()
+
+    def on_fit_end(self, store: Store, last_output):
+        report_results(output_stats=store, wandb=self.wandb, final=True)
+
+
+def get_wandb():
+    from dotenv import load_dotenv
+
+    load_dotenv()
+
+    """ 0. Login to Weights and Biases """
+    wsb_token = os.environ.get("WANDB_API_KEY")
+    if wsb_token:
+        wandb.login(key=wsb_token)
+        return wandb
+    else:
+        return None  # wandb.login()
+
+
+def launch_wandb(project_name: str, default_config: Config) -> Optional[object]:
+    wandb = get_wandb()
+    if wandb is None:
+        raise Exception(
+            "Wandb can not be initalized, the environment variable WANDB_API_KEY is missing (can also use .env file)"
+        )
+    else:
+        wandb.init(project=project_name, config=vars(default_config), reinit=True)
+        return wandb
+
+
+def send_report_to_wandb(
+    stats: Union[Stats, BaseStats], wandb: Optional[object], final: bool = False
+):
+    if wandb is None:
+        return
+
+    run = wandb.run
+    if final:
+        run.save()
+
+    run.log(vars(stats))
+
+    if final:
+        run.finish()
+
+
+def report_results(output_stats: Any, wandb, final: bool = False):
+    send_report_to_wandb(output_stats, wandb, final)

@@ -28,5 +28,10 @@ def predict(model: Block, dataset: pd.Series, store: Store) -> List:
         and model.evaluators is not None
     ):
         predictions = [pred[0] for pred in output]
-        evaluate(predictions, store, model.evaluators, f"{store.path}/{model.id}")
+        stats = evaluate(
+            predictions, store, model.evaluators, f"{store.path}/{model.id}"
+        )
+
+        store.set_stats(model.id, stats)
+
     return output

@@ -9,7 +9,7 @@ import os
 
 def evaluate(
     predictions: Union[List, pd.Series], store: Store, evaluators: Evaluators, path: str
-):
+) -> pd.Series:
     stats = pd.Series(dtype="float64")
     if not os.path.isdir(path):
         os.makedirs(path)
@@ -27,3 +27,5 @@ def evaluate(
 
     pprint(stats)
     stats.to_csv(path + "/stats.csv")
+
+    return stats
