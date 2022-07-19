@@ -19,11 +19,8 @@ def run_pipeline(
     train: bool,
 ) -> List:
 
-    run_path = (
-        Const.output_runs_path
-        + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        + "/"
-    )
+    run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
+
 
     print("🗼 Hierarchy of Models:")
     pprint(pipeline.children())

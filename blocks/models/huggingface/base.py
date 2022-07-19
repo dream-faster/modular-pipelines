@@ -17,6 +17,9 @@ from sklearn.model_selection import train_test_split
 
 from configs.constants import Const
 import os
+import torch
+
+device = 0 if torch.cuda.is_available() else -1
 
 
 def safe_load_pipeline(
@@ -26,10 +29,15 @@ def safe_load_pipeline(
     try:
         if tokenizer is not None:
             loaded_pipeline = pipeline(
-                task="sentiment-analysis", model=module, tokenizer=tokenizer
+                task="sentiment-analysis",
+                model=module,
+                tokenizer=tokenizer,
+                device=device,
             )
         else:
-            loaded_pipeline = pipeline(task="sentiment-analysis", model=module)
+            loaded_pipeline = pipeline(
+                task="sentiment-analysis", model=module, device=device
+            )
         print(
             f"    ├ Pipeline loaded: {module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}"
         )
@@ -70,7 +78,7 @@ class HuggingfaceModel(Model):
         if model:
             self.model = model
         else:
-            print("     ├ ℹ️ No local model found")
+            print("    ├ ℹ️ No local model found")
 
         return execution_order + 1
 
@@ -81,7 +89,7 @@ class HuggingfaceModel(Model):
                 self.model = model
             else:
                 print(
-                    f"     ├ ℹ️ No fitted model found remotely, loading pretrained foundational model: {self.config.pretrained_model}"
+                    f"    ├ ℹ️ No fitted model found remotely, loading pretrained foundational model: {self.config.pretrained_model}"
                 )
                 self.model = safe_load_pipeline(self.config.pretrained_model)
 
