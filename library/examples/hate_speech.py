@@ -95,7 +95,7 @@ nlp_huggingface = Pipeline(
     "nlp_huggingface",
     input_data,
     [
-        HuggingfaceModel("hf-model", huggingface_config),
+        HuggingfaceModel("hf-model-full", huggingface_config),
     ],
 )
 
