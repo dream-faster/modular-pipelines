@@ -121,11 +121,11 @@ class HuggingfaceModel(Model):
         pass
 
     def save_remote(self) -> None:
-        pass
+        # pass
         # Push to hub doesn't work yet (huggingface gives an error),
         # so we are letting Trainer handle it
-        # if all([self.config.save_remote, self.config.save]) is True:
-        #     self.trainer.push_to_hub()
+        if all([self.config.save_remote, self.config.save]) is True:
+            self.trainer.push_to_hub()
 
 
 def from_pandas(df: pd.DataFrame, num_classes: int = None) -> Dataset:
