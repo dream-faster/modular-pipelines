@@ -20,8 +20,8 @@ def run_pipeline(
     train: bool,
 ) -> List:
 
-    path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")}/"
-    
+    path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
+
     os.mkdir(path)
 
     print("🗼 Hierarchy of Models:")
