@@ -2,6 +2,7 @@ from blocks.pipeline import Pipeline
 from blocks.models.huggingface import HuggingfaceModel
 
 from blocks.models.sklearn import SKLearnModel
+from library.evaluation.classification import classification_metrics
 from type import PreprocessConfig, HuggingfaceConfig, SKLearnConfig
 from blocks.pipeline import Pipeline
 from blocks.adaptors import SeriesToList
@@ -68,7 +69,7 @@ nlp_sklearn = Pipeline(
                 ngram_range=(1, 3),
             )
         ),
-        SKLearnModel("model1", sklearn_config),
+        SKLearnModel("model1", sklearn_config, evaluators=classification_metrics),
     ],
 )
 
@@ -110,4 +111,4 @@ nlp_huggingface_autocorrect = Pipeline(
 
 
 def hate_speech_detection_pipeline() -> Pipeline:
-    return nlp_sklearn_autocorrect
+    return nlp_sklearn

@@ -46,7 +46,7 @@ class Pipeline(Block):
     def predict(self, store: Store) -> pd.Series:
         last_output = process_block(self.datasource, store)
         for model in self.models:
-            last_output = predict(model, last_output)
+            last_output = predict(model, last_output, store)
         store.set_data(self.id, last_output)
         return last_output
 

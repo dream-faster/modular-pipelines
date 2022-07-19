@@ -17,4 +17,4 @@ def run_inference_pipeline(
     ]
     predicitions = [np.argmax(prob) for prob in probs]
 
-    return zip(predicitions, probs)
+    return list(zip(predicitions, probs))

@@ -1,4 +1,4 @@
-from type import PytorchConfig, DataType
+from type import Evaluators, PytorchConfig, DataType
 import pandas as pd
 import pytorch_lightning as pl
 from blocks.models.base import Model
@@ -17,11 +17,11 @@ class PytorchModel(Model):
     inputTypes = DataType.Series
     outputType = DataType.PredictionsWithProbs
 
-    def __init__(self, id: str, config: PytorchConfig):
+    def __init__(self, id: str, config: PytorchConfig, evaluators: Optional[Evaluators]= None):
         self.config = config
         self.id = id
-
         self.model = LightningWrapper(Decoder(config))
+        self.evaluators: Optional[Evaluators] = evaluators
 
     def load_remote(self):
         pass

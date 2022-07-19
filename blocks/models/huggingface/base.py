@@ -1,7 +1,7 @@
 from blocks.models.base import Model
 from .infer import run_inference_pipeline
 from .train import run_training_pipeline
-from type import HuggingfaceConfig, DataType, PredsWithProbs
+from type import Evaluators, HuggingfaceConfig, DataType, PredsWithProbs
 from configs.constants import Const
 import pandas as pd
 from datasets import Dataset, Features, Value, ClassLabel
@@ -46,11 +46,17 @@ class HuggingfaceModel(Model):
     inputTypes = [DataType.Series, DataType.List]
     outputType = DataType.PredictionsWithProbs
 
-    def __init__(self, id: str, config: HuggingfaceConfig):
+    def __init__(
+        self,
+        id: str,
+        config: HuggingfaceConfig,
+        evaluators: Optional[Evaluators] = None,
+    ):
         self.id = id
         self.config = config
         self.model: Optional[Union[Callable, Trainer]] = None
-        self.trained: bool = False
+        self.trained = False
+        self.evaluators = evaluators
 
         os.environ["TOKENIZERS_PARALLELISM"] = "False"
 

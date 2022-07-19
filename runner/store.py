@@ -5,10 +5,16 @@ from typing import List, Union
 
 
 class Store:
-    def __init__(self, data: Dict[str, Union[List, pd.Series]], labels: pd.Series):
+
+    path: str
+
+    def __init__(
+        self, data: Dict[str, Union[List, pd.Series]], labels: pd.Series, path: str
+    ):
         self.data = data
         self.labels = labels
         self.id = "store-" + random_string(5)
+        self.path = path
 
     def get_data(self, id: str) -> pd.Series:
         return self.data[id].copy()
