@@ -56,7 +56,7 @@ def run_training_pipeline(
         num_train_epochs=2,
         weight_decay=0.01,
         save_strategy="epoch" if config.save else "NO",
-        push_to_hub=False,
+        push_to_hub=True,
         log_level="critical",
         report_to="none",
         optim="adamw_torch",
