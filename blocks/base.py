@@ -50,7 +50,7 @@ class Block(Element):
     def fit(self, dataset: pd.Series, labels: Optional[pd.Series]) -> None:
         raise NotImplementedError()
 
-    def predict(self, dataset: pd.Series) -> pd.Series:
+    def predict(self, dataset: pd.Series) -> List:
         raise NotImplementedError()
 
     def is_fitted(self) -> bool:

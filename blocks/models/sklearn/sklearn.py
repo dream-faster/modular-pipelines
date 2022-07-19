@@ -4,7 +4,7 @@ from sklearn.base import ClassifierMixin
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.pipeline import Pipeline as ImbPipeline
 from blocks.models.base import Model
-from type import PredsWithProbs, SKLearnConfig, DataType
+from type import Evaluators, PredsWithProbs, SKLearnConfig, DataType
 from configs.constants import Const
 from typing import Optional, List
 
@@ -16,11 +16,12 @@ class SKLearnModel(Model):
     inputTypes = [DataType.Series, DataType.List, DataType.NpArray]
     outputType = DataType.PredictionsWithProbs
 
-    def __init__(self, id: str, config: SKLearnConfig):
+    def __init__(self, id: str, config: SKLearnConfig, evaluators: Optional[Evaluators]= None):
         self.id = id
         self.config = config
         self.model = None
         self.trained = False
+        self.evaluators = evaluators
 
     def fit(self, dataset: pd.Series, labels: Optional[pd.Series]) -> None:
 
@@ -39,7 +40,7 @@ class SKLearnModel(Model):
         predictions = self.model.predict(dataset)
         probabilities = self.model.predict_proba(dataset)
 
-        return zip(predictions, probabilities)
+        return list(zip(predictions, probabilities))
 
     def is_fitted(self) -> bool:
         return self.model is not None

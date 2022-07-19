@@ -1,6 +1,10 @@
+from typing import List
 from blocks.base import Block
 import pandas as pd
+
+from blocks.models.base import Model
 from .store import Store
+from .evaluation import evaluate
 
 
 def train_predict(model: Block, dataset: pd.Series, store: Store):
@@ -11,9 +15,18 @@ def train_predict(model: Block, dataset: pd.Series, store: Store):
         if model.config.save:
             model.save()
 
-    return predict(model, dataset)
+    return predict(model, dataset, store)
 
 
-def predict(model: Block, dataset: pd.Series) -> pd.Series:
+def predict(model: Block, dataset: pd.Series, store: Store) -> List:
     print(f"    ├ Predicting on {model.id}, {model.__class__.__name__}")
-    return model.predict(dataset)
+    output = model.predict(dataset)
+
+    if (
+        isinstance(model, Model)
+        and hasattr(model, "evaluators")
+        and model.evaluators is not None
+    ):
+        predictions = [pred[0] for pred in output]
+        evaluate(predictions, store, model.evaluators, f"{store.path}/{model.id}")
+    return output
