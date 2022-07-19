@@ -19,9 +19,9 @@ from sklearn.ensemble import (
 )
 
 preprocess_config = PreprocessConfig(
-    train_size=10,
-    val_size=10,
-    test_size=5,
+    train_size=-1,
+    val_size=-1,
+    test_size=-1,
     input_col="text",
     label_col="label",
 )
@@ -29,7 +29,7 @@ preprocess_config = PreprocessConfig(
 huggingface_config = HuggingfaceConfig(
     pretrained_model="distilbert-base-uncased",
     epochs=2,
-    user_name="itchingpixels",
+    user_name="semy",
     repo_name="finetuning-tweeteval-hate-speech",
     save_remote=True,
     save=True,
@@ -111,5 +111,4 @@ nlp_huggingface_autocorrect = Pipeline(
 
 
 def hate_speech_detection_pipeline() -> Pipeline:
-    return nlp_sklearn
-
+    return nlp_huggingface
