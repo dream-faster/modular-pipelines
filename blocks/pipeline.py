@@ -1,6 +1,6 @@
 from .base import Block, DataSource, Element
 import pandas as pd
-from typing import List, Union, Optional
+from typing import List, Union, Optional, Callable
 from runner.train import train_predict, predict
 from runner.store import Store
 
@@ -37,10 +37,26 @@ class Pipeline(Block):
         for i, model in enumerate(self.models):
             model.load(f"{self.datasource.id}/{self.id}", i + last_i)
 
-    def fit(self, store: Store) -> None:
+    def fit(
+        self,
+        store: Store,
+        on_fit_begin: List[Callable],
+        on_fit_end: List[Callable],
+    ) -> None:
+        """Begin"""
         last_output = process_block(self.datasource, store)
+        for hook in on_fit_begin:
+            last_output = hook(store, last_output)
+
+        """ Core """
         for model in self.models:
             last_output = train_predict(model, last_output, store)
+
+        """ End """
+        for hook in on_fit_end:
+            last_output = hook(store, last_output)
+
+        """ Save data """
         store.set_data(self.id, last_output)
 
     def predict(self, store: Store) -> pd.Series:

@@ -19,12 +19,14 @@ class Runner:
         labels: pd.Series,
         evaluators: Evaluators,
         train: bool,
+        plugins: List,
     ):
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
         self.pipeline = pipeline
         self.store = Store(data, labels, self.run_path)
         self.evaluators = evaluators
         self.train = train
+        self.plugins = plugins
 
     def run(self):
         print("🗼 Hierarchy of Models:")
@@ -42,7 +44,11 @@ class Runner:
 
         if self.train:
             print("🏋️ Training pipeline")
-            self.pipeline.fit(self.store)
+            self.pipeline.fit(
+                self.store,
+                [plugin.on_fit_begin for plugin in self.plugins],
+                [plugin.on_fit_end for plugin in self.plugins],
+            )
 
             print("📡 Uploading models")
             self.pipeline.save_remote()
