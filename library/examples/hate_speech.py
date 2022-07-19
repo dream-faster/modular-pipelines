@@ -95,7 +95,7 @@ nlp_huggingface = Pipeline(
     "nlp_huggingface",
     input_data,
     [
-        HuggingfaceModel("hf-model", huggingface_config),
+        HuggingfaceModel("hf-model-full", huggingface_config),
     ],
 )
 
@@ -110,4 +110,4 @@ nlp_huggingface_autocorrect = Pipeline(
 
 
 def hate_speech_detection_pipeline() -> Pipeline:
-    return nlp_sklearn_autocorrect
+    return nlp_huggingface
