@@ -1,17 +1,20 @@
 from .base import Plugin
 import wandb
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Any
 import os
 from runner.store import Store
+import pandas as pd
 
 
 class WandbPlugin(Plugin):
     def __init__(self):
         super().__init__()
-        self.wandb = launch_wandb()
+        self.wandb = launch_wandb(self.id)
 
-    def on_fit_end(self, store: Store, last_output):
+    def on_predict_end(self, store: Store, last_output: Any):
         report_results(output_stats=store, wandb=self.wandb, final=True)
+
+        return store, last_output
 
 
 def get_wandb():
@@ -28,19 +31,20 @@ def get_wandb():
         return None  # wandb.login()
 
 
-def launch_wandb(project_name: str, default_config: Config) -> Optional[object]:
+def launch_wandb(project_name: str) -> Optional[object]:
     wandb = get_wandb()
     if wandb is None:
         raise Exception(
             "Wandb can not be initalized, the environment variable WANDB_API_KEY is missing (can also use .env file)"
         )
     else:
-        wandb.init(project=project_name, config=vars(default_config), reinit=True)
+        # wandb.init(project=project_name, config=vars(default_config), reinit=True)
+        wandb.init(project=project_name, reinit=True)
         return wandb
 
 
 def send_report_to_wandb(
-    stats: Union[Stats, BaseStats], wandb: Optional[object], final: bool = False
+    stats: pd.Series, wandb: Optional[object], final: bool = False
 ):
     if wandb is None:
         return

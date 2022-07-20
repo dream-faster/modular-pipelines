@@ -3,6 +3,7 @@ import pandas as pd
 from typing import List, Union, Optional, Callable
 from runner.train import train_predict, predict
 from runner.store import Store
+from plugins.base import Plugin
 
 
 class Pipeline(Block):
@@ -29,10 +30,10 @@ class Pipeline(Block):
         for model in self.models:
             model.load_remote()
 
-    def load(self, on_load_begin: List[Callable], on_load_end: List[Callable]) -> None:
+    def load(self, plugins: List[Plugin]) -> None:
         """Begin"""
-        for hook in on_load_begin:
-            hook()
+        for plugin in plugins:
+            plugin.on_load_begin()
 
         """ Core """
         last_i = 0
@@ -43,35 +44,40 @@ class Pipeline(Block):
             model.load(f"{self.datasource.id}/{self.id}", i + last_i)
 
         """ End """
-        for hook in on_load_end:
-            hook()
+        for plugin in plugins:
+            plugin.on_load_end()
 
-    def fit(
-        self,
-        store: Store,
-        on_fit_begin: List[Callable],
-        on_fit_end: List[Callable],
-    ) -> None:
+    def fit(self, store: Store, plugins: List[Plugin]) -> None:
         """Begin"""
         last_output = process_block(self.datasource, store)
-        for hook in on_fit_begin:
-            store, last_output = hook(store, last_output)
+        for plugin in plugins:
+            store, last_output = plugin.on_fit_begin(store, last_output)
 
         """ Core """
         for model in self.models:
             last_output = train_predict(model, last_output, store)
 
         """ End """
-        for hook in on_fit_end:
-            store, last_output = hook(store, last_output)
+        for plugin in plugins:
+            store, last_output = plugin.on_fit_end(store, last_output)
 
         """ Save data """
         store.set_data(self.id, last_output)
 
-    def predict(self, store: Store) -> pd.Series:
+    def predict(self, store: Store, plugins: List[Plugin]) -> pd.Series:
+        """Begin"""
         last_output = process_block(self.datasource, store)
+        for plugin in plugins:
+            store, last_output = plugin.on_predict_begin(store, last_output)
+
+        """ Core """
         for model in self.models:
             last_output = predict(model, last_output, store)
+
+        """ End """
+        for plugin in plugins:
+            store, last_output = plugin.on_predict_end(store, last_output)
+
         store.set_data(self.id, last_output)
         return last_output
 

@@ -37,21 +37,14 @@ class Runner:
             raise Exception("Pipeline integrity check failed")
 
         print("💈 Loading existing models")
-        self.pipeline.load(
-            [plugin.on_load_begin for plugin in self.plugins],
-            [plugin.on_load_end for plugin in self.plugins],
-        )
+        self.pipeline.load(self.plugins)
 
         print("📡 Looking for remote models")
         self.pipeline.load_remote()
 
         if self.train:
             print("🏋️ Training pipeline")
-            self.pipeline.fit(
-                self.store,
-                [plugin.on_fit_begin for plugin in self.plugins],
-                [plugin.on_fit_end for plugin in self.plugins],
-            )
+            self.pipeline.fit(self.store, self.plugins)
 
             print("📡 Uploading models")
             self.pipeline.save_remote()

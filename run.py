@@ -9,6 +9,7 @@ from library.evaluation import classification_metrics
 from library.examples.all_transformations import all_transformations
 
 from plugins.base import Plugin
+from plugins.wandb_plugin import WandbPlugin
 
 
 train_dataset, test_dataset = load_data("data/original", preprocess_config)
@@ -22,7 +23,7 @@ runner = Runner(
     labels=train_dataset[Const.label_col],
     evaluators=classification_metrics,
     train=True,
-    plugins=[Plugin(), Plugin()],
+    plugins=[Plugin(), WandbPlugin()],
 )
 
 runner.run()
