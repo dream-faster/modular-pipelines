@@ -6,6 +6,7 @@ from blocks.pipeline import Pipeline
 
 from utils.random import random_string
 from runner.store import Store
+import pandas as pd
 
 
 def print_checker(function_origin: str, text: str) -> None:
@@ -19,10 +20,8 @@ class Plugin(ABC):
         self.printprefix = f"    ├ 🔌 Plugin {self.id}: "
 
     def on_run_begin(self, pipeline: Pipeline):
-        pass
-
-    def on_run_end(self, pipeline: Pipeline):
-        pass
+        function_origin = type(self).on_run_begin.__qualname__.split(".")[0]
+        print_checker(function_origin, f"{self.printprefix} on_run_begin")
 
     def on_load_begin(self):
         function_origin = type(self).on_load_begin.__qualname__.split(".")[0]
@@ -55,3 +54,7 @@ class Plugin(ABC):
         print_checker(function_origin, f"{self.printprefix} on_predict_end")
 
         return store, last_output
+
+    def on_run_end(self, pipeline: Pipeline, stats: pd.Series):
+        function_origin = type(self).on_run_end.__qualname__.split(".")[0]
+        print_checker(function_origin, f"{self.printprefix} on_run_end")

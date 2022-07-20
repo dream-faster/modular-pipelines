@@ -6,7 +6,6 @@ from type import Evaluators
 from .store import Store
 from typing import List, Union
 
-from pprint import pprint
 from .evaluation import evaluate
 import datetime
 from configs import Const
@@ -52,5 +51,8 @@ class Runner:
 
         stats = evaluate(predictions, self.store, self.evaluators, self.run_path)
         self.store.set_stats("final", stats)
+
+        for plugin in self.plugins:
+            plugin.on_run_end(self.pipeline, stats)
 
         return predictions
