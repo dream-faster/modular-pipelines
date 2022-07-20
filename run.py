@@ -15,7 +15,8 @@ train_dataset, test_dataset = load_data("data/original", preprocess_config)
 
 pipeline = hate_speech_detection_pipeline()
 
-runner = Runner(
+
+train_runner = Runner(
     pipeline,
     data={"input": train_dataset[Const.input_col]},
     labels=train_dataset[Const.label_col],
@@ -23,5 +24,15 @@ runner = Runner(
     train=True,
     plugins=[WandbPlugin()],
 )
+train_runner.run()
 
-runner.run()
+
+test_runner = Runner(
+    pipeline,
+    data={"input": test_dataset[Const.input_col]},
+    labels=test_dataset[Const.label_col],
+    evaluators=classification_metrics,
+    train=False,
+    # plugins=[],
+)
+test_runner.run()
