@@ -9,6 +9,7 @@ Probabilities = List[float]
 
 PredsWithProbs = Tuple[Label, Probabilities]
 
+
 class DataType(Enum):
     Any = "Any"
     NpArray = "ndarray"

@@ -1,10 +1,11 @@
 from typing import Dict
 import pandas as pd
 from blocks.pipeline import Pipeline
+
 from type import Evaluators
 from .store import Store
 from typing import List, Union
-from .integrity import check_integrity
+
 from pprint import pprint
 from .evaluation import evaluate
 import datetime
@@ -19,7 +20,7 @@ class Runner:
         labels: pd.Series,
         evaluators: Evaluators,
         train: bool,
-        plugins: List,
+        plugins: List["Plugin"],
     ):
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
         self.pipeline = pipeline
@@ -32,9 +33,8 @@ class Runner:
         print("🗼 Hierarchy of Models:")
         pprint(self.pipeline.children())
 
-        print("🆔 Verifying pipeline integrity")
-        if not check_integrity(self.pipeline):
-            raise Exception("Pipeline integrity check failed")
+        for plugin in self.plugins:
+            plugin.on_run_begin(self.pipeline)
 
         print("💈 Loading existing models")
         self.pipeline.load(self.plugins)

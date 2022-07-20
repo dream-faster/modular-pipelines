@@ -8,8 +8,7 @@ from library.examples.hate_speech import (
 from library.evaluation import classification_metrics
 from library.examples.all_transformations import all_transformations
 
-from plugins.base import Plugin
-from plugins.wandb_plugin import WandbPlugin
+from plugins import Plugin, WandbPlugin
 
 
 train_dataset, test_dataset = load_data("data/original", preprocess_config)

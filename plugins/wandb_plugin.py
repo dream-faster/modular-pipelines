@@ -12,6 +12,7 @@ class WandbPlugin(Plugin):
         self.wandb = launch_wandb(self.id)
 
     def on_predict_end(self, store: Store, last_output: Any):
+        super().on_predict_end(store, last_output)
         report_results(output_stats=store.get_all_stats(), wandb=self.wandb, final=True)
 
         return store, last_output

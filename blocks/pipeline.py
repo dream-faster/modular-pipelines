@@ -3,7 +3,6 @@ import pandas as pd
 from typing import List, Union, Optional, Callable
 from runner.train import train_predict, predict
 from runner.store import Store
-from plugins.base import Plugin
 
 
 class Pipeline(Block):
@@ -30,7 +29,7 @@ class Pipeline(Block):
         for model in self.models:
             model.load_remote()
 
-    def load(self, plugins: List[Plugin]) -> None:
+    def load(self, plugins: List["Plugin"]) -> None:
         """Begin"""
         for plugin in plugins:
             plugin.on_load_begin()
@@ -47,7 +46,7 @@ class Pipeline(Block):
         for plugin in plugins:
             plugin.on_load_end()
 
-    def fit(self, store: Store, plugins: List[Plugin]) -> None:
+    def fit(self, store: Store, plugins: List["Plugin"]) -> None:
         """Begin"""
         last_output = process_block(self.datasource, store)
         for plugin in plugins:
@@ -64,7 +63,7 @@ class Pipeline(Block):
         """ Save data """
         store.set_data(self.id, last_output)
 
-    def predict(self, store: Store, plugins: List[Plugin]) -> pd.Series:
+    def predict(self, store: Store, plugins: List["Plugin"]) -> pd.Series:
         """Begin"""
         last_output = process_block(self.datasource, store)
         for plugin in plugins:
@@ -84,7 +83,7 @@ class Pipeline(Block):
     def is_fitted(self) -> bool:
         return all([model.is_fitted() for model in self.models])
 
-    def save(self, plugins: List[Plugin]) -> None:
+    def save(self, plugins: List["Plugin"]) -> None:
         pass
 
     def save_remote(self) -> None:

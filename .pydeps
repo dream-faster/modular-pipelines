@@ -1,0 +1,50 @@
+[pydeps]
+max_bacon = 32
+no_show = False
+verbose = 2
+pylib = False
+include_missing = True
+find_package = True
+# show_raw_deps = True
+show_dot = True
+show_cycles = True
+exclude =
+    os
+    re
+    sys
+    collections
+    __future__
+    python=3.9
+    black
+    ipython
+    notebook
+    ipykernel
+    pytorch=1.10.2
+    tqdm
+    numpy
+    pandas
+    pytest
+    tensorboard
+    pyright
+    wandb
+    python-dotenv
+    nltk
+    transformers
+    datasets
+    scikit_learn
+    spacy
+    imbalanced_learn
+    swifter
+    huggingface_hub
+    pytorch_lightning
+    scipy
+    sklearn
+    URLExtract
+    emoji
+    autocorrect
+    spello
+    joblib
+    IPython
+    traitlets
+    pygments
+    dotenv
