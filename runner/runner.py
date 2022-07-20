@@ -1,6 +1,8 @@
 from typing import Dict
 import pandas as pd
 from blocks.pipeline import Pipeline
+from plugins import PipelineAnalyser, IntegrityChecker
+
 
 from type import Evaluators
 from .store import Store
@@ -9,6 +11,8 @@ from typing import List, Union
 from .evaluation import evaluate
 import datetime
 from configs import Const
+
+obligatory_plugins = [PipelineAnalyser(), IntegrityChecker()]
 
 
 class Runner:
@@ -26,7 +30,7 @@ class Runner:
         self.store = Store(data, labels, self.run_path)
         self.evaluators = evaluators
         self.train = train
-        self.plugins = plugins
+        self.plugins = obligatory_plugins + plugins
 
     def run(self):
         for plugin in self.plugins:
