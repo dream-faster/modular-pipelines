@@ -1,5 +1,4 @@
 from abc import ABC
-from dataclasses import dataclass
 from typing import Tuple, Any
 
 from blocks.pipeline import Pipeline

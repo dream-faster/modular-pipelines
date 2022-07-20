@@ -2,8 +2,6 @@ from pprint import pprint
 from blocks.pipeline import Pipeline
 
 from .base import Plugin
-from utils.flatten import flatten
-from type import DataType
 
 
 class PipelineAnalyser(Plugin):

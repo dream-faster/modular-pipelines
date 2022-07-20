@@ -1,6 +1,6 @@
 from .base import Plugin
 import wandb
-from typing import Optional, Union, Tuple, Any
+from typing import Optional, Any
 import os
 from runner.store import Store
 import pandas as pd
