@@ -50,10 +50,10 @@ class Runner:
             self.pipeline.save_remote()
 
         print("🔮 Predicting with pipeline")
-        preds_probs = self.pipeline.predict(self.store)
+        preds_probs = self.pipeline.predict(self.store, self.plugins)
         predictions = [pred[0] for pred in preds_probs]
 
         stats = evaluate(predictions, self.store, self.evaluators, self.run_path)
-        self.store.set_stats(self.id, stats)
+        self.store.set_stats("final", stats)
 
         return predictions

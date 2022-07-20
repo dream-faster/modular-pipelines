@@ -28,3 +28,10 @@ class Store:
 
     def set_stats(self, id: str, stats: pd.Series) -> None:
         self.stats[id] = stats
+
+    def get_all_stats(self) -> pd.DataFrame:
+        collected_dfs = pd.DataFrame([])
+        for key, values in self.stats.items():
+            collected_dfs = pd.concat([collected_dfs, values], axis=1)
+
+        return collected_dfs

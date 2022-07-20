@@ -8,8 +8,8 @@ from runner.store import Store
 
 class Plugin(ABC):
     def __init__(self):
-        self.id = self.__class__.__name__ + random_string(5)
-        self.printprefix = f"        ├ 🔌 Plugin {self.id}: "
+        self.id = f"{self.__class__.__name__} - {random_string(5)}"
+        self.printprefix = f"    ├ 🔌 Plugin {self.id}: "
 
     def on_load_begin(self):
         print(f"{self.printprefix} on_load_begin")

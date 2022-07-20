@@ -12,7 +12,7 @@ class WandbPlugin(Plugin):
         self.wandb = launch_wandb(self.id)
 
     def on_predict_end(self, store: Store, last_output: Any):
-        report_results(output_stats=store, wandb=self.wandb, final=True)
+        report_results(output_stats=store.get_all_stats(), wandb=self.wandb, final=True)
 
         return store, last_output
 
@@ -53,7 +53,7 @@ def send_report_to_wandb(
     if final:
         run.save()
 
-    run.log(vars(stats))
+    run.log({"stats": wandb.Table(dataframe=stats)})
 
     if final:
         run.finish()
