@@ -1,7 +1,3 @@
-# from __future__ import annotations
-# from typing import TYPE_CHECKING
-
-# if TYPE_CHECKING:
 from blocks.pipeline import Pipeline
 
 from .base import Plugin
@@ -11,7 +7,7 @@ from type import DataType
 
 class IntegrityChecker(Plugin):
     def on_run_begin(self, pipeline: Pipeline) -> None:
-        # super().on_run_begin(pipeline)
+        super().on_run_begin(pipeline)
 
         print("🆔 Verifying pipeline integrity")
         if not check_integrity(pipeline):

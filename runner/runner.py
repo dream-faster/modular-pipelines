@@ -30,9 +30,6 @@ class Runner:
         self.plugins = plugins
 
     def run(self):
-        print("🗼 Hierarchy of Models:")
-        pprint(self.pipeline.children())
-
         for plugin in self.plugins:
             plugin.on_run_begin(self.pipeline)
 

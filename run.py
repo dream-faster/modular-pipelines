@@ -8,14 +8,14 @@ from library.examples.hate_speech import (
 from library.evaluation import classification_metrics
 from library.examples.all_transformations import all_transformations
 
-from plugins import Plugin, IntegrityChecker, WandbPlugin
+from plugins import IntegrityChecker, WandbPlugin, PipelineAnalyser
 
 
 train_dataset, test_dataset = load_data("data/original", preprocess_config)
 
 pipeline = hate_speech_detection_pipeline()
 
-default_plugins = [IntegrityChecker()]
+default_plugins = [PipelineAnalyser(), IntegrityChecker()]
 custom_plugins = [WandbPlugin()]
 
 runner = Runner(
