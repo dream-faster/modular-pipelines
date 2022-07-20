@@ -1,9 +1,10 @@
+from utils.printing import pprint_indent
 from .store import Store
 from type import Evaluators
 from typing import Union, List
 import pandas as pd
 from utils.json import dump_json, dump_str
-from pprint import pprint
+
 import os
 
 
@@ -25,7 +26,7 @@ def evaluate(
         else:
             raise Exception(f"Evaluator returned an invalid type: {type(output)}")
 
-    pprint(stats)
+    pprint_indent(stats)
     stats.to_csv(path + "/stats.csv")
 
     return stats

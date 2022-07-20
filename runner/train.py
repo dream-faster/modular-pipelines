@@ -3,6 +3,7 @@ from blocks.base import Block
 import pandas as pd
 
 from blocks.models.base import Model
+from plugins.base import Plugin
 from .store import Store
 from .evaluation import evaluate
 

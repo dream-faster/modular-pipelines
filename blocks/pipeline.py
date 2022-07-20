@@ -84,7 +84,7 @@ class Pipeline(Block):
     def is_fitted(self) -> bool:
         return all([model.is_fitted() for model in self.models])
 
-    def save(self) -> None:
+    def save(self, plugins: List[Plugin]) -> None:
         pass
 
     def save_remote(self) -> None:
