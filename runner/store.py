@@ -15,6 +15,7 @@ class Store:
         self.labels = labels
         self.id = "store-" + random_string(5)
         self.path = path
+        self.stats = dict()
 
     def get_data(self, id: str) -> pd.Series:
         return self.data[id].copy()
@@ -24,3 +25,9 @@ class Store:
 
     def set_data(self, id: str, data: Union[pd.Series, List]) -> None:
         self.data[id] = data
+
+    def set_stats(self, id: str, stats: pd.Series) -> None:
+        self.stats[id] = stats
+
+    def get_all_stats(self) -> pd.DataFrame:
+        return pd.concat(list(self.stats.values()), axis=1)

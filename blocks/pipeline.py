@@ -1,6 +1,6 @@
 from .base import Block, DataSource, Element
 import pandas as pd
-from typing import List, Union, Optional
+from typing import List, Union, Optional, Callable
 from runner.train import train_predict, predict
 from runner.store import Store
 
@@ -29,7 +29,12 @@ class Pipeline(Block):
         for model in self.models:
             model.load_remote()
 
-    def load(self) -> None:
+    def load(self, plugins: List["Plugin"]) -> None:
+        """Begin"""
+        for plugin in plugins:
+            plugin.on_load_begin()
+
+        """ Core """
         last_i = 0
         if isinstance(self.datasource, Pipeline):
             last_i = self.datasource.load(f"{self.datasource.id}/{self.id}", 0)
@@ -37,23 +42,48 @@ class Pipeline(Block):
         for i, model in enumerate(self.models):
             model.load(f"{self.datasource.id}/{self.id}", i + last_i)
 
-    def fit(self, store: Store) -> None:
+        """ End """
+        for plugin in plugins:
+            plugin.on_load_end()
+
+    def fit(self, store: Store, plugins: List["Plugin"]) -> None:
+        """Begin"""
         last_output = process_block(self.datasource, store)
+        for plugin in plugins:
+            store, last_output = plugin.on_fit_begin(store, last_output)
+
+        """ Core """
         for model in self.models:
             last_output = train_predict(model, last_output, store)
+
+        """ End """
+        for plugin in plugins:
+            store, last_output = plugin.on_fit_end(store, last_output)
+
+        """ Save data """
         store.set_data(self.id, last_output)
 
-    def predict(self, store: Store) -> pd.Series:
+    def predict(self, store: Store, plugins: List["Plugin"]) -> pd.Series:
+        """Begin"""
         last_output = process_block(self.datasource, store)
+        for plugin in plugins:
+            store, last_output = plugin.on_predict_begin(store, last_output)
+
+        """ Core """
         for model in self.models:
             last_output = predict(model, last_output, store)
+
+        """ End """
+        for plugin in plugins:
+            store, last_output = plugin.on_predict_end(store, last_output)
+
         store.set_data(self.id, last_output)
         return last_output
 
     def is_fitted(self) -> bool:
         return all([model.is_fitted() for model in self.models])
 
-    def save(self) -> None:
+    def save(self, plugins: List["Plugin"]) -> None:
         pass
 
     def save_remote(self) -> None:

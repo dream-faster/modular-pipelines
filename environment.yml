@@ -33,5 +33,6 @@ dependencies:
       - autocorrect
       - spello
       - joblib
+      - pydeps
 
 prefix: /usr/local/anaconda3/envs/nlp
