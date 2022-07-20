@@ -15,6 +15,8 @@ train_dataset, test_dataset = load_data("data/original", preprocess_config)
 
 pipeline = hate_speech_detection_pipeline()
 
+default_plugins = [IntegrityChecker()]
+custom_plugins = [Plugin(), WandbPlugin()]
 
 runner = Runner(
     pipeline,
@@ -22,7 +24,7 @@ runner = Runner(
     labels=train_dataset[Const.label_col],
     evaluators=classification_metrics,
     train=True,
-    plugins=[Plugin(), IntegrityChecker(), WandbPlugin()],
+    plugins=(default_plugins + custom_plugins),
 )
 
 runner.run()
