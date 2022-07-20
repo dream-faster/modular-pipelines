@@ -131,7 +131,7 @@ class HuggingfaceModel(Model):
             self.trainer.push_to_hub()
 
 
-def from_pandas(df: pd.DataFrame, num_classes: int = None) -> Dataset:
+def from_pandas(df: pd.DataFrame, num_classes: int) -> Dataset:
 
     if Const.label_col in df.columns:
         return Dataset.from_pandas(
