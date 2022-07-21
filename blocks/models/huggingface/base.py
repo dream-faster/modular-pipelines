@@ -7,6 +7,7 @@ import pandas as pd
 from datasets import Dataset, Features, Value, ClassLabel
 from typing import List, Tuple, Callable, Optional, Union
 from transformers import (
+    TrainingArguments,
     pipeline,
     Trainer,
     PreTrainedModel,
@@ -80,6 +81,20 @@ class HuggingfaceModel(Model):
         else:
             print("    ├ ℹ️ No local model found")
 
+        self.training_args = TrainingArguments(
+            output_dir=f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}",
+            learning_rate=2e-5,
+            per_device_train_batch_size=16,
+            per_device_eval_batch_size=16,
+            num_train_epochs=2,
+            weight_decay=0.01,
+            save_strategy="epoch" if self.config.save else "NO",
+            push_to_hub=all([self.config.save_remote and self.config.save]),
+            log_level="critical",
+            report_to="none",
+            optim="adamw_torch",
+        )
+
         return execution_order + 1
 
     def load_remote(self):
@@ -93,18 +108,26 @@ class HuggingfaceModel(Model):
                 )
                 self.model = safe_load_pipeline(self.config.pretrained_model)
 
-    def fit(self, dataset: List[str], labels: Optional[pd.Series]) -> None:
+    def fit(
+        self,
+        dataset: List[str],
+        labels: Optional[pd.Series],
+        trainer_callbacks: Optional[List[Callable]],
+    ) -> None:
+
         train_dataset, val_dataset = train_test_split(
             pd.DataFrame({Const.input_col: dataset, Const.label_col: labels}),
             test_size=self.config.val_size,
         )
 
         trainer = run_training_pipeline(
+            self.training_args,
             from_pandas(train_dataset, self.config.num_classes),
             from_pandas(val_dataset, self.config.num_classes),
             self.config,
             self.pipeline_id,
             self.id,
+            trainer_callbacks,
         )
         self.model = safe_load_pipeline(trainer.model, trainer.tokenizer)
 

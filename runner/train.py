@@ -1,4 +1,4 @@
-from typing import List
+from typing import Callable, List, Optional
 from blocks.base import Block
 import pandas as pd
 
@@ -7,10 +7,15 @@ from .store import Store
 from .evaluation import evaluate
 
 
-def train_predict(model: Block, dataset: pd.Series, store: Store):
+def train_predict(
+    model: Block,
+    dataset: pd.Series,
+    store: Store,
+    trainer_callbacks: Optional[List[Callable]],
+):
     if not model.is_fitted() or model.config.force_fit:
         print(f"    ├ Training {model.id}, {model.__class__.__name__}")
-        model.fit(dataset, store.get_labels())
+        model.fit(dataset, store.get_labels(), trainer_callbacks)
 
         if model.config.save:
             model.save()

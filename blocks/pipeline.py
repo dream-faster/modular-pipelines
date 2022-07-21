@@ -52,11 +52,13 @@ class Pipeline(Block):
         """Begin"""
         last_output = process_block(self.datasource, store)
         for plugin in plugins:
-            store, last_output = plugin.on_fit_begin(store, last_output)
+            store, last_output, trainer_callbacks = plugin.on_fit_begin(
+                store, last_output
+            )
 
         """ Core """
         for model in self.models:
-            last_output = train_predict(model, last_output, store)
+            last_output = train_predict(model, last_output, store, trainer_callbacks)
 
         """ End """
         for plugin in plugins:

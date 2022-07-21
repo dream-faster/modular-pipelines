@@ -1,3 +1,4 @@
+from typing import Callable, List, Optional
 from transformers import (
     AutoTokenizer,
     DataCollatorWithPadding,
@@ -28,11 +29,13 @@ def compute_metrics(eval_pred):
 
 
 def run_training_pipeline(
+    training_args: TrainingArguments,
     train_data: Dataset,
     val_data: Dataset,
     config: HuggingfaceConfig,
     pipeline_id: str,
     id: str,
+    trainer_callbacks: Optional[List[Callable]],
 ) -> Trainer:
 
     model = AutoModelForSequenceClassification.from_pretrained(
@@ -48,20 +51,6 @@ def run_training_pipeline(
 
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
-    training_args = TrainingArguments(
-        output_dir=f"{Const.output_pipelines_path}/{pipeline_id}/{id}",
-        learning_rate=2e-5,
-        per_device_train_batch_size=16,
-        per_device_eval_batch_size=16,
-        num_train_epochs=2,
-        weight_decay=0.01,
-        save_strategy="epoch" if config.save else "NO",
-        push_to_hub=all([config.save_remote and config.save]),
-        log_level="critical",
-        report_to="none",
-        optim="adamw_torch",
-    )
-
     trainer = Trainer(
         model=model,
         args=training_args,
@@ -70,6 +59,7 @@ def run_training_pipeline(
         tokenizer=tokenizer,
         data_collator=data_collator,
         compute_metrics=compute_metrics,
+        callbacks=trainer_callbacks,
     )
 
     trainer.train()

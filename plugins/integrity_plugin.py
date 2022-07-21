@@ -9,11 +9,11 @@ class IntegrityChecker(Plugin):
     def on_run_begin(self, pipeline: Pipeline) -> None:
         super().on_run_begin(pipeline)
 
-        print("🆔 Verifying pipeline integrity")
+        print("    ├── 🆔 Verifying pipeline integrity")
         if not check_integrity(pipeline):
             raise Exception("Pipeline integrity check failed")
         else:
-            print("    ├ ✅ Integrity check passed")
+            print("    ├── ✅ Integrity check passed")
 
 
 def check_integrity(pipeline: Pipeline) -> bool:
