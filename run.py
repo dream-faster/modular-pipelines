@@ -9,24 +9,32 @@ from library.examples.hate_speech import (
 from library.evaluation import classification_metrics
 from library.examples.all_transformations import all_transformations
 
+
 from blocks.pipeline import Pipeline
 from typing import Tuple
+from plugins import WandbPlugin, WandbConfig
+
 
 hate_speech_data = load_data("data/original", preprocess_config)
 
 
-def run(pipeline: Pipeline, data: Tuple[Dataset, Dataset] = hate_speech_data) -> None:
+def run(pipeline: Pipeline, data: Tuple[Dataset, Dataset]) -> None:
     train_dataset, test_dataset = data
 
-    train_runner = Runner(
-        pipeline,
-        data={"input": train_dataset[Const.input_col]},
-        labels=train_dataset[Const.label_col],
-        evaluators=classification_metrics,
-        train=True,
-        plugins=[],
-    )
-    train_runner.run()
+train_runner = Runner(
+    pipeline,
+    data={"input": train_dataset[Const.input_col]},
+    labels=train_dataset[Const.label_col],
+    evaluators=classification_metrics,
+    train=True,
+    plugins=[
+        WandbPlugin(
+            WandbConfig(project_id="hate-speech-detection"), pipeline.get_configs()
+        )
+    ],
+)
+train_runner.run()
+
 
     test_runner = Runner(
         pipeline,
