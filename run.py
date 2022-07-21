@@ -8,7 +8,7 @@ from library.examples.hate_speech import (
 from library.evaluation import classification_metrics
 from library.examples.all_transformations import all_transformations
 
-from plugins import WandbPlugin
+from plugins import WandbPlugin, WandbConfig
 
 
 train_dataset, test_dataset = load_data("data/original", preprocess_config)
@@ -22,7 +22,11 @@ train_runner = Runner(
     labels=train_dataset[Const.label_col],
     evaluators=classification_metrics,
     train=True,
-    plugins=[WandbPlugin()],
+    plugins=[
+        WandbPlugin(
+            WandbConfig(project_id="hate-speech-detection"), pipeline.get_configs()
+        )
+    ],
 )
 train_runner.run()
 

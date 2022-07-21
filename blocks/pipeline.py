@@ -3,6 +3,8 @@ import pandas as pd
 from typing import List, Union, Optional, Callable
 from runner.train import train_predict, predict
 from runner.store import Store
+from type import BaseConfig
+from utils.flatten import flatten
 
 
 class Pipeline(Block):
@@ -93,6 +95,14 @@ class Pipeline(Block):
 
     def children(self) -> List[Element]:
         return self.datasource.children() + [self] + [self.models]
+
+    def get_configs(self) -> List[BaseConfig]:
+        entire_pipeline = self.children()
+        return {
+            block.id: vars(block.config)
+            for block in flatten(entire_pipeline)
+            if not any([isinstance(block, DataSource), isinstance(block, Pipeline)])
+        }
 
 
 def process_block(block: Union[DataSource, Pipeline], store: Store) -> pd.Series:

@@ -1,15 +1,23 @@
+from dataclasses import dataclass
+
+from type import BaseConfig
 from .base import Plugin
 import wandb
-from typing import Optional, Any
+from typing import List, Optional, Any
 import os
 from runner.store import Store
 import pandas as pd
 
 
+@dataclass
+class WandbConfig:
+    project_id: str
+
+
 class WandbPlugin(Plugin):
-    def __init__(self):
+    def __init__(self, config: WandbConfig, configs: List[BaseConfig]):
         super().__init__()
-        self.wandb = launch_wandb(self.id)
+        self.wandb = launch_wandb(config.project_id, configs)
 
     def on_predict_end(self, store: Store, last_output: Any):
         super().on_predict_end(store, last_output)
@@ -32,15 +40,16 @@ def get_wandb():
         return None  # wandb.login()
 
 
-def launch_wandb(project_name: str) -> Optional[object]:
+def launch_wandb(
+    project_name: str, configs: Optional[dict[str, dict]] = None
+) -> Optional[object]:
     wandb = get_wandb()
     if wandb is None:
         raise Exception(
             "Wandb can not be initalized, the environment variable WANDB_API_KEY is missing (can also use .env file)"
         )
     else:
-        # wandb.init(project=project_name, config=vars(default_config), reinit=True)
-        wandb.init(project=project_name, reinit=True)
+        wandb.init(project=project_name, config=configs, reinit=True)
         return wandb
 
 
