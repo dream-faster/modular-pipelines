@@ -6,7 +6,7 @@ from configs.constants import Const
 from collections import Counter
 from urlextract import URLExtract
 from .base import Augmenter
-from emoji import UNICODE_EMOJI_ENGLISH
+from emoji import EMOJI_DATA
 import re
 import numpy as np
 
@@ -63,7 +63,7 @@ def get_num_aggressive_char(words_fused: str) -> int:
 
 
 def get_num_emoji(words_fused: str) -> int:
-    return len([char for char in words_fused if char in UNICODE_EMOJI_ENGLISH])
+    return len([char for char in words_fused if char in EMOJI_DATA.keys()])
 
 
 def get_num_uppercase(words: list[str]) -> int:

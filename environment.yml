@@ -29,7 +29,7 @@ dependencies:
   - pip
   - pip:
       - URLExtract
-      - emoji
+      - emoji>=2.0.0
       - autocorrect
       - spello
       - joblib

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from type import BaseConfig
 from .base import Plugin
 import wandb
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Dict
 import os
 from runner.store import Store
 import pandas as pd
@@ -15,7 +15,7 @@ class WandbConfig:
 
 
 class WandbPlugin(Plugin):
-    def __init__(self, config: WandbConfig, configs: List[BaseConfig]):
+    def __init__(self, config: WandbConfig, configs: Optional[Dict[str, Dict]]):
         super().__init__()
         self.wandb = launch_wandb(config.project_id, configs)
 
@@ -41,7 +41,7 @@ def get_wandb():
 
 
 def launch_wandb(
-    project_name: str, configs: Optional[dict[str, dict]] = None
+    project_name: str, configs: Optional[Dict[str, Dict]] = None
 ) -> Optional[object]:
     wandb = get_wandb()
     if wandb is None:
