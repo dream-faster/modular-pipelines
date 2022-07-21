@@ -20,11 +20,11 @@ class StatisticAugmenter(Augmenter):
         return [get_statistic([token.text for token in item]) for item in dataset]
 
 
-def get_num_words(words: list[str]) -> int:
+def get_num_words(words: List[str]) -> int:
     return len(words)
 
 
-def get_word_freq(words: list[str]) -> dict:
+def get_word_freq(words: List[str]) -> dict:
     return dict(Counter(words))
 
 
@@ -66,7 +66,7 @@ def get_num_emoji(words_fused: str) -> int:
     return len([char for char in words_fused if char in EMOJI_DATA.keys()])
 
 
-def get_num_uppercase(words: list[str]) -> int:
+def get_num_uppercase(words: List[str]) -> int:
     return len(
         [
             word
@@ -86,7 +86,7 @@ def get_distribution_metrics(word_freq: dict) -> Tuple[int, int]:
     return mean, variance
 
 
-def get_statistic(words: list[str]) -> List[int]:
+def get_statistic(words: List[str]) -> List[int]:
     words_fused = " ".join(words)
     num_words = get_num_words(words)
     word_freq = get_word_freq(words)
