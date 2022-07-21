@@ -2,6 +2,7 @@ from typing import Dict
 import pandas as pd
 from blocks.pipeline import Pipeline
 from plugins import PipelineAnalyser, IntegrityChecker
+from plugins.base import Plugin
 
 
 from type import Evaluators
@@ -23,7 +24,7 @@ class Runner:
         labels: pd.Series,
         evaluators: Evaluators,
         train: bool,
-        plugins: List["Plugin"],
+        plugins: List[Plugin],
     ):
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
         self.pipeline = pipeline
