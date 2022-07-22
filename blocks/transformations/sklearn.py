@@ -26,7 +26,6 @@ class SKLearnTransformation(Transformation):
         labels: Optional[Union[List, np.ndarray]],
     ) -> None:
         self.model.fit(dataset)
-        self.trained = True
 
     def predict(self, dataset: Union[list, np.ndarray]) -> np.ndarray:
         return self.model.transform(dataset)

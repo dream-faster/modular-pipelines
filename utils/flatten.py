@@ -7,3 +7,6 @@ def flatten(input: List) -> List:
         return [a for i in input for a in flatten(i)]
     else:
         return [input]
+
+def remove_none(input: List) -> List:
+    return [i for i in input if i is not None]

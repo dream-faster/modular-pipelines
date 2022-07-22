@@ -6,7 +6,7 @@ from type import DataType
 
 class SpacyTokenizer(Transformation):
 
-    inputTypes = DataType.List
+    inputTypes = [DataType.List, DataType.Series]
     outputType = DataType.List
 
     def load_remote(self):

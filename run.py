@@ -1,4 +1,4 @@
-from datasets import Dataset
+from datasets.arrow_dataset import Dataset
 from configs.constants import Const
 from data.dataloader import load_data
 from runner.runner import Runner
@@ -7,8 +7,6 @@ from library.examples.hate_speech import (
     preprocess_config,
 )
 from library.evaluation import classification_metrics
-from library.examples.all_transformations import all_transformations
-
 
 from blocks.pipeline import Pipeline
 from typing import Tuple
@@ -28,9 +26,9 @@ def run(pipeline: Pipeline, data: Tuple[Dataset, Dataset]) -> None:
         evaluators=classification_metrics,
         train=True,
         plugins=[
-            WandbPlugin(
-                WandbConfig(project_id="hate-speech-detection"), pipeline.get_configs()
-            )
+            # WandbPlugin(
+            #     WandbConfig(project_id="hate-speech-detection"), pipeline.get_configs()
+            # )
         ],
     )
     train_runner.run()
@@ -41,7 +39,7 @@ def run(pipeline: Pipeline, data: Tuple[Dataset, Dataset]) -> None:
         labels=test_dataset[Const.label_col],
         evaluators=classification_metrics,
         train=False,
-        # plugins=[],
+        plugins=[],
     )
     test_runner.run()
 

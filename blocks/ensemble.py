@@ -1,41 +1,37 @@
-from configs.constants import Const
 from .base import Block, Element
-from .data import DataSource
+from .pipeline import Pipeline
 import pandas as pd
 from typing import List
-from runner.train import train_predict, predict
 from runner.store import Store
 import numpy as np
 from type import PredsWithProbs
 
 
-class Ensemble(Block):
-
-    id: str
-    datasource: DataSource
-    models: List[Block]
-
-    def __init__(self, id: str, datasource: DataSource, models: List[Block]):
+class Ensemble(Pipeline):
+    def __init__(self, id: str, pipelines: List[Pipeline]):
         self.id = id
-        self.models = models
-        self.datasource = datasource
+        self.pipelines = pipelines
+
+    def load(self, plugins: List["Plugin"]) -> None:
+        for pipeline in self.pipelines:
+            pipeline.load(plugins)
 
     def load_remote(self):
-        self.datasource.load_remote()
-        for model in self.models:
-            model.load_remote()
+        for pipeline in self.pipelines:
+            pipeline.load_remote()
 
-    def fit(self, store: Store) -> None:
-        input = self.datasource.deplate(store)
-        for model in self.models:
-            output = train_predict(model, input, store)
-            store.set_data(model.id, output)
+    def save_remote(self) -> None:
+        for pipeline in self.pipelines:
+            pipeline.save_remote()
 
-    def predict(self, store: Store) -> List[PredsWithProbs]:
-        input = self.datasource.deplate(store)
-        outputs: List[pd.Series] = []
-        for model in self.models:
-            output = predict(model, input)
+    def fit(self, store: Store, plugins: List["Plugin"]) -> None:
+        for pipeline in self.pipelines:
+            pipeline.fit(store, plugins)
+
+    def predict(self, store: Store, plugins: List["Plugin"]) -> pd.Series:
+        outputs: List[List[PredsWithProbs]] = []
+        for pipeline in self.pipelines:
+            output = pipeline.predict(store, plugins)
             outputs.append(output)
 
         averaged = average_output(outputs)
@@ -43,16 +39,16 @@ class Ensemble(Block):
         return averaged
 
     def is_fitted(self) -> bool:
-        return all([model.is_fitted() for model in self.models])
+        return all([pipeline.is_fitted() for pipeline in self.pipelines])
 
     def children(self) -> List[Element]:
-        return [self.datasource] + [self] + [self.models]
+        return [self] + [pipeline.children() for pipeline in self.pipelines]
 
 
-def average_output(outputs: List[pd.Series]) -> List[PredsWithProbs]:
+def average_output(outputs: List[List[PredsWithProbs]]) -> List[PredsWithProbs]:
     probabilities = np.average(
-        np.array([item[1] for item in outputs]),
-        axis=0,
+        np.array([[item[1] for item in tuples] for tuples in list(zip(*outputs))]),
+        axis=1,
     )
     predictions = [np.argmax(probs) for probs in probabilities]
-    return zip(predictions, probabilities)
+    return list(zip(predictions, probabilities))
