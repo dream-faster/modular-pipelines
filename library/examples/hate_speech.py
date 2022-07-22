@@ -3,14 +3,13 @@ from blocks.pipeline import Pipeline
 from blocks.models.huggingface import HuggingfaceModel
 
 from blocks.models.sklearn import SKLearnModel
-from library.evaluation.classification import classification_metrics
 from type import PreprocessConfig, HuggingfaceConfig, SKLearnConfig
 from blocks.pipeline import Pipeline
-from blocks.adaptors import SeriesToList
 from blocks.transformations import Lemmatizer, SpacyTokenizer
-from blocks.data import DataSource, StrConcat, VectorConcat
+from blocks.data import DataSource
+from blocks.ensemble import Ensemble
 from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
-from blocks.transformations.sklearn import SKLearnTransformation
+from blocks.transformations import SKLearnTransformation, TextStatisticTransformation
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
@@ -18,11 +17,14 @@ from sklearn.ensemble import (
     GradientBoostingClassifier,
     VotingClassifier,
 )
+from utils.flatten import remove_none
+from sklearn.preprocessing import MinMaxScaler
+from blocks.adaptors import ListOfListsToNumpy
 
 preprocess_config = PreprocessConfig(
-    train_size=-1,
-    val_size=-1,
-    test_size=-1,
+    train_size=100,
+    val_size=100,
+    test_size=100,
     input_col="text",
     label_col="label",
 )
@@ -55,15 +57,21 @@ huggingface_config = HuggingfaceConfig(
     ),
 )
 
-nb = MultinomialNB()
-lg = LogisticRegression()
-gb = GradientBoostingClassifier(n_estimators=100, max_depth=20, random_state=0)
-
 sklearn_config = SKLearnConfig(
     force_fit=False,
     save=True,
     classifier=VotingClassifier(
-        estimators=[("nb", nb), ("lg", lg), ("gb", gb)], voting="soft"
+        estimators=[
+            ("nb", MultinomialNB()),
+            ("lg", LogisticRegression()),
+            (
+                "gb",
+                GradientBoostingClassifier(
+                    n_estimators=100, max_depth=20, random_state=0
+                ),
+            ),
+        ],
+        voting="soft",
     ),
     one_vs_rest=False,
     save_remote=False,
@@ -73,59 +81,61 @@ sklearn_config = SKLearnConfig(
 input_data = DataSource("input")
 
 
-nlp_sklearn = Pipeline(
-    "nlp_sklearn",
-    input_data,
-    [
-        SeriesToList(),
-        SpacyTokenizer(),
-        Lemmatizer(),
-        SKLearnTransformation(
-            TfidfVectorizer(
-                max_features=100000,
-                ngram_range=(1, 3),
-            )
+def create_nlp_sklearn_pipeline(autocorrect: bool) -> Pipeline:
+    return Pipeline(
+        "nlp_sklearn_autocorrect" if autocorrect else "nlp_sklearn",
+        input_data,
+        remove_none(
+            [
+                SpellAutocorrectAugmenter(fast=True) if autocorrect else None,
+                SpacyTokenizer(),
+                Lemmatizer(),
+                SKLearnTransformation(
+                    TfidfVectorizer(
+                        max_features=100000,
+                        ngram_range=(1, 3),
+                    )
+                ),
+                SKLearnModel("nlp-sklearn", sklearn_config),
+            ]
         ),
-        SKLearnModel("model1", sklearn_config, evaluators=classification_metrics),
-    ],
-)
+    )
 
-nlp_sklearn_autocorrect = Pipeline(
-    "nlp_sklearn_autocorrect",
-    input_data,
-    [
-        SeriesToList(),
-        SpellAutocorrectAugmenter(fast=True),
-        SpacyTokenizer(),
-        Lemmatizer(),
-        SKLearnTransformation(
-            TfidfVectorizer(
-                max_features=100000,
-                ngram_range=(1, 3),
-            )
+
+nlp_sklearn = create_nlp_sklearn_pipeline(autocorrect=False)
+nlp_sklearn_autocorrect = create_nlp_sklearn_pipeline(autocorrect=True)
+
+
+
+def create_nlp_huggingface_pipeline(autocorrect: bool) -> Pipeline:
+    return Pipeline(
+        "nlp_hf_autocorrect" if autocorrect else "nlp_hf",
+        input_data,
+        remove_none(
+            [
+                SpellAutocorrectAugmenter(fast=True) if autocorrect else None,
+                HuggingfaceModel("hf-model", huggingface_config),
+            ]
         ),
-        SKLearnModel("model1", sklearn_config),
+    )
+
+
+text_statistics_pipeline = Pipeline(
+    "text_statistics",
+    input_data,
+    models=[
+        SpacyTokenizer(),
+        TextStatisticTransformation(),
+        ListOfListsToNumpy(),
+        SKLearnTransformation(MinMaxScaler(feature_range=(0, 1), clip=True)),
+        SKLearnModel("statistics_sklearn_ensemble", sklearn_config),
     ],
 )
 
-
-nlp_huggingface = Pipeline(
-    "nlp_huggingface",
-    input_data,
-    [
-        HuggingfaceModel("hf-model-full", huggingface_config),
-    ],
-)
-
-nlp_huggingface_autocorrect = Pipeline(
-    "nlp_huggingface_autocorrect",
-    input_data,
-    [
-        SpellAutocorrectAugmenter(fast=True),
-        HuggingfaceModel("hf-model", huggingface_config),
-    ],
+ensemble_pipeline = Ensemble(
+    "ensemble", [nlp_sklearn, nlp_sklearn_autocorrect, text_statistics_pipeline]
 )
 
 
 def hate_speech_detection_pipeline() -> Pipeline:
-    return nlp_huggingface
+    return ensemble_pipeline

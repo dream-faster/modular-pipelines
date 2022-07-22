@@ -7,33 +7,26 @@ from blocks.models.base import Model
 from type import Evaluators, PredsWithProbs, SKLearnConfig, DataType
 from configs.constants import Const
 from typing import Optional, List
+from sklearn.base import clone, BaseEstimator
 
 
 class SKLearnModel(Model):
 
     config: SKLearnConfig
+    model: Optional[BaseEstimator] = None
 
     inputTypes = [DataType.Series, DataType.List, DataType.NpArray]
     outputType = DataType.PredictionsWithProbs
 
-    def __init__(self, id: str, config: SKLearnConfig, evaluators: Optional[Evaluators]= None):
+    def __init__(
+        self, id: str, config: SKLearnConfig, evaluators: Optional[Evaluators] = None
+    ):
         self.id = id
         self.config = config
-        self.model = None
-        self.trained = False
         self.evaluators = evaluators
 
     def fit(self, dataset: pd.Series, labels: Optional[pd.Series]) -> None:
-
-        self.model = ImbPipeline(
-            [
-                # ('feature_selection', SelectPercentile(chi2, percentile=50)),
-                ("sampling", RandomOverSampler()),
-                ("clf", self.config.classifier),
-            ],
-            verbose=True,
-        )
-
+        self.model = clone(self.config.classifier)
         self.model.fit(dataset, labels)
 
     def predict(self, dataset: pd.Series) -> List[PredsWithProbs]:

@@ -1,17 +1,14 @@
-import nltk
-from nltk.corpus import wordnet as wn
-from typing import List, Any, Union, Tuple, Optional
+from typing import List, Tuple, Union
 from type import DataType
-from configs.constants import Const
 from collections import Counter
 from urlextract import URLExtract
-from .base import Augmenter
 from emoji import EMOJI_DATA
 import re
 import numpy as np
+from .base import Transformation
 
 
-class StatisticAugmenter(Augmenter):
+class TextStatisticTransformation(Transformation):
 
     inputTypes = DataType.List
     outputType = DataType.List
@@ -76,7 +73,7 @@ def get_num_uppercase(words: List[str]) -> int:
     )
 
 
-def get_distribution_metrics(word_freq: dict) -> Tuple[int, int]:
+def get_distribution_metrics(word_freq: dict) -> Tuple[float, float]:
 
     distribution = [value for value in word_freq.values()]
 
@@ -86,7 +83,7 @@ def get_distribution_metrics(word_freq: dict) -> Tuple[int, int]:
     return mean, variance
 
 
-def get_statistic(words: List[str]) -> List[int]:
+def get_statistic(words: list[str]) -> List[Union[int, float]]:
     words_fused = " ".join(words)
     num_words = get_num_words(words)
     word_freq = get_word_freq(words)
