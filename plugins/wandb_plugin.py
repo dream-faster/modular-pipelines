@@ -23,6 +23,9 @@ class WandbCallback(TrainerCallback):
     def on_log(self, args, state, control, logs=None, **kwargs):
         self.wandb.log(logs)
 
+    def on_evaluate(self, args, state, control, logs=None, metrics=None, **kwargs):
+        self.wandb.log(metrics)
+
 
 class WandbPlugin(Plugin):
     def __init__(self, config: WandbConfig, configs: Optional[Dict[str, Dict]]):

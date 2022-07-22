@@ -93,6 +93,10 @@ class HuggingfaceModel(Model):
             log_level="critical",
             report_to="none",
             optim="adamw_torch",
+            logging_strategy="steps",
+            evaluation_strategy="epoch",
+            logging_steps=1,
+            # eval_steps = 10
         )
 
         return execution_order + 1
