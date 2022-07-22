@@ -1,4 +1,4 @@
-from datasets import Dataset
+from datasets.arrow_dataset import Dataset
 from configs.constants import Const
 from data.dataloader import load_data
 from runner.runner import Runner

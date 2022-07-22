@@ -126,7 +126,7 @@ text_statistics_pipeline = Pipeline(
     models=[
         SpacyTokenizer(),
         TextStatisticTransformation(),
-        ListOfListsToNumpy(),
+        ListOfListsToNumpy(replace_nan=True),
         SKLearnTransformation(MinMaxScaler(feature_range=(0, 1), clip=True)),
         SKLearnModel("statistics_sklearn_ensemble", sklearn_config),
     ],
