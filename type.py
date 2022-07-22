@@ -3,6 +3,8 @@ from enum import Enum
 from sklearn.base import ClassifierMixin
 from typing import Callable, List, Tuple
 
+from transformers import TrainingArguments
+
 
 Label = int
 Probabilities = List[float]
@@ -37,11 +39,11 @@ class BaseConfig:
 @dataclass
 class HuggingfaceConfig(BaseConfig):
     pretrained_model: str
-    epochs: int
     user_name: str
     repo_name: str
     num_classes: int
     val_size: float
+    training_args: TrainingArguments
 
 
 @dataclass

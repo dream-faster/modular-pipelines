@@ -69,7 +69,9 @@ class HuggingfaceModel(Model):
 
         os.environ["TOKENIZERS_PARALLELISM"] = "False"
 
-    def load(self, pipeline_id: str, execution_order: int) -> None:
+        self.training_args = self.config.training_args
+
+    def load(self, pipeline_id: str, execution_order: int) -> int:
         self.pipeline_id = pipeline_id
         self.id += f"-{str(execution_order)}"
 
@@ -81,22 +83,8 @@ class HuggingfaceModel(Model):
         else:
             print("    ├ ℹ️ No local model found")
 
-        self.training_args = TrainingArguments(
-            output_dir=f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}",
-            learning_rate=2e-5,
-            per_device_train_batch_size=16,
-            per_device_eval_batch_size=16,
-            num_train_epochs=2,
-            weight_decay=0.01,
-            save_strategy="epoch" if self.config.save else "NO",
-            push_to_hub=all([self.config.save_remote and self.config.save]),
-            log_level="critical",
-            report_to="none",
-            optim="adamw_torch",
-            logging_strategy="steps",
-            evaluation_strategy="epoch",
-            logging_steps=1,
-            # eval_steps = 10
+        self.training_args.output_dir = (
+            f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}"
         )
 
         return execution_order + 1
