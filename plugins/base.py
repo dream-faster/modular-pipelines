@@ -1,59 +1,52 @@
 from abc import ABC
-from typing import Tuple, Any
+from typing import Callable, List, Tuple, Any
 
 from blocks.pipeline import Pipeline
+from configs.constants import LogConst
 
 from utils.random import random_string
 from runner.store import Store
 import pandas as pd
 
 
-def print_checker(function_origin: str, text: str) -> None:
-    if not function_origin == "Plugin":
-        print(text)
+def just_custom_functions(obj) -> List[Tuple]:
+    return [func for func in vars(obj).items() if not func[0].startswith("__")]
 
 
 class Plugin(ABC):
     def __init__(self):
-        self.id = f"{self.__class__.__name__} - {random_string(5)}"
-        self.printprefix = f"    ├ 🔌 Plugin {self.id}: "
+        pass
 
-    def on_run_begin(self, pipeline: Pipeline):
-        function_origin = type(self).on_run_begin.__qualname__.split(".")[0]
-        print_checker(function_origin, f"{self.printprefix} on_run_begin")
+    def __init_subclass__(cls):
+        cls.id = f"{cls.__name__} - {random_string(5)}"
+        cls.print_dict = vars(cls).keys()
 
-    def on_load_begin(self):
-        function_origin = type(self).on_load_begin.__qualname__.split(".")[0]
-        print_checker(function_origin, f"{self.printprefix} on_load_begin")
+    def print_me(self, key):
+        if key in self.print_dict:
+            print(f"{LogConst.plugin_prefix} {self.id}: {key}")
 
-    def on_load_end(self):
-        function_origin = type(self).on_load_end.__qualname__.split(".")[0]
-        print_checker(function_origin, f"{self.printprefix} on_load_end")
+    def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
+        return pipeline
+
+    def on_load_begin(self) -> None:
+        pass
+
+    def on_load_end(self) -> None:
+        pass
 
     def on_fit_begin(self, store: Store, last_output: Any) -> Tuple[Store, Any]:
-        function_origin = type(self).on_fit_begin.__qualname__.split(".")[0]
-        print_checker(function_origin, f"{self.printprefix} on_fit_begin")
-
         return store, last_output
 
     def on_fit_end(self, store: Store, last_output: Any) -> Tuple[Store, Any]:
-        function_origin = type(self).on_fit_end.__qualname__.split(".")[0]
-        print_checker(function_origin, f"{self.printprefix} on_fit_end")
-
         return store, last_output
 
     def on_predict_begin(self, store: Store, last_output: Any) -> Tuple[Store, Any]:
-        function_origin = type(self).on_predict_begin.__qualname__.split(".")[0]
-        print_checker(function_origin, f"{self.printprefix} on_predict_begin")
-
         return store, last_output
 
     def on_predict_end(self, store: Store, last_output: Any) -> Tuple[Store, Any]:
-        function_origin = type(self).on_predict_end.__qualname__.split(".")[0]
-        print_checker(function_origin, f"{self.printprefix} on_predict_end")
-
         return store, last_output
 
-    def on_run_end(self, pipeline: Pipeline, stats: pd.Series):
-        function_origin = type(self).on_run_end.__qualname__.split(".")[0]
-        print_checker(function_origin, f"{self.printprefix} on_run_end")
+    def on_run_end(
+        self, pipeline: Pipeline, stats: pd.Series
+    ) -> Tuple[Pipeline, pd.Series]:
+        return pipeline, stats

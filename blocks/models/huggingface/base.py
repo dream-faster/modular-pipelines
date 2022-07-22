@@ -7,6 +7,7 @@ import pandas as pd
 from datasets import Dataset, Features, Value, ClassLabel
 from typing import List, Tuple, Callable, Optional, Union
 from transformers import (
+    TrainingArguments,
     pipeline,
     Trainer,
     PreTrainedModel,
@@ -39,7 +40,7 @@ def safe_load_pipeline(
                 task="sentiment-analysis", model=module, device=device
             )
         print(
-            f"    ├ Pipeline loaded: {module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}"
+            f"    ┣━━━ Pipeline loaded: {module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}"
         )
     except:
         print(f"    ├ Couldn't load {module} pipeline. Skipping.")
@@ -68,7 +69,9 @@ class HuggingfaceModel(Model):
 
         os.environ["TOKENIZERS_PARALLELISM"] = "False"
 
-    def load(self, pipeline_id: str, execution_order: int) -> None:
+        self.training_args = self.config.training_args
+
+    def load(self, pipeline_id: str, execution_order: int) -> int:
         self.pipeline_id = pipeline_id
         self.id += f"-{str(execution_order)}"
 
@@ -79,6 +82,10 @@ class HuggingfaceModel(Model):
             self.model = model
         else:
             print("    ├ ℹ️ No local model found")
+
+        self.training_args.output_dir = (
+            f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}"
+        )
 
         return execution_order + 1
 
@@ -94,17 +101,20 @@ class HuggingfaceModel(Model):
                 self.model = safe_load_pipeline(self.config.pretrained_model)
 
     def fit(self, dataset: List[str], labels: Optional[pd.Series]) -> None:
+
         train_dataset, val_dataset = train_test_split(
             pd.DataFrame({Const.input_col: dataset, Const.label_col: labels}),
             test_size=self.config.val_size,
         )
 
         trainer = run_training_pipeline(
+            self.training_args,
             from_pandas(train_dataset, self.config.num_classes),
             from_pandas(val_dataset, self.config.num_classes),
             self.config,
             self.pipeline_id,
             self.id,
+            self.trainer_callbacks,
         )
         self.model = safe_load_pipeline(trainer.model, trainer.tokenizer)
 

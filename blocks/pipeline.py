@@ -1,3 +1,4 @@
+from configs.constants import LogConst
 from .base import Block, DataSource, Element
 import pandas as pd
 from typing import List, Union, Optional, Callable
@@ -34,6 +35,7 @@ class Pipeline(Block):
     def load(self, plugins: List["Plugin"]) -> None:
         """Begin"""
         for plugin in plugins:
+            plugin.print_me("on_load_begin")
             plugin.on_load_begin()
 
         """ Core """
@@ -46,12 +48,14 @@ class Pipeline(Block):
 
         """ End """
         for plugin in plugins:
+            plugin.print_me("on_load_end")
             plugin.on_load_end()
 
     def fit(self, store: Store, plugins: List["Plugin"]) -> None:
         """Begin"""
-        last_output = process_block(self.datasource, store)
+        last_output = process_block(self.datasource, store, plugins)
         for plugin in plugins:
+            plugin.print_me("on_fit_begin")
             store, last_output = plugin.on_fit_begin(store, last_output)
 
         """ Core """
@@ -60,6 +64,7 @@ class Pipeline(Block):
 
         """ End """
         for plugin in plugins:
+            plugin.print_me("on_fit_end")
             store, last_output = plugin.on_fit_end(store, last_output)
 
         """ Save data """
@@ -67,8 +72,9 @@ class Pipeline(Block):
 
     def predict(self, store: Store, plugins: List["Plugin"]) -> pd.Series:
         """Begin"""
-        last_output = process_block(self.datasource, store)
+        last_output = process_block(self.datasource, store, plugins)
         for plugin in plugins:
+            plugin.print_me("on_predict_begin")
             store, last_output = plugin.on_predict_begin(store, last_output)
 
         """ Core """
@@ -77,6 +83,7 @@ class Pipeline(Block):
 
         """ End """
         for plugin in plugins:
+            plugin.print_me("on_predict_end")
             store, last_output = plugin.on_predict_end(store, last_output)
 
         store.set_data(self.id, last_output)
@@ -105,12 +112,14 @@ class Pipeline(Block):
         }
 
 
-def process_block(block: Union[DataSource, Pipeline], store: Store) -> pd.Series:
+def process_block(
+    block: Union[DataSource, Pipeline], store: Store, plugins: List["Plugin"]
+) -> pd.Series:
     if isinstance(block, DataSource):
         return block.deplate(store)
     elif isinstance(block, Pipeline):
         if not block.is_fitted():
-            block.fit(store)
-        return block.predict(store)
+            block.fit(store, plugins)
+        return block.predict(store, plugins)
     else:
         raise ValueError("Expected DataBlock or Pipeline")

@@ -1,12 +1,17 @@
 from dataclasses import dataclass
 
+from transformers import TrainerCallback
+from blocks.models.huggingface.base import HuggingfaceModel
+from blocks.pipeline import Pipeline
+
 from type import BaseConfig
 from .base import Plugin
 import wandb
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Dict, Tuple
 import os
 from runner.store import Store
 import pandas as pd
+from utils.flatten import flatten
 
 
 @dataclass
@@ -14,13 +19,30 @@ class WandbConfig:
     project_id: str
 
 
+class WandbCallback(TrainerCallback):
+    def __init__(self, wandb):
+        self.wandb = wandb
+
+    def on_log(self, args, state, control, logs=None, **kwargs):
+        self.wandb.log(logs)
+
+    def on_evaluate(self, args, state, control, logs=None, metrics=None, **kwargs):
+        self.wandb.log(metrics)
+
+
 class WandbPlugin(Plugin):
-    def __init__(self, config: WandbConfig, configs: List[BaseConfig]):
+    def __init__(self, config: WandbConfig, configs: Optional[Dict[str, Dict]]):
         super().__init__()
         self.wandb = launch_wandb(config.project_id, configs)
 
+    def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
+        for element in flatten(pipeline.children()):
+            if isinstance(element, HuggingfaceModel):
+                element.trainer_callbacks = [WandbCallback(wandb=self.wandb)]
+
+        return pipeline
+
     def on_predict_end(self, store: Store, last_output: Any):
-        super().on_predict_end(store, last_output)
         report_results(output_stats=store.get_all_stats(), wandb=self.wandb, final=True)
 
         return store, last_output
@@ -41,7 +63,7 @@ def get_wandb():
 
 
 def launch_wandb(
-    project_name: str, configs: Optional[dict[str, dict]] = None
+    project_name: str, configs: Optional[Dict[str, Dict]] = None
 ) -> Optional[object]:
     wandb = get_wandb()
     if wandb is None:

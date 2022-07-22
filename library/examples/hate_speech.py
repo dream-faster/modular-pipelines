@@ -1,3 +1,4 @@
+from transformers import TrainingArguments
 from blocks.pipeline import Pipeline
 from blocks.models.huggingface import HuggingfaceModel
 
@@ -28,7 +29,6 @@ preprocess_config = PreprocessConfig(
 
 huggingface_config = HuggingfaceConfig(
     pretrained_model="distilbert-base-uncased",
-    epochs=2,
     user_name="semy",
     repo_name="finetuning-tweeteval-hate-speech",
     save_remote=True,
@@ -36,6 +36,23 @@ huggingface_config = HuggingfaceConfig(
     num_classes=2,
     val_size=0.1,
     force_fit=False,
+    training_args=TrainingArguments(
+        output_dir="",
+        learning_rate=2e-5,
+        per_device_train_batch_size=16,
+        per_device_eval_batch_size=16,
+        num_train_epochs=2,
+        weight_decay=0.01,
+        save_strategy="epoch",
+        push_to_hub=True,
+        log_level="critical",
+        report_to="none",
+        optim="adamw_torch",
+        logging_strategy="steps",
+        evaluation_strategy="epoch",
+        logging_steps=1,
+        # eval_steps = 10
+    ),
 )
 
 nb = MultinomialNB()

@@ -1,7 +1,7 @@
 from type import BaseConfig, DataType
 from abc import ABC
 import pandas as pd
-from typing import Optional, Union, List
+from typing import Callable, Optional, Union, List
 from runner.store import Store
 from blocks.iomanager import safe_loading, safe_saving
 
@@ -47,7 +47,11 @@ class Block(Element):
     def load_remote(self) -> None:
         pass
 
-    def fit(self, dataset: pd.Series, labels: Optional[pd.Series]) -> None:
+    def fit(
+        self,
+        dataset: pd.Series,
+        labels: Optional[pd.Series],
+    ) -> None:
         raise NotImplementedError()
 
     def predict(self, dataset: pd.Series) -> List:

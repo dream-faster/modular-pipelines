@@ -1,7 +1,9 @@
 from typing import Dict
 import pandas as pd
 from blocks.pipeline import Pipeline
+from configs.constants import LogConst
 from plugins import PipelineAnalyser, IntegrityChecker
+from plugins.base import Plugin
 
 
 from type import Evaluators
@@ -15,6 +17,10 @@ from configs import Const
 obligatory_plugins = [PipelineAnalyser(), IntegrityChecker()]
 
 
+def print_checker(function_origin, text):
+    type(self).on_run_begin.__qualname__.split(".")[0]
+
+
 class Runner:
     def __init__(
         self,
@@ -23,8 +29,8 @@ class Runner:
         labels: pd.Series,
         evaluators: Evaluators,
         train: bool,
-        plugins: List["Plugin"],
-    ):
+        plugins: List[Plugin],
+    ) -> None:
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
         self.pipeline = pipeline
         self.store = Store(data, labels, self.run_path)
@@ -34,7 +40,8 @@ class Runner:
 
     def run(self):
         for plugin in self.plugins:
-            plugin.on_run_begin(self.pipeline)
+            plugin.print_me("on_run_begin")
+            self.pipeline = plugin.on_run_begin(self.pipeline)
 
         print("💈 Loading existing models")
         self.pipeline.load(self.plugins)
@@ -57,6 +64,5 @@ class Runner:
         self.store.set_stats("final", stats)
 
         for plugin in self.plugins:
-            plugin.on_run_end(self.pipeline, stats)
-
-        return predictions
+            plugin.print_me("on_run_end")
+            self.pipeline, stats = plugin.on_run_end(self.pipeline, stats)

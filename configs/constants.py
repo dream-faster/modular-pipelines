@@ -12,3 +12,7 @@ class Const:
 
     output_pipelines_path = output_path + "pipelines"
     output_runs_path = output_path + "runs"
+
+
+class LogConst:
+    plugin_prefix = "    ┣━━┯ 🔌  Plugin"
