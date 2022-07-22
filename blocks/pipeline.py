@@ -34,6 +34,7 @@ class Pipeline(Block):
     def load(self, plugins: List["Plugin"]) -> None:
         """Begin"""
         for plugin in plugins:
+            print(f"    ┣━━┯ 🔌 Plugin {plugin.id}: on_load_begin")
             plugin.on_load_begin()
 
         """ Core """
@@ -46,12 +47,14 @@ class Pipeline(Block):
 
         """ End """
         for plugin in plugins:
+            print(f"    ┣━━┯ 🔌 Plugin {plugin.id}: on_load_end")
             plugin.on_load_end()
 
     def fit(self, store: Store, plugins: List["Plugin"]) -> None:
         """Begin"""
         last_output = process_block(self.datasource, store)
         for plugin in plugins:
+            print(f"    ┣━━┯ 🔌 Plugin {plugin.id}: on_fit_begin")
             store, last_output = plugin.on_fit_begin(store, last_output)
 
         """ Core """
@@ -60,6 +63,7 @@ class Pipeline(Block):
 
         """ End """
         for plugin in plugins:
+            print(f"    ┣━━┯ 🔌 Plugin {plugin.id}: on_fit_end")
             store, last_output = plugin.on_fit_end(store, last_output)
 
         """ Save data """
@@ -69,6 +73,7 @@ class Pipeline(Block):
         """Begin"""
         last_output = process_block(self.datasource, store)
         for plugin in plugins:
+            print(f"    ┣━━┯ 🔌 Plugin {plugin.id}: on_predict_begin")
             store, last_output = plugin.on_predict_begin(store, last_output)
 
         """ Core """
@@ -77,6 +82,7 @@ class Pipeline(Block):
 
         """ End """
         for plugin in plugins:
+            print(f"    ┣━━┯ 🔌 Plugin {plugin.id}: on_predict_end")
             store, last_output = plugin.on_predict_end(store, last_output)
 
         store.set_data(self.id, last_output)

@@ -8,8 +8,6 @@ from .base import Plugin
 
 class PipelineAnalyser(Plugin):
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
-        super().on_run_begin(pipeline)
-
         print("    ┃  └── 🗼 Hierarchy of Models:")
         full_pipeline = pipeline.children()
 
