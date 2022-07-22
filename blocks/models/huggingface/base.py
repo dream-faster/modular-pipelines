@@ -100,12 +100,7 @@ class HuggingfaceModel(Model):
                 )
                 self.model = safe_load_pipeline(self.config.pretrained_model)
 
-    def fit(
-        self,
-        dataset: List[str],
-        labels: Optional[pd.Series],
-        trainer_callbacks: Optional[List[Callable]],
-    ) -> None:
+    def fit(self, dataset: List[str], labels: Optional[pd.Series]) -> None:
 
         train_dataset, val_dataset = train_test_split(
             pd.DataFrame({Const.input_col: dataset, Const.label_col: labels}),
@@ -119,7 +114,7 @@ class HuggingfaceModel(Model):
             self.config,
             self.pipeline_id,
             self.id,
-            trainer_callbacks,
+            self.trainer_callbacks,
         )
         self.model = safe_load_pipeline(trainer.model, trainer.tokenizer)
 

@@ -6,7 +6,7 @@ from type import DataType
 
 
 class IntegrityChecker(Plugin):
-    def on_run_begin(self, pipeline: Pipeline) -> None:
+    def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
         super().on_run_begin(pipeline)
 
         print("    ┃  ├── 🆔 Verifying pipeline integrity")
@@ -14,6 +14,8 @@ class IntegrityChecker(Plugin):
             raise Exception("Pipeline integrity check failed")
         else:
             print("    ┃  └── ✅ Integrity check passed")
+
+        return pipeline
 
 
 def check_integrity(pipeline: Pipeline) -> bool:

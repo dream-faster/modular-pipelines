@@ -51,7 +51,6 @@ class Block(Element):
         self,
         dataset: pd.Series,
         labels: Optional[pd.Series],
-        trainer_callbacks: Optional[List[Callable]],
     ) -> None:
         raise NotImplementedError()
 

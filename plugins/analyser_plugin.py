@@ -7,7 +7,7 @@ from .base import Plugin
 
 
 class PipelineAnalyser(Plugin):
-    def on_run_begin(self, pipeline: Pipeline) -> None:
+    def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
         super().on_run_begin(pipeline)
 
         print("    ┃  └── 🗼 Hierarchy of Models:")
@@ -24,4 +24,4 @@ class PipelineAnalyser(Plugin):
 
         print_all(full_pipeline)
 
-        # pprint(pipeline.children())
+        return pipeline

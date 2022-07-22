@@ -35,7 +35,7 @@ class Runner:
 
     def run(self):
         for plugin in self.plugins:
-            plugin.on_run_begin(self.pipeline)
+            self.pipeline = plugin.on_run_begin(self.pipeline)
 
         print("💈 Loading existing models")
         self.pipeline.load(self.plugins)

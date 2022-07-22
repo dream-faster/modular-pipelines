@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 
 from transformers import TrainerCallback
+from blocks.models.huggingface.base import HuggingfaceModel
+from blocks.pipeline import Pipeline
 
 from type import BaseConfig
 from .base import Plugin
@@ -9,6 +11,7 @@ from typing import List, Optional, Any, Dict, Tuple
 import os
 from runner.store import Store
 import pandas as pd
+from utils.flatten import flatten
 
 
 @dataclass
@@ -32,14 +35,12 @@ class WandbPlugin(Plugin):
         super().__init__()
         self.wandb = launch_wandb(config.project_id, configs)
 
-        self.trainer_callback = WandbCallback(wandb=self.wandb)
+    def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
+        for element in flatten(pipeline.children()):
+            if isinstance(element, HuggingfaceModel):
+                element.trainer_callbacks = [WandbCallback(wandb=self.wandb)]
 
-    def on_fit_begin(
-        self, store: Store, last_output: Any
-    ) -> Tuple[Store, Any, BaseConfig]:
-        super().on_fit_begin(store, last_output)
-
-        return store, last_output, [self.trainer_callback]
+        return pipeline
 
     def on_predict_end(self, store: Store, last_output: Any):
         super().on_predict_end(store, last_output)
