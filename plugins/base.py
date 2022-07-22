@@ -2,15 +2,28 @@ from abc import ABC
 from typing import Callable, List, Tuple, Any
 
 from blocks.pipeline import Pipeline
+from configs.constants import LogConst
 
 from utils.random import random_string
 from runner.store import Store
 import pandas as pd
 
 
+def just_custom_functions(obj) -> List[Tuple]:
+    return [func for func in vars(obj).items() if not func[0].startswith("__")]
+
+
 class Plugin(ABC):
     def __init__(self):
-        self.id = f"{self.__class__.__name__} - {random_string(5)}"
+        pass
+
+    def __init_subclass__(cls):
+        cls.id = f"{cls.__name__} - {random_string(5)}"
+        cls.print_dict = vars(cls).keys()
+
+    def print_me(self, key):
+        if key in self.print_dict:
+            print(f"{LogConst.plugin_prefix} {self.id}: {key}")
 
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
         return pipeline
@@ -33,5 +46,7 @@ class Plugin(ABC):
     def on_predict_end(self, store: Store, last_output: Any) -> Tuple[Store, Any]:
         return store, last_output
 
-    def on_run_end(self, pipeline: Pipeline, stats: pd.Series):
+    def on_run_end(
+        self, pipeline: Pipeline, stats: pd.Series
+    ) -> Tuple[Pipeline, pd.Series]:
         return pipeline, stats

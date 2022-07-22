@@ -17,6 +17,10 @@ from configs import Const
 obligatory_plugins = [PipelineAnalyser(), IntegrityChecker()]
 
 
+def print_checker(function_origin, text):
+    type(self).on_run_begin.__qualname__.split(".")[0]
+
+
 class Runner:
     def __init__(
         self,
@@ -36,7 +40,7 @@ class Runner:
 
     def run(self):
         for plugin in self.plugins:
-            print(f"{LogConst.plugin_prefix} {plugin.id}: on_run_begin")
+            plugin.print_me("on_run_begin")
             self.pipeline = plugin.on_run_begin(self.pipeline)
 
         print("💈 Loading existing models")
@@ -60,5 +64,5 @@ class Runner:
         self.store.set_stats("final", stats)
 
         for plugin in self.plugins:
-            print(f"{LogConst.plugin_prefix} {plugin.id}: on_run_end")
+            plugin.print_me("on_run_end")
             self.pipeline, stats = plugin.on_run_end(self.pipeline, stats)
