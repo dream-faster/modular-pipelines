@@ -1,6 +1,7 @@
 from typing import Dict
 import pandas as pd
 from blocks.pipeline import Pipeline
+from configs.constants import LogConst
 from plugins import PipelineAnalyser, IntegrityChecker
 from plugins.base import Plugin
 
@@ -35,7 +36,7 @@ class Runner:
 
     def run(self):
         for plugin in self.plugins:
-            f"┣━━┯ 🔌 Plugin {plugin.id}: on_run_begin"
+            print(f"{LogConst.plugin_prefix} {plugin.id}: on_run_begin")
             self.pipeline = plugin.on_run_begin(self.pipeline)
 
         print("💈 Loading existing models")
@@ -59,5 +60,5 @@ class Runner:
         self.store.set_stats("final", stats)
 
         for plugin in self.plugins:
-            f"┣━━┯ 🔌 Plugin {plugin.id}: on_run_end"
+            print(f"{LogConst.plugin_prefix} {plugin.id}: on_run_end")
             self.pipeline, stats = plugin.on_run_end(self.pipeline, stats)
