@@ -14,7 +14,7 @@ def train_predict(
     trainer_callbacks: Optional[List[Callable]],
 ):
     if not model.is_fitted() or model.config.force_fit:
-        print(f"    ├ Training {model.id}, {model.__class__.__name__}")
+        print(f"    ┣━━━ Training {model.id}, {model.__class__.__name__}")
         model.fit(dataset, store.get_labels(), trainer_callbacks)
 
         if model.config.save:

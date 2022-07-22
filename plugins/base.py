@@ -16,7 +16,7 @@ def print_checker(function_origin: str, text: str) -> None:
 class Plugin(ABC):
     def __init__(self):
         self.id = f"{self.__class__.__name__} - {random_string(5)}"
-        self.printprefix = f"    ├ 🔌 Plugin {self.id}: "
+        self.printprefix = f"    ┣━━┯ 🔌 Plugin {self.id}: "
 
     def on_run_begin(self, pipeline: Pipeline):
         function_origin = type(self).on_run_begin.__qualname__.split(".")[0]

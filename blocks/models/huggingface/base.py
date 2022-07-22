@@ -40,7 +40,7 @@ def safe_load_pipeline(
                 task="sentiment-analysis", model=module, device=device
             )
         print(
-            f"    ├ Pipeline loaded: {module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}"
+            f"    ┣━━━ Pipeline loaded: {module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}"
         )
     except:
         print(f"    ├ Couldn't load {module} pipeline. Skipping.")
