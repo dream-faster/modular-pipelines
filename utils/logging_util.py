@@ -1,6 +1,6 @@
 import logging
 
-FORMAT = "%(lines)s%(splits)s %(message)s"
+FORMAT = "%(splits)s %(message)s"
 # formatter = logging.Formatter(FORMAT)  # , defaults={"lines": None, "splits": None}
 # logging.setFormatter(formatter)
 logging.basicConfig(format=FORMAT)

@@ -31,11 +31,24 @@ class Plugin(ABC):
         cls.print_dict = vars(cls).keys()
 
         cls.logger = logging.getLogger(".".join(get_parent_name(cls)))
-        cls.d = {"lines": f"{'    '*len(get_parent_name(cls))}┃", "splits": "  └──"}
+        cls.logger.info(
+            f"{LogConst.indentation}{LogConst.plugin_prefix} {cls.id} Initialized",
+        )
+
+        formatter = logging.Formatter(
+            f"{LogConst.indentation}┃{LogConst.indentation*len(get_parent_name(cls))}"
+            + "%(splits)s "
+        )
+
+        formatted_handler = logging.StreamHandler()
+        formatted_handler.setFormatter(formatter)
+        cls.logger.addHandler(formatted_handler)
+
+        cls.d = {"splits": ""}
 
     def print_me(self, key):
         if key in self.print_dict:
-            d = {"lines": f"{'    '*len(get_parent_name(type(self)))}┃", "splits": ""}
+            d = {"splits": ""}
             self.logger.info(
                 f"{LogConst.indentation}{LogConst.plugin_prefix} {self.id}: {key}",
                 extra=d,

@@ -35,7 +35,7 @@ class WandbPlugin(Plugin):
     def __init__(self, config: WandbConfig, configs: Optional[Dict[str, Dict]]):
         self.wandb = launch_wandb(config.project_id, configs, self.logger)
 
-        self.logger.info("✅ Wandb login success", extra=self.d)
+        self.logger.info("✅ Wandb login success", extra={"splits": "    └──"})
 
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
         for element in flatten(pipeline.children()):
@@ -55,7 +55,7 @@ class WandbPlugin(Plugin):
         run.save()
         run.finish()
 
-        self.logger(" ✅ Wandb login success", extra=self.d)
+        self.logger(" ✅ Wandb login success", extra={"splits": "    └──"})
 
 
 def launch_wandb(
