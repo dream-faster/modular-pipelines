@@ -16,7 +16,7 @@ from plugins import WandbPlugin, WandbConfig
 hate_speech_data = load_data("data/original", preprocess_config)
 
 
-def run(pipeline: Pipeline, data: Tuple[Dataset, Dataset]) -> None:
+def run(pipeline: Pipeline, data: Tuple[Dataset, Dataset], project_id: str) -> None:
     train_dataset, test_dataset = data
 
     train_runner = Runner(
@@ -42,7 +42,7 @@ def run(pipeline: Pipeline, data: Tuple[Dataset, Dataset]) -> None:
         train=False,
         plugins=[
             WandbPlugin(
-                WandbConfig(project_id="hate-speech-detection", run_name=pipeline.id),
+                WandbConfig(project_id=project_id, run_name=pipeline.id),
                 pipeline.get_configs(),
             )
         ],
@@ -51,4 +51,4 @@ def run(pipeline: Pipeline, data: Tuple[Dataset, Dataset]) -> None:
 
 
 if __name__ == "__main__":
-    run(ensemble_pipeline, hate_speech_data)
+    run(ensemble_pipeline, hate_speech_data, project_id="hate-speech-detection")
