@@ -145,3 +145,8 @@ ensemble_pipeline_hf = Ensemble(
 ensemble_pipeline_hf_statistic = Ensemble(
     "ensemble_hf_statistic", [text_statistics_pipeline, huggingface_baseline]
 )
+
+ensemble_pipeline_hf_statistic_sklearn = Ensemble(
+    "ensemble_hf_statistic_sklearn",
+    [nlp_sklearn, text_statistics_pipeline, huggingface_baseline],
+)
