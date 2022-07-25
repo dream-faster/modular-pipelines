@@ -30,4 +30,9 @@ for pipeline in [
     text_statistics_pipeline,
     ensemble_pipeline,
 ]:
-    run(pipeline, hate_speech_data, project_id="hate-speech-detection")
+    run(
+        pipeline,
+        hate_speech_data,
+        preprocess_config,
+        project_id="hate-speech-detection",
+    )

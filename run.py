@@ -11,12 +11,18 @@ from library.evaluation import classification_metrics
 from blocks.pipeline import Pipeline
 from typing import Tuple
 from plugins import WandbPlugin, WandbConfig
+from type import PreprocessConfig
 
 
 hate_speech_data = load_data("data/original", preprocess_config)
 
 
-def run(pipeline: Pipeline, data: Tuple[Dataset, Dataset], project_id: str) -> None:
+def run(
+    pipeline: Pipeline,
+    data: Tuple[Dataset, Dataset],
+    preprocess_config: PreprocessConfig,
+    project_id: str,
+) -> None:
     train_dataset, test_dataset = data
 
     train_runner = Runner(
@@ -26,10 +32,10 @@ def run(pipeline: Pipeline, data: Tuple[Dataset, Dataset], project_id: str) -> N
         evaluators=classification_metrics,
         train=True,
         plugins=[
-            # WandbPlugin(
-            #     WandbConfig(project_id="hate-speech-detection", run_name=pipeline.id),
-            #     pipeline.get_configs(),
-            # )
+            WandbPlugin(
+                WandbConfig(project_id=project_id, run_name=pipeline.id + "_train"),
+                dict(pipeline.get_configs(), preprocess_config=vars(preprocess_config)),
+            )
         ],
     )
     train_runner.run()
@@ -42,8 +48,8 @@ def run(pipeline: Pipeline, data: Tuple[Dataset, Dataset], project_id: str) -> N
         train=False,
         plugins=[
             WandbPlugin(
-                WandbConfig(project_id=project_id, run_name=pipeline.id),
-                pipeline.get_configs(),
+                WandbConfig(project_id=project_id, run_name=pipeline.id + "_test"),
+                dict(pipeline.get_configs(), preprocess_config=vars(preprocess_config)),
             )
         ],
     )
@@ -51,4 +57,9 @@ def run(pipeline: Pipeline, data: Tuple[Dataset, Dataset], project_id: str) -> N
 
 
 if __name__ == "__main__":
-    run(ensemble_pipeline, hate_speech_data, project_id="hate-speech-detection")
+    run(
+        ensemble_pipeline,
+        hate_speech_data,
+        preprocess_config,
+        project_id="hate-speech-detection",
+    )
