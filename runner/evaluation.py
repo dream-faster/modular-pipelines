@@ -17,7 +17,7 @@ def evaluate(
 
     for id, evaluator in evaluators:
         output = evaluator(store.get_labels(), predictions)
-        if isinstance(output, (float, int, List)):
+        if isinstance(output, (float, int, list)):
             stats[id] = output
         elif isinstance(output, dict):
             dump_json(output, path + "/" + id + ".json")

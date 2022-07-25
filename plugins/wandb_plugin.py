@@ -22,6 +22,7 @@ logger = logging.getLogger("Wandb-Plugin")
 class WandbConfig:
     project_id: str
     run_name: str
+    train: bool
 
 
 class WandbCallback(TrainerCallback):
@@ -38,7 +39,12 @@ class WandbCallback(TrainerCallback):
 class WandbPlugin(Plugin):
     def __init__(self, config: WandbConfig, configs: Optional[Dict[str, Dict]]):
         super().__init__()
-        self.wandb = launch_wandb(config.project_id, config.run_name, configs)
+        self.wandb = launch_wandb(
+            config.project_id,
+            config.run_name + ("_train" if config.train is True else "_test"),
+            configs,
+        )
+        self.config = config
 
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
         for element in flatten(pipeline.children()):
@@ -48,16 +54,23 @@ class WandbPlugin(Plugin):
         return pipeline
 
     def on_predict_end(self, store: Store, last_output: Any):
-        report_results(stats=store.get_all_stats(), wandb=self.wandb)
+        report_results(
+            stats=store.get_all_stats(), wandb=self.wandb, config=self.config
+        )
 
         return store, last_output
 
     def on_run_end(self, pipeline: Pipeline, store: Store):
-        report_results(stats=store.get_all_stats(), wandb=self.wandb)
+        report_results(
+            stats=store.get_all_stats(), wandb=self.wandb, config=self.config
+        )
 
-        run = wandb.run
-        run.save()
-        run.finish()
+        if self.wandb is not None:
+            run = self.wandb.run
+
+            if run is not None:
+                run.save()
+                run.finish()
 
         return pipeline, store
 
@@ -84,15 +97,16 @@ def launch_wandb(
         logger.debug(e, exc_info=True)
 
 
-def report_results(stats: pd.DataFrame, wandb: wandb):
+def report_results(stats: pd.DataFrame, wandb: wandb, config: WandbConfig):
     if wandb is None or len(stats) < 1:
         return
 
     run = wandb.run
 
+    run_type = "train" if config.train else "test"
     # Log values of the final run seperately
     if Const.final_eval_name in stats.columns:
         for index, value in stats[Const.final_eval_name].items():
-            run.log({index: value})
+            run.log({run_type: {index: value}})
 
-    run.log({"stats": wandb.Table(dataframe=stats)})
+    run.log({run_type: {"stats": wandb.Table(dataframe=stats)}})

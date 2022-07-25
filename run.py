@@ -33,7 +33,11 @@ def run(
         train=True,
         plugins=[
             WandbPlugin(
-                WandbConfig(project_id=project_id, run_name=pipeline.id + "_train"),
+                WandbConfig(
+                    project_id=project_id,
+                    run_name=pipeline.id,
+                    train=True,
+                ),
                 dict(pipeline.get_configs(), preprocess_config=vars(preprocess_config)),
             )
         ],
@@ -48,7 +52,7 @@ def run(
         train=False,
         plugins=[
             WandbPlugin(
-                WandbConfig(project_id=project_id, run_name=pipeline.id + "_test"),
+                WandbConfig(project_id=project_id, run_name=pipeline.id, train=False),
                 dict(pipeline.get_configs(), preprocess_config=vars(preprocess_config)),
             )
         ],

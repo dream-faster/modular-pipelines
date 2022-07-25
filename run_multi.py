@@ -12,9 +12,9 @@ from library.examples.hate_speech import (
 from type import PreprocessConfig
 
 preprocess_config = PreprocessConfig(
-    train_size=-1,
-    val_size=-1,
-    test_size=-1,
+    train_size=100,
+    val_size=100,
+    test_size=100,
     input_col="text",
     label_col="label",
 )
