@@ -12,6 +12,9 @@ import os
 from runner.store import Store
 import pandas as pd
 from utils.flatten import flatten
+import logging
+
+logger = logging.getLogger("Wandb-Plugin")
 
 
 @dataclass
@@ -47,48 +50,41 @@ class WandbPlugin(Plugin):
 
         return store, last_output
 
+    def on_run_end(self, pipeline: Pipeline, stats: pd.Series):
+        run = wandb.run
 
-def get_wandb():
-    from dotenv import load_dotenv
-
-    load_dotenv()
-
-    """ 0. Login to Weights and Biases """
-    wsb_token = os.environ.get("WANDB_API_KEY")
-    if wsb_token:
-        wandb.login(key=wsb_token)
-        return wandb
-    else:
-        return None  # wandb.login()
+        run.save()
+        run.finish()
 
 
 def launch_wandb(
     project_name: str, configs: Optional[Dict[str, Dict]] = None
 ) -> Optional[object]:
-    wandb = get_wandb()
-    if wandb is None:
-        raise Exception(
-            "Wandb can not be initalized, the environment variable WANDB_API_KEY is missing (can also use .env file)"
-        )
-    else:
+    try:
+        from dotenv import load_dotenv
+
+        load_dotenv()
+
+        wsb_token = os.environ.get("WANDB_API_KEY")
+        wandb.login(key=wsb_token)
+
+    except Exception as e:
+        logger.debug(e, exc_info=True)
+        logger.warning("The environment variable WANDB_API_KEY is missing")
+
+    try:
         wandb.init(project=project_name, config=configs, reinit=True)
         return wandb
+    except Exception as e:
+        logger.debug(e, exc_info=True)
 
 
-def send_report_to_wandb(
-    stats: pd.Series, wandb: Optional[object], final: bool = False
-):
+def send_report_to_wandb(stats: pd.Series, wandb: wandb, final: bool = False):
     if wandb is None:
         return
 
     run = wandb.run
-    if final:
-        run.save()
-
     run.log({"stats": wandb.Table(dataframe=stats)})
-
-    if final:
-        run.finish()
 
 
 def report_results(output_stats: Any, wandb, final: bool = False):
