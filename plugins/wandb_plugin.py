@@ -26,14 +26,15 @@ class WandbConfig:
 
 
 class WandbCallback(TrainerCallback):
-    def __init__(self, wandb):
+    def __init__(self, wandb, config: WandbConfig):
         self.wandb = wandb
+        self.run_type = "train" if config.train else "test"
 
     def on_log(self, args, state, control, logs=None, **kwargs):
-        self.wandb.log(logs)
+        self.wandb.log({self.run_type: logs})
 
     def on_evaluate(self, args, state, control, logs=None, metrics=None, **kwargs):
-        self.wandb.log(metrics)
+        self.wandb.log({self.run_type: metrics})
 
 
 class WandbPlugin(Plugin):
@@ -49,7 +50,9 @@ class WandbPlugin(Plugin):
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
         for element in flatten(pipeline.children()):
             if isinstance(element, HuggingfaceModel):
-                element.trainer_callbacks = [WandbCallback(wandb=self.wandb)]
+                element.trainer_callbacks = [
+                    WandbCallback(wandb=self.wandb, config=self.config)
+                ]
 
         return pipeline
 
