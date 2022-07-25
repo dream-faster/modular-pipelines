@@ -13,10 +13,10 @@ from library.examples.hate_speech import (
 hate_speech_data = load_data("data/original", preprocess_config)
 
 for pipeline in [
-    # huggingface_baseline,
+    huggingface_baseline,
     nlp_sklearn,
     nlp_sklearn_autocorrect,
     text_statistics_pipeline,
-    # ensemble_pipeline,
+    ensemble_pipeline,
 ]:
     run(pipeline, hate_speech_data)

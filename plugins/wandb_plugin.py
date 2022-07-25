@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from transformers import TrainerCallback
 from blocks.models.huggingface.base import HuggingfaceModel
 from blocks.pipeline import Pipeline
+from configs.constants import Const
 
 from type import BaseConfig
 from .base import Plugin
@@ -47,17 +48,17 @@ class WandbPlugin(Plugin):
         return pipeline
 
     def on_predict_end(self, store: Store, last_output: Any):
-        report_results(output_stats=store.get_all_stats(), wandb=self.wandb, final=True)
+        report_results(stats=store.get_all_stats(), wandb=self.wandb)
 
         return store, last_output
 
     def on_run_end(self, pipeline: Pipeline, store: Store):
-        report_results(output_stats=store.get_all_stats(), wandb=self.wandb, final=True)
+        report_results(stats=store.get_all_stats(), wandb=self.wandb)
 
         run = wandb.run
         run.save()
         run.finish()
-        
+
         return pipeline, store
 
 
@@ -83,13 +84,15 @@ def launch_wandb(
         logger.debug(e, exc_info=True)
 
 
-def send_report_to_wandb(stats: pd.Series, wandb: wandb, final: bool = False):
-    if wandb is None:
+def report_results(stats: pd.DataFrame, wandb: wandb):
+    if wandb is None or len(stats) < 1:
         return
 
     run = wandb.run
+
+    # Log values of the final run seperately
+    if Const.final_eval_name in stats.columns:
+        for index, value in stats[Const.final_eval_name].items():
+            run.log({index: value})
+
     run.log({"stats": wandb.Table(dataframe=stats)})
-
-
-def report_results(output_stats: Any, wandb, final: bool = False):
-    send_report_to_wandb(output_stats, wandb, final)

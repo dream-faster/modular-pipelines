@@ -114,7 +114,7 @@ class HuggingfaceModel(Model):
             self.config,
             self.pipeline_id,
             self.id,
-            self.trainer_callbacks,
+            self.trainer_callbacks if hasattr(self, "trainer_callbacks") else None,
         )
         self.model = safe_load_pipeline(trainer.model, trainer.tokenizer)
 

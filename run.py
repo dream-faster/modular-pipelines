@@ -26,10 +26,10 @@ def run(pipeline: Pipeline, data: Tuple[Dataset, Dataset]) -> None:
         evaluators=classification_metrics,
         train=True,
         plugins=[
-            WandbPlugin(
-                WandbConfig(project_id="hate-speech-detection", run_name=pipeline.id),
-                pipeline.get_configs(),
-            )
+            # WandbPlugin(
+            #     WandbConfig(project_id="hate-speech-detection", run_name=pipeline.id),
+            #     pipeline.get_configs(),
+            # )
         ],
     )
     train_runner.run()
@@ -40,7 +40,12 @@ def run(pipeline: Pipeline, data: Tuple[Dataset, Dataset]) -> None:
         labels=test_dataset[Const.label_col],
         evaluators=classification_metrics,
         train=False,
-        plugins=[],
+        plugins=[
+            WandbPlugin(
+                WandbConfig(project_id="hate-speech-detection", run_name=pipeline.id),
+                pipeline.get_configs(),
+            )
+        ],
     )
     test_runner.run()
 
