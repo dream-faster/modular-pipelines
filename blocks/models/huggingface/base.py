@@ -152,6 +152,7 @@ def from_pandas(df: pd.DataFrame, num_classes: int) -> Dataset:
                     Const.label_col: ClassLabel(num_classes),
                 }
             ),
+            preserve_index=False,
         )
     else:
         return Dataset.from_pandas(
@@ -161,4 +162,5 @@ def from_pandas(df: pd.DataFrame, num_classes: int) -> Dataset:
                     Const.input_col: Value("string"),
                 }
             ),
+            preserve_index=False,
         )
