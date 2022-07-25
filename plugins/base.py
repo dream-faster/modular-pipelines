@@ -46,6 +46,12 @@ class Plugin(ABC):
     def on_predict_end(self, store: Store, last_output: Any) -> Tuple[Store, Any]:
         return store, last_output
 
+    def on_save_remote_begin(self) -> None:
+        pass
+
+    def on_save_remote_end(self) -> None:
+        pass
+
     def on_run_end(
         self, pipeline: Pipeline, stats: pd.Series
     ) -> Tuple[Pipeline, pd.Series]:
