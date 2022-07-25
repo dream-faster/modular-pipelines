@@ -138,8 +138,10 @@ ensemble_pipeline = Ensemble(
     "ensemble", [nlp_sklearn, nlp_sklearn_autocorrect, text_statistics_pipeline]
 )
 
-ensemble_pipeline_hf = Ensemble("ensemble", [nlp_sklearn, huggingface_baseline])
+ensemble_pipeline_hf = Ensemble(
+    "ensemble_hf_sklearn", [nlp_sklearn, huggingface_baseline]
+)
 
 ensemble_pipeline_hf_statistic = Ensemble(
-    "ensemble", [text_statistics_pipeline, huggingface_baseline]
+    "ensemble_hf_statistic", [text_statistics_pipeline, huggingface_baseline]
 )

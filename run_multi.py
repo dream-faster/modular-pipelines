@@ -8,6 +8,7 @@ from library.examples.hate_speech import (
     text_statistics_pipeline,
     ensemble_pipeline,
     ensemble_pipeline_hf,
+    ensemble_pipeline_hf_statistic,
     # preprocess_config,
 )
 from type import PreprocessConfig
