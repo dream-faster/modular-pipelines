@@ -1,3 +1,4 @@
+import logging
 from blocks.pipeline import Pipeline
 
 from .base import Plugin
@@ -6,17 +7,17 @@ from type import DataType
 
 
 class IntegrityChecker(Plugin):
-    def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
-        print("    ┃  ├── 🆔 Verifying pipeline integrity")
-        if not check_integrity(pipeline):
+    def on_run_begin(self, pipeline: Pipeline) -> None:
+        self.logger.info("🆔 Verifying pipeline integrity", extra=self.d)
+        if not check_integrity(pipeline, self.logger, self.d):
             raise Exception("Pipeline integrity check failed")
         else:
-            print("    ┃  └── ✅ Integrity check passed")
+            self.logger.info("✅ Integrity check passed", extra=self.d)
 
         return pipeline
 
 
-def check_integrity(pipeline: Pipeline) -> bool:
+def check_integrity(pipeline: Pipeline, logger: logging.Logger, d=dict[str]) -> bool:
     hierarchy = list(reversed(flatten(pipeline.children())))
     previous_block = hierarchy[0]
     for item in hierarchy[1:]:
@@ -27,8 +28,9 @@ def check_integrity(pipeline: Pipeline) -> bool:
                 item.outputType not in previous_block.inputTypes
                 and DataType.Any not in previous_block.inputTypes
             ):
-                print(
-                    f"{item.id}'s output type is {item.outputType} and not {previous_block.inputTypes} which {previous_block.id} requires"
+                logger.info(
+                    f"{item.id}'s output type is {item.outputType} and not {previous_block.inputTypes} which {previous_block.id} requires",
+                    extra=d,
                 )
                 return False
         else:
@@ -36,8 +38,9 @@ def check_integrity(pipeline: Pipeline) -> bool:
                 item.outputType != previous_block.inputTypes
                 and previous_block.inputTypes is not DataType.Any
             ):
-                print(
-                    f"{item.id}'s output type is {item.outputType} and not {previous_block.inputTypes} which {previous_block.id} requires"
+                logger.info(
+                    f"{item.id}'s output type is {item.outputType} and not {previous_block.inputTypes} which {previous_block.id} requires",
+                    extra=d,
                 )
                 return False
         previous_block = item

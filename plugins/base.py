@@ -7,10 +7,19 @@ from configs.constants import LogConst
 from utils.random import random_string
 from runner.store import Store
 import pandas as pd
+import logging
 
 
 def just_custom_functions(obj) -> List[Tuple]:
     return [func for func in vars(obj).items() if not func[0].startswith("__")]
+
+
+def get_parent_name(class_obj) -> List[str]:
+    return [
+        parent.__name__
+        for parent in class_obj.__mro__
+        if parent.__name__ not in ["ABC", "object"]
+    ][::-1]
 
 
 class Plugin(ABC):
@@ -21,9 +30,16 @@ class Plugin(ABC):
         cls.id = f"{cls.__name__} - {random_string(5)}"
         cls.print_dict = vars(cls).keys()
 
+        cls.logger = logging.getLogger(".".join(get_parent_name(cls)))
+        cls.d = {"lines": f"{'    '*len(get_parent_name(cls))}┃", "splits": "  └──"}
+
     def print_me(self, key):
         if key in self.print_dict:
-            print(f"{LogConst.plugin_prefix} {self.id}: {key}")
+            d = {"lines": f"{'    '*len(get_parent_name(type(self)))}┃", "splits": ""}
+            self.logger.info(
+                f"{LogConst.indentation}{LogConst.plugin_prefix} {self.id}: {key}",
+                extra=d,
+            )
 
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
         return pipeline

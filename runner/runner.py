@@ -5,6 +5,8 @@ from configs.constants import LogConst
 from plugins import PipelineAnalyser, IntegrityChecker
 from plugins.base import Plugin
 
+import utils.logging_util
+
 
 from type import Evaluators
 from .store import Store

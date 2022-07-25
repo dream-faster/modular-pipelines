@@ -15,4 +15,5 @@ class Const:
 
 
 class LogConst:
-    plugin_prefix = "    ┣━━┯ 🔌  Plugin"
+    plugin_prefix = "🔌  Plugin"
+    indentation = "    "

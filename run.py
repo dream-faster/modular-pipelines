@@ -26,9 +26,9 @@ def run(pipeline: Pipeline, data: Tuple[Dataset, Dataset]) -> None:
         evaluators=classification_metrics,
         train=True,
         plugins=[
-            # WandbPlugin(
-            #     WandbConfig(project_id="hate-speech-detection"), pipeline.get_configs()
-            # )
+            WandbPlugin(
+                WandbConfig(project_id="hate-speech-detection"), pipeline.get_configs()
+            )
         ],
     )
     train_runner.run()

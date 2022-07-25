@@ -14,8 +14,6 @@ import pandas as pd
 from utils.flatten import flatten
 import logging
 
-logger = logging.getLogger("Wandb-Plugin")
-
 
 @dataclass
 class WandbConfig:
@@ -35,8 +33,9 @@ class WandbCallback(TrainerCallback):
 
 class WandbPlugin(Plugin):
     def __init__(self, config: WandbConfig, configs: Optional[Dict[str, Dict]]):
-        super().__init__()
-        self.wandb = launch_wandb(config.project_id, configs)
+        self.wandb = launch_wandb(config.project_id, configs, self.logger)
+
+        self.logger.info("✅ Wandb login success", extra=self.d)
 
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
         for element in flatten(pipeline.children()):
@@ -46,7 +45,7 @@ class WandbPlugin(Plugin):
         return pipeline
 
     def on_predict_end(self, store: Store, last_output: Any):
-        report_results(output_stats=store.get_all_stats(), wandb=self.wandb, final=True)
+        report_results(stats=store.get_all_stats(), wandb=self.wandb, final=True)
 
         return store, last_output
 
@@ -56,9 +55,13 @@ class WandbPlugin(Plugin):
         run.save()
         run.finish()
 
+        self.logger(" ✅ Wandb login success", extra=self.d)
+
 
 def launch_wandb(
-    project_name: str, configs: Optional[Dict[str, Dict]] = None
+    project_name: str,
+    configs: Optional[Dict[str, Dict]],
+    logger: logging.Logger = None,
 ) -> Optional[object]:
     try:
         from dotenv import load_dotenv
@@ -79,13 +82,9 @@ def launch_wandb(
         logger.debug(e, exc_info=True)
 
 
-def send_report_to_wandb(stats: pd.Series, wandb: wandb, final: bool = False):
+def report_results(stats: pd.Series, wandb: wandb):
     if wandb is None:
         return
 
     run = wandb.run
     run.log({"stats": wandb.Table(dataframe=stats)})
-
-
-def report_results(output_stats: Any, wandb, final: bool = False):
-    send_report_to_wandb(output_stats, wandb, final)

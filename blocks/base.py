@@ -4,6 +4,9 @@ import pandas as pd
 from typing import Callable, Optional, Union, List
 from runner.store import Store
 from blocks.iomanager import safe_loading, safe_saving
+import logging
+
+logger = logging.getLogger("block-base")
 
 
 class Element(ABC):
@@ -30,9 +33,9 @@ class Block(Element):
         )
 
         if self.inputTypes is None:
-            print("inputTypes must be set")
+            logger.warning("inputTypes must be set")
         if self.outputType is None:
-            print("outputType must be set")
+            logger.warning("outputType must be set")
 
     def load(self, pipeline_id: str, execution_order: int) -> int:
         self.pipeline_id = pipeline_id
