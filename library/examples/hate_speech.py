@@ -137,3 +137,5 @@ nlp_sklearn_autocorrect = create_nlp_sklearn_pipeline(autocorrect=True)
 ensemble_pipeline = Ensemble(
     "ensemble", [nlp_sklearn, nlp_sklearn_autocorrect, text_statistics_pipeline]
 )
+
+ensemble_pipeline_hf = Ensemble("ensemble", [nlp_sklearn, huggingface_baseline])

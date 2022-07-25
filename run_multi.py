@@ -7,6 +7,7 @@ from library.examples.hate_speech import (
     nlp_sklearn_autocorrect,
     text_statistics_pipeline,
     ensemble_pipeline,
+    ensemble_pipeline_hf,
     # preprocess_config,
 )
 from type import PreprocessConfig
@@ -24,11 +25,12 @@ hate_speech_data = load_data("data/original", preprocess_config)
 train_data, test_data = hate_speech_data
 
 for pipeline in [
-    huggingface_baseline,
-    nlp_sklearn,
-    nlp_sklearn_autocorrect,
-    text_statistics_pipeline,
-    ensemble_pipeline,
+    ensemble_pipeline_hf
+    # huggingface_baseline,
+    # nlp_sklearn,
+    # nlp_sklearn_autocorrect,
+    # text_statistics_pipeline,
+    # ensemble_pipeline,
 ]:
     run(
         pipeline,
