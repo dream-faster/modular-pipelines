@@ -3,6 +3,7 @@ from blocks.pipeline import Pipeline
 from .base import Plugin
 from utils.flatten import flatten
 from type import DataType
+from typing import List
 
 
 class IntegrityChecker(Plugin):
@@ -22,7 +23,7 @@ def check_integrity(pipeline: Pipeline) -> bool:
     for item in hierarchy[1:]:
         if isinstance(item, Pipeline):
             continue
-        if isinstance(previous_block.inputTypes, list):
+        if isinstance(previous_block.inputTypes, List):
             if (
                 item.outputType not in previous_block.inputTypes
                 and DataType.Any not in previous_block.inputTypes
