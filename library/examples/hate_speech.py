@@ -3,6 +3,7 @@ from blocks.pipeline import Pipeline
 from blocks.models.huggingface import HuggingfaceModel
 
 from blocks.models.sklearn import SKLearnModel
+from library.evaluation import classification
 from type import PreprocessConfig, HuggingfaceConfig, SKLearnConfig
 from blocks.pipeline import Pipeline
 from blocks.transformations import Lemmatizer, SpacyTokenizer
@@ -20,6 +21,8 @@ from sklearn.ensemble import (
 from utils.flatten import remove_none
 from sklearn.preprocessing import MinMaxScaler
 from blocks.adaptors import ListOfListsToNumpy
+
+from library.evaluation import classification_metrics
 
 preprocess_config = PreprocessConfig(
     train_size=100,
@@ -102,11 +105,6 @@ def create_nlp_sklearn_pipeline(autocorrect: bool) -> Pipeline:
     )
 
 
-nlp_sklearn = create_nlp_sklearn_pipeline(autocorrect=False)
-nlp_sklearn_autocorrect = create_nlp_sklearn_pipeline(autocorrect=True)
-
-
-
 def create_nlp_huggingface_pipeline(autocorrect: bool) -> Pipeline:
     return Pipeline(
         "nlp_hf_autocorrect" if autocorrect else "nlp_hf",
@@ -132,10 +130,10 @@ text_statistics_pipeline = Pipeline(
     ],
 )
 
+huggingface_baseline = create_nlp_huggingface_pipeline(autocorrect=False)
+nlp_sklearn = create_nlp_sklearn_pipeline(autocorrect=False)
+nlp_sklearn_autocorrect = create_nlp_sklearn_pipeline(autocorrect=True)
+
 ensemble_pipeline = Ensemble(
     "ensemble", [nlp_sklearn, nlp_sklearn_autocorrect, text_statistics_pipeline]
 )
-
-
-def hate_speech_detection_pipeline() -> Pipeline:
-    return ensemble_pipeline

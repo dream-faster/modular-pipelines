@@ -3,7 +3,7 @@ from configs.constants import Const
 from data.dataloader import load_data
 from runner.runner import Runner
 from library.examples.hate_speech import (
-    hate_speech_detection_pipeline,
+    ensemble_pipeline,
     preprocess_config,
 )
 from library.evaluation import classification_metrics
@@ -26,7 +26,10 @@ def run(pipeline: Pipeline, data: Tuple[Dataset, Dataset]) -> None:
         evaluators=classification_metrics,
         train=True,
         plugins=[
-            WandbPlugin(WandbConfig(project_id=pipeline.id), pipeline.get_configs())
+            WandbPlugin(
+                WandbConfig(project_id="hate-speech-detection", run_name=pipeline.id),
+                pipeline.get_configs(),
+            )
         ],
     )
     train_runner.run()
@@ -43,4 +46,4 @@ def run(pipeline: Pipeline, data: Tuple[Dataset, Dataset]) -> None:
 
 
 if __name__ == "__main__":
-    run(hate_speech_detection_pipeline(), hate_speech_data)
+    run(ensemble_pipeline, hate_speech_data)

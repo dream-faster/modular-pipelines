@@ -20,6 +20,7 @@ logger = logging.getLogger("Wandb-Plugin")
 @dataclass
 class WandbConfig:
     project_id: str
+    run_name: str
 
 
 class WandbCallback(TrainerCallback):
@@ -36,7 +37,7 @@ class WandbCallback(TrainerCallback):
 class WandbPlugin(Plugin):
     def __init__(self, config: WandbConfig, configs: Optional[Dict[str, Dict]]):
         super().__init__()
-        self.wandb = launch_wandb(config.project_id, configs)
+        self.wandb = launch_wandb(config.project_id, config.run_name, configs)
 
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
         for element in flatten(pipeline.children()):
@@ -50,15 +51,18 @@ class WandbPlugin(Plugin):
 
         return store, last_output
 
-    def on_run_end(self, pipeline: Pipeline, stats: pd.Series):
-        run = wandb.run
+    def on_run_end(self, pipeline: Pipeline, store: Store):
+        report_results(output_stats=store.get_all_stats(), wandb=self.wandb, final=True)
 
+        run = wandb.run
         run.save()
         run.finish()
+        
+        return pipeline, store
 
 
 def launch_wandb(
-    project_name: str, configs: Optional[Dict[str, Dict]] = None
+    project_name: str, run_name: str, configs: Optional[Dict[str, Dict]] = None
 ) -> Optional[object]:
     try:
         from dotenv import load_dotenv
@@ -73,7 +77,7 @@ def launch_wandb(
         logger.warning("The environment variable WANDB_API_KEY is missing")
 
     try:
-        wandb.init(project=project_name, config=configs, reinit=True)
+        wandb.init(project=project_name, config=configs, reinit=True, name=run_name)
         return wandb
     except Exception as e:
         logger.debug(e, exc_info=True)

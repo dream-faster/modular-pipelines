@@ -23,7 +23,7 @@ def train_predict(
 
 
 def predict(model: Block, dataset: pd.Series, store: Store) -> List:
-    print(f"    ├ Predicting on {model.id}, {model.__class__.__name__}")
+    print(f"    ┣━━━ Predicting on {model.id}, {model.__class__.__name__}")
     output = model.predict(dataset)
 
     if (

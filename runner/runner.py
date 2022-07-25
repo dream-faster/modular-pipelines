@@ -65,4 +65,4 @@ class Runner:
 
         for plugin in self.plugins:
             plugin.print_me("on_run_end")
-            self.pipeline, stats = plugin.on_run_end(self.pipeline, stats)
+            self.pipeline, stats = plugin.on_run_end(self.pipeline, self.store)

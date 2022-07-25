@@ -52,7 +52,5 @@ class Plugin(ABC):
     def on_save_remote_end(self) -> None:
         pass
 
-    def on_run_end(
-        self, pipeline: Pipeline, stats: pd.Series
-    ) -> Tuple[Pipeline, pd.Series]:
-        return pipeline, stats
+    def on_run_end(self, pipeline: Pipeline, store: Store) -> Tuple[Pipeline, Store]:
+        return pipeline, store
