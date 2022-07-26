@@ -114,7 +114,7 @@ class HuggingfaceModel(Model):
             self.config,
             self.pipeline_id,
             self.id,
-            self.trainer_callbacks,
+            self.trainer_callbacks if hasattr(self, "trainer_callbacks") else None,
         )
         self.model = safe_load_pipeline(trainer.model, trainer.tokenizer)
 
@@ -152,6 +152,7 @@ def from_pandas(df: pd.DataFrame, num_classes: int) -> Dataset:
                     Const.label_col: ClassLabel(num_classes),
                 }
             ),
+            preserve_index=False,
         )
     else:
         return Dataset.from_pandas(
@@ -161,4 +162,5 @@ def from_pandas(df: pd.DataFrame, num_classes: int) -> Dataset:
                     Const.input_col: Value("string"),
                 }
             ),
+            preserve_index=False,
         )

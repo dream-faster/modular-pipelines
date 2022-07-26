@@ -83,7 +83,7 @@ def get_distribution_metrics(word_freq: dict) -> Tuple[float, float]:
     return mean, variance
 
 
-def get_statistic(words: list[str]) -> List[Union[int, float]]:
+def get_statistic(words: List[str]) -> List[Union[int, float]]:
     words_fused = " ".join(words)
     num_words = get_num_words(words)
     word_freq = get_word_freq(words)

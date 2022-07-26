@@ -30,4 +30,9 @@ class Store:
         self.stats[id] = stats
 
     def get_all_stats(self) -> pd.DataFrame:
-        return pd.concat(list(self.stats.values()), axis=1)
+        df = pd.DataFrame([])
+
+        for key, value in self.stats.items():
+            df[key] = value
+
+        return df

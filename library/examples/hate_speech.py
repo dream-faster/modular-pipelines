@@ -3,6 +3,7 @@ from blocks.pipeline import Pipeline
 from blocks.models.huggingface import HuggingfaceModel
 
 from blocks.models.sklearn import SKLearnModel
+from library.evaluation import classification
 from type import PreprocessConfig, HuggingfaceConfig, SKLearnConfig
 from blocks.pipeline import Pipeline
 from blocks.transformations import Lemmatizer, SpacyTokenizer
@@ -21,6 +22,8 @@ from utils.flatten import remove_none
 from sklearn.preprocessing import MinMaxScaler
 from blocks.adaptors import ListOfListsToNumpy
 
+from library.evaluation import classification_metrics
+
 preprocess_config = PreprocessConfig(
     train_size=100,
     val_size=100,
@@ -33,7 +36,7 @@ huggingface_config = HuggingfaceConfig(
     pretrained_model="distilbert-base-uncased",
     user_name="semy",
     repo_name="finetuning-tweeteval-hate-speech",
-    save_remote=True,
+    save_remote=False,
     save=True,
     num_classes=2,
     val_size=0.1,
@@ -46,7 +49,7 @@ huggingface_config = HuggingfaceConfig(
         num_train_epochs=2,
         weight_decay=0.01,
         save_strategy="epoch",
-        push_to_hub=True,
+        push_to_hub=False,
         log_level="critical",
         report_to="none",
         optim="adamw_torch",
@@ -102,11 +105,6 @@ def create_nlp_sklearn_pipeline(autocorrect: bool) -> Pipeline:
     )
 
 
-nlp_sklearn = create_nlp_sklearn_pipeline(autocorrect=False)
-nlp_sklearn_autocorrect = create_nlp_sklearn_pipeline(autocorrect=True)
-
-
-
 def create_nlp_huggingface_pipeline(autocorrect: bool) -> Pipeline:
     return Pipeline(
         "nlp_hf_autocorrect" if autocorrect else "nlp_hf",
@@ -132,10 +130,23 @@ text_statistics_pipeline = Pipeline(
     ],
 )
 
+huggingface_baseline = create_nlp_huggingface_pipeline(autocorrect=False)
+nlp_sklearn = create_nlp_sklearn_pipeline(autocorrect=False)
+nlp_sklearn_autocorrect = create_nlp_sklearn_pipeline(autocorrect=True)
+
 ensemble_pipeline = Ensemble(
     "ensemble", [nlp_sklearn, nlp_sklearn_autocorrect, text_statistics_pipeline]
 )
 
+ensemble_pipeline_hf = Ensemble(
+    "ensemble_hf_sklearn", [nlp_sklearn, huggingface_baseline]
+)
 
-def hate_speech_detection_pipeline() -> Pipeline:
-    return ensemble_pipeline
+ensemble_pipeline_hf_statistic = Ensemble(
+    "ensemble_hf_statistic", [text_statistics_pipeline, huggingface_baseline]
+)
+
+ensemble_pipeline_hf_statistic_sklearn = Ensemble(
+    "ensemble_hf_statistic_sklearn",
+    [nlp_sklearn, text_statistics_pipeline, huggingface_baseline],
+)

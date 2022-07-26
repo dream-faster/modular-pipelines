@@ -21,7 +21,7 @@ class Pipeline(Block):
         models: Union[List[Block], Block],
     ):
         self.id = id
-        if isinstance(models, list):
+        if isinstance(models, List):
             self.models = models
         else:
             self.models = [models]

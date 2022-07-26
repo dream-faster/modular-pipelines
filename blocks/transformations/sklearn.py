@@ -22,12 +22,12 @@ class SKLearnTransformation(Transformation):
 
     def fit(
         self,
-        dataset: Union[list, np.ndarray],
+        dataset: Union[List, np.ndarray],
         labels: Optional[Union[List, np.ndarray]],
     ) -> None:
         self.model.fit(dataset)
 
-    def predict(self, dataset: Union[list, np.ndarray]) -> np.ndarray:
+    def predict(self, dataset: Union[List, np.ndarray]) -> np.ndarray:
         return self.model.transform(dataset)
 
     def is_fitted(self) -> bool:

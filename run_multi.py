@@ -2,13 +2,40 @@ from data.dataloader import load_data
 from run import run
 
 from library.examples.hate_speech import (
-    nlp_huggingface,
-    nlp_huggingface_autocorrect,
+    huggingface_baseline,
+    nlp_sklearn,
     nlp_sklearn_autocorrect,
-    preprocess_config,
+    text_statistics_pipeline,
+    ensemble_pipeline,
+    ensemble_pipeline_hf,
+    ensemble_pipeline_hf_statistic,
+    # preprocess_config,
+)
+from type import PreprocessConfig
+
+preprocess_config = PreprocessConfig(
+    train_size=100,
+    val_size=100,
+    test_size=100,
+    input_col="text",
+    label_col="label",
 )
 
 hate_speech_data = load_data("data/original", preprocess_config)
 
-for pipeline in [nlp_huggingface, nlp_huggingface_autocorrect, nlp_sklearn_autocorrect]:
-    run(pipeline, hate_speech_data)
+train_data, test_data = hate_speech_data
+
+for pipeline in [
+    ensemble_pipeline_hf
+    # huggingface_baseline,
+    # nlp_sklearn,
+    # nlp_sklearn_autocorrect,
+    # text_statistics_pipeline,
+    # ensemble_pipeline,
+]:
+    run(
+        pipeline,
+        hate_speech_data,
+        preprocess_config,
+        project_id="hate-speech-detection",
+    )
