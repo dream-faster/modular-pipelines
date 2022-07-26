@@ -36,6 +36,7 @@ def run_training_pipeline(
     pipeline_id: str,
     id: str,
     trainer_callbacks: Optional[List[Callable]],
+    hub_token: str,
 ) -> Trainer:
 
     model = AutoModelForSequenceClassification.from_pretrained(
@@ -60,6 +61,7 @@ def run_training_pipeline(
         data_collator=data_collator,
         compute_metrics=compute_metrics,
         callbacks=trainer_callbacks,
+        hub_token=hub_token,
     )
 
     trainer.train()

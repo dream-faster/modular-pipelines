@@ -1,6 +1,7 @@
 from blocks.models.base import Model
 from utils.env_interface import get_env
-from utils.huggingface_hub import initialize_huggingface
+
+# from utils.huggingface_hub import initialize_huggingface
 from .infer import run_inference_pipeline
 from .train import run_training_pipeline
 from type import Evaluators, HuggingfaceConfig, DataType, PredsWithProbs
@@ -71,7 +72,8 @@ class HuggingfaceModel(Model):
 
         os.environ["TOKENIZERS_PARALLELISM"] = "False"
 
-        initialize_huggingface(get_env("HF_HUB_TOKEN"))
+        self.hub_token = get_env("HF_HUB_TOKEN")
+        # initialize_huggingface(self.hub_token)
         self.training_args = self.config.training_args
 
     def load(self, pipeline_id: str, execution_order: int) -> int:
@@ -118,6 +120,7 @@ class HuggingfaceModel(Model):
             self.pipeline_id,
             self.id,
             self.trainer_callbacks if hasattr(self, "trainer_callbacks") else None,
+            self.hub_token,
         )
         self.model = safe_load_pipeline(trainer.model, trainer.tokenizer)
 
