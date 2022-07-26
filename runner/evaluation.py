@@ -16,7 +16,7 @@ def evaluate(
         os.makedirs(path)
 
     for id, evaluator in evaluators:
-        output = evaluator(store.get_labels().to_list(), predictions)
+        output = evaluator(store.get_labels(), predictions)
         if isinstance(output, (float, int, list)):
             stats[id] = output
         elif isinstance(output, dict):
