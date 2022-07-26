@@ -80,11 +80,19 @@ sklearn_config = SKLearnConfig(
     save_remote=False,
 )
 
+sklearn_config_simple = SKLearnConfig(
+    force_fit=False,
+    save=True,
+    classifier=MultinomialNB(),
+    one_vs_rest=False,
+    save_remote=False,
+)
+
 
 input_data = DataSource("input")
 
 
-def create_nlp_sklearn_pipeline(autocorrect: bool) -> Pipeline:
+def create_nlp_sklearn_pipeline(autocorrect: bool, simple: bool = False) -> Pipeline:
     return Pipeline(
         "nlp_sklearn_autocorrect" if autocorrect else "nlp_sklearn",
         input_data,
@@ -99,7 +107,9 @@ def create_nlp_sklearn_pipeline(autocorrect: bool) -> Pipeline:
                         ngram_range=(1, 3),
                     )
                 ),
-                SKLearnModel("nlp-sklearn", sklearn_config),
+                SKLearnModel(
+                    "nlp-sklearn", sklearn_config if simple else sklearn_config_simple
+                ),
             ]
         ),
     )
@@ -133,6 +143,8 @@ text_statistics_pipeline = Pipeline(
 huggingface_baseline = create_nlp_huggingface_pipeline(autocorrect=False)
 nlp_sklearn = create_nlp_sklearn_pipeline(autocorrect=False)
 nlp_sklearn_autocorrect = create_nlp_sklearn_pipeline(autocorrect=True)
+
+nlp_sklearn_simple = create_nlp_sklearn_pipeline(autocorrect=False)
 
 ensemble_pipeline = Ensemble(
     "ensemble", [nlp_sklearn, nlp_sklearn_autocorrect, text_statistics_pipeline]
