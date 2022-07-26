@@ -72,8 +72,8 @@ class HuggingfaceModel(Model):
 
         os.environ["TOKENIZERS_PARALLELISM"] = "False"
 
-        self.hub_token = get_env("HF_HUB_TOKEN")
         # initialize_huggingface(self.hub_token)
+        self.training_args.hub_token = get_env("HF_HUB_TOKEN")
         self.training_args = self.config.training_args
 
     def load(self, pipeline_id: str, execution_order: int) -> int:
@@ -120,7 +120,6 @@ class HuggingfaceModel(Model):
             self.pipeline_id,
             self.id,
             self.trainer_callbacks if hasattr(self, "trainer_callbacks") else None,
-            self.hub_token,
         )
         self.model = safe_load_pipeline(trainer.model, trainer.tokenizer)
 
