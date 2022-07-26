@@ -1,8 +1,6 @@
 from huggingface_hub import HfApi
 
 
-def initialize_huggingface(repo_id:str) -> HfApi:
+def initialize_huggingface(token: str) -> None:
     api = HfApi()
-    api.create_repo(repo_id=repo_id, private=True)
-
-    return api
+    api.set_access_token(token)

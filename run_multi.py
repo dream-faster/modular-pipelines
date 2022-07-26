@@ -33,9 +33,9 @@ hate_speech_data = (balance_labels(train_data), balance_labels(test_data))
 
 for pipeline in [
     # ensemble_pipeline_hf,
-    # huggingface_baseline,
+    huggingface_baseline,
     # nlp_sklearn,
-    nlp_sklearn_simple,
+    # nlp_sklearn_simple,
     # nlp_sklearn_autocorrect,
     # text_statistics_pipeline,
     # ensemble_pipeline,
