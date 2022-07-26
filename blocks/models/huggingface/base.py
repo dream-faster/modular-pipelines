@@ -73,8 +73,8 @@ class HuggingfaceModel(Model):
         os.environ["TOKENIZERS_PARALLELISM"] = "False"
 
         # initialize_huggingface(self.hub_token)
-        self.training_args.hub_token = get_env("HF_HUB_TOKEN")
         self.training_args = self.config.training_args
+        self.training_args.hub_token = get_env("HF_HUB_TOKEN")
 
     def load(self, pipeline_id: str, execution_order: int) -> int:
         self.pipeline_id = pipeline_id
