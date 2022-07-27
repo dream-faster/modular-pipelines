@@ -46,7 +46,7 @@ def run(
             if hasattr(config.dataset, Const.label_col)
             else None,
             evaluators=classification_metrics,
-            plugins=[] + logger_plugins if config.remote_logging is not False else [],
+            plugins=logger_plugins if config.remote_logging else [],
         )
         runner.run()
 

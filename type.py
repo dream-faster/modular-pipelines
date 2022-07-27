@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 from enum import Enum
+import pandas as pd
 from sklearn.base import ClassifierMixin
-from typing import Callable, List, Optional, Tuple
+from typing import Callable, List, Optional, Tuple, Union
 
 from transformers import TrainingArguments
-from datasets.arrow_dataset import Dataset
 
 
 Label = int
@@ -79,7 +79,7 @@ class PytorchConfig(BaseConfig):
 class RunConfig:
     run_name: str  # Get's appended as a prefix before the pipeline name
     train: bool  # Weather the run should do training
-    dataset: Dataset
+    dataset: pd.DataFrame
     force_fit: Optional[bool] = None  # If set to True will make all models train
     save_remote: Optional[
         bool

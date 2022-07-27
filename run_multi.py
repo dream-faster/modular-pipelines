@@ -32,9 +32,9 @@ hate_speech_data = load_data("data/original", preprocess_config)
 train_dataset, test_dataset = hate_speech_data
 run_name = "nlp-ensemble"
 run_configs = [
-    RunConfig(
-        run_name=run_name, dataset=train_dataset, train=True, remote_logging=False
-    ),
+    # RunConfig(
+    #     run_name=run_name, dataset=train_dataset, train=True, remote_logging=False
+    # ),
     RunConfig(run_name=run_name, dataset=test_dataset, train=False),
 ]
 
