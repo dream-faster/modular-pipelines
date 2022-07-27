@@ -24,7 +24,12 @@ class Block(Element):
     ) -> None:
         self.id = self.__class__.__name__ if id is None else id
         self.config = (
-            BaseConfig(force_fit=False, save=True, save_remote=False)
+            BaseConfig(
+                force_fit=False,
+                save=True,
+                save_remote=False,
+                preferred_load_origin=None,
+            )
             if config is None
             else config
         )

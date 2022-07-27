@@ -104,7 +104,7 @@ def create_nlp_sklearn_pipeline(autocorrect: bool, simple: bool = False) -> Pipe
             [
                 SpellAutocorrectAugmenter(fast=True) if autocorrect else None,
                 SpacyTokenizer(),
-                Lemmatizer(),
+                Lemmatizer(remove_stopwords=False),
                 SKLearnTransformation(
                     TfidfVectorizer(
                         max_features=100000,
