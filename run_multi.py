@@ -22,13 +22,10 @@ preprocess_config = PreprocessConfig(
     test_size=100,
     input_col="text",
     label_col="label",
-    rebalance=False, 
+    rebalance=False,
 )
 
-
 hate_speech_data = load_data("data/original", preprocess_config)
-
-# hate_speech_data = (balance_labels(hate_speech_data[0]), balance_labels(hate_speech_data[1]))
 
 for pipeline in [
     # ensemble_pipeline_hf,

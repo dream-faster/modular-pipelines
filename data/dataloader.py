@@ -27,7 +27,7 @@ def load_data(
         }
     )
 
-    if config.rebalance is True:
+    if config.rebalance:
         df_train = balance_labels(df_train)
         df_test = balance_labels(df_test)
 
