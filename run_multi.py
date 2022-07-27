@@ -47,7 +47,6 @@ for pipeline in [
 ]:
     run(
         pipeline,
-        hate_speech_data,
         preprocess_config,
         project_id="hate-speech-detection",
         run_configs=run_configs,
