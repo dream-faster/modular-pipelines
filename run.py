@@ -13,9 +13,6 @@ from plugins import WandbPlugin, WandbConfig
 from type import PreprocessConfig, TestDataset, TrainDataset, RunConfig
 
 
-hate_speech_data = load_data("data/original", preprocess_config)
-
-
 def run(
     pipeline: Pipeline,
     preprocess_config: PreprocessConfig,
@@ -52,6 +49,7 @@ def run(
 
 
 if __name__ == "__main__":
+    hate_speech_data = load_data("data/original", preprocess_config)
     run_configs = [
         RunConfig(
             run_name="hate-speech-detection", dataset=hate_speech_data[0], train=True
