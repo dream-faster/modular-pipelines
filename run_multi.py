@@ -1,3 +1,6 @@
+from cgi import test
+from dataclasses import dataclass
+from typing import Optional
 from data.dataloader import load_data
 from run import run
 
@@ -13,7 +16,7 @@ from library.examples.hate_speech import (
     nlp_sklearn_simple,
     # preprocess_config,
 )
-from type import PreprocessConfig
+from type import PreprocessConfig, RunConfig
 
 preprocess_config = PreprocessConfig(
     train_size=100,
@@ -23,7 +26,15 @@ preprocess_config = PreprocessConfig(
     label_col="label",
 )
 
+
 hate_speech_data = load_data("data/original", preprocess_config)
+
+train_dataset, test_dataset = hate_speech_data
+run_name = "nlp-ensemble"
+run_configs = [
+    RunConfig(run_name=run_name, dataset=train_dataset, train=True),
+    RunConfig(run_name=run_name, dataset=test_dataset, train=False),
+]
 
 for pipeline in [
     # ensemble_pipeline_hf,
@@ -39,4 +50,5 @@ for pipeline in [
         hate_speech_data,
         preprocess_config,
         project_id="hate-speech-detection",
+        run_configs=run_configs,
     )

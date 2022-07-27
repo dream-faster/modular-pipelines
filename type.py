@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 from enum import Enum
 from sklearn.base import ClassifierMixin
-from typing import Callable, List, Tuple
+from typing import Callable, List, Optional, Tuple
 
 from transformers import TrainingArguments
+from datasets.arrow_dataset import Dataset
 
 
 Label = int
@@ -69,3 +70,17 @@ class PytorchConfig(BaseConfig):
     hidden_size: int
     output_size: int
     val_size: float
+
+
+@dataclass
+class RunConfig:
+    run_name: str  # Get's appended as a prefix before the pipeline name
+    train: bool  # Weather the run should do training
+    dataset: Dataset
+    force_fit_all: Optional[bool] = None  # If set to True will make all models train
+    enable_remote_logging: Optional[
+        bool
+    ] = None  # Switches on and off all remote logging (eg.: wandb)
+    save_remote_all: Optional[
+        bool
+    ] = None  # If set True all models will try uploading (if configured), if set False it overwrites uploading of any models (even if configured)

@@ -9,9 +9,9 @@ from library.examples.hate_speech import (
 from library.evaluation import classification_metrics
 
 from blocks.pipeline import Pipeline
-from typing import Tuple
+from typing import List, Tuple
 from plugins import WandbPlugin, WandbConfig
-from type import PreprocessConfig
+from type import PreprocessConfig, RunConfig
 
 
 hate_speech_data = load_data("data/original", preprocess_config)
@@ -19,51 +19,51 @@ hate_speech_data = load_data("data/original", preprocess_config)
 
 def run(
     pipeline: Pipeline,
-    data: Tuple[Dataset, Dataset],
     preprocess_config: PreprocessConfig,
     project_id: str,
+    run_configs: List[RunConfig],
 ) -> None:
-    train_dataset, test_dataset = data
 
-    train_runner = Runner(
-        pipeline,
-        data={"input": train_dataset[Const.input_col]},
-        labels=train_dataset[Const.label_col],
-        evaluators=classification_metrics,
-        train=True,
-        plugins=[
-            WandbPlugin(
-                WandbConfig(
-                    project_id=project_id,
-                    run_name=pipeline.id,
-                    train=True,
-                ),
-                dict(pipeline.get_configs(), preprocess_config=vars(preprocess_config)),
-            )
-        ],
-    )
-    train_runner.run()
-
-    test_runner = Runner(
-        pipeline,
-        data={"input": test_dataset[Const.input_col]},
-        labels=test_dataset[Const.label_col],
-        evaluators=classification_metrics,
-        train=False,
-        plugins=[
-            WandbPlugin(
-                WandbConfig(project_id=project_id, run_name=pipeline.id, train=False),
-                dict(pipeline.get_configs(), preprocess_config=vars(preprocess_config)),
-            )
-        ],
-    )
-    test_runner.run()
+    for config in run_configs:
+        runner = Runner(
+            config,
+            pipeline,
+            data={Const.input_col: config.dataset[Const.input_col]},
+            labels=config.dataset[Const.label_col]
+            if hasattr(config.dataset, Const.label_col)
+            else None,
+            evaluators=classification_metrics,
+            plugins=[
+                WandbPlugin(
+                    WandbConfig(
+                        project_id=project_id,
+                        run_name=config.run_name + "-" + pipeline.id,
+                        train=True,
+                    ),
+                    dict(
+                        run_config=config,
+                        preprocess_config=vars(preprocess_config),
+                        pipeline_configs=pipeline.get_configs(),
+                    ),
+                )
+            ],
+        )
+        runner.run()
 
 
 if __name__ == "__main__":
+    run_configs = [
+        RunConfig(
+            run_name="hate-speech-detection", dataset=hate_speech_data[0], train=True
+        ),
+        RunConfig(
+            run_name="hate-speech-detection", dataset=hate_speech_data[1], train=False
+        ),
+    ]
+
     run(
+        run_configs,
         ensemble_pipeline,
-        hate_speech_data,
         preprocess_config,
         project_id="hate-speech-detection",
     )

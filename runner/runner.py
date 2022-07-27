@@ -6,7 +6,7 @@ from plugins import PipelineAnalyser, IntegrityChecker
 from plugins.base import Plugin
 
 
-from type import Evaluators
+from type import Evaluators, RunConfig
 from .store import Store
 from typing import List, Union
 
@@ -24,18 +24,18 @@ def print_checker(function_origin, text):
 class Runner:
     def __init__(
         self,
+        run_config: RunConfig,
         pipeline: Pipeline,
         data: Dict[str, Union[pd.Series, List]],
         labels: pd.Series,
         evaluators: Evaluators,
-        train: bool,
         plugins: List[Plugin],
     ) -> None:
+        self.config = run_config
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
         self.pipeline = pipeline
         self.store = Store(data, labels, self.run_path)
         self.evaluators = evaluators
-        self.train = train
         self.plugins = obligatory_plugins + plugins
 
     def run(self):
@@ -49,7 +49,7 @@ class Runner:
         print("📡 Looking for remote models")
         self.pipeline.load_remote()
 
-        if self.train:
+        if self.config.train:
             print("🏋️ Training pipeline")
             self.pipeline.fit(self.store, self.plugins)
 
