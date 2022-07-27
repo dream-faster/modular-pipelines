@@ -1,7 +1,6 @@
 from blocks.models.base import Model
 from utils.env_interface import get_env
 
-# from utils.huggingface_hub import initialize_huggingface
 from .infer import run_inference_pipeline
 from .train import run_training_pipeline
 from type import Evaluators, HuggingfaceConfig, DataType, PredsWithProbs
