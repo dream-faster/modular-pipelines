@@ -81,7 +81,7 @@ def create_nlp_sklearn_pipeline(
                         ngram_range=tfidf_ngram_range,
                     )
                 ),
-                SKLearnModel("nlp-sklearn", sklearn_config),
+                SKLearnModel(title, sklearn_config),
             ]
         ),
     )
@@ -92,7 +92,7 @@ sklearn_no_lemma_1_3 = create_nlp_sklearn_pipeline(
     autocorrect=True,
     lemmatization=False,
     tfidf_ngram_range=(1, 3),
-    tfidf_min_df=None,
+    tfidf_min_df=2,
     tfidf_max_features=100000,
     sklearn_config=sklearn_config,
 )
@@ -101,23 +101,38 @@ sklearn_lemma_1_3 = create_nlp_sklearn_pipeline(
     autocorrect=False,
     lemmatization=True,
     tfidf_ngram_range=(1, 3),
-    tfidf_min_df=None,
+    tfidf_min_df=2,
     tfidf_max_features=100000,
     sklearn_config=sklearn_config,
 )
 
-sklearn_lemma_1_2 = create_nlp_sklearn_pipeline(
+sklearn_lemma_1_2_small = create_nlp_sklearn_pipeline(
     title="sklearn_lemma_12",
     autocorrect=False,
     lemmatization=True,
     tfidf_ngram_range=(1, 2),
-    tfidf_min_df=None,
+    tfidf_min_df=2,
     tfidf_max_features=10000,
+    sklearn_config=sklearn_config,
+)
+
+sklearn_lemma_1_2_large = create_nlp_sklearn_pipeline(
+    title="sklearn_lemma_12",
+    autocorrect=False,
+    lemmatization=True,
+    tfidf_ngram_range=(1, 2),
+    tfidf_min_df=2,
+    tfidf_max_features=100000,
     sklearn_config=sklearn_config,
 )
 
 
 sklearn_ensemble = Ensemble(
     "sklearn-ensemble",
-    [sklearn_no_lemma_1_3, sklearn_lemma_1_3, sklearn_lemma_1_2],
+    [
+        sklearn_no_lemma_1_3,
+        sklearn_lemma_1_3,
+        sklearn_lemma_1_2_small,
+        sklearn_lemma_1_2_large,
+    ],
 )
