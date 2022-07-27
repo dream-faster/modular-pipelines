@@ -77,10 +77,10 @@ class RunConfig:
     run_name: str  # Get's appended as a prefix before the pipeline name
     train: bool  # Weather the run should do training
     dataset: Dataset
-    force_fit_all: Optional[bool] = None  # If set to True will make all models train
-    enable_remote_logging: Optional[
-        bool
-    ] = None  # Switches on and off all remote logging (eg.: wandb)
-    save_remote_all: Optional[
+    force_fit: Optional[bool] = None  # If set to True will make all models train
+    save_remote: Optional[
         bool
     ] = None  # If set True all models will try uploading (if configured), if set False it overwrites uploading of any models (even if configured)
+    remote_logging: Optional[
+        bool
+    ] = None  # Switches on and off all remote logging (eg.: wandb)

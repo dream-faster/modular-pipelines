@@ -1,3 +1,4 @@
+from asyncio.log import logger
 from datasets.arrow_dataset import Dataset
 from configs.constants import Const
 from data.dataloader import load_data
@@ -25,6 +26,20 @@ def run(
 ) -> None:
 
     for config in run_configs:
+        logger_plugins = [
+            WandbPlugin(
+                WandbConfig(
+                    project_id=project_id,
+                    run_name=config.run_name + "-" + pipeline.id,
+                    train=True,
+                ),
+                dict(
+                    run_config=config,
+                    preprocess_config=vars(preprocess_config),
+                    pipeline_configs=pipeline.get_configs(),
+                ),
+            )
+        ]
         runner = Runner(
             config,
             pipeline,
@@ -33,20 +48,7 @@ def run(
             if hasattr(config.dataset, Const.label_col)
             else None,
             evaluators=classification_metrics,
-            plugins=[
-                WandbPlugin(
-                    WandbConfig(
-                        project_id=project_id,
-                        run_name=config.run_name + "-" + pipeline.id,
-                        train=True,
-                    ),
-                    dict(
-                        run_config=config,
-                        preprocess_config=vars(preprocess_config),
-                        pipeline_configs=pipeline.get_configs(),
-                    ),
-                )
-            ],
+            plugins=[] + logger_plugins if config.remote_logging is not False else [],
         )
         runner.run()
 
