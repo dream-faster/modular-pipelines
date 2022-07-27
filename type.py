@@ -64,6 +64,9 @@ class PreprocessConfig:
     input_col: str
     label_col: str
 
+    def get_configs(self):
+        return vars(self)
+
 
 @dataclass
 class PytorchConfig(BaseConfig):
@@ -84,3 +87,6 @@ class RunConfig:
     remote_logging: Optional[
         bool
     ] = None  # Switches on and off all remote logging (eg.: wandb)
+
+    def get_configs(self):
+        return vars(self)

@@ -32,8 +32,8 @@ def run(
                     train=True,
                 ),
                 dict(
-                    run_config=config,
-                    preprocess_config=vars(preprocess_config),
+                    run_config=config.get_configs(),
+                    preprocess_config=preprocess_config.get_configs(),
                     pipeline_configs=pipeline.get_configs(),
                 ),
             )
