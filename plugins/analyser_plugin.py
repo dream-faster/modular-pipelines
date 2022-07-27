@@ -17,6 +17,7 @@ class PipelineAnalyser(Plugin):
                 if isinstance(block, List):
                     indent += "    "
                     print_all(block, indent)
+                    indent = indent[:len(indent) - len("    ")]
                 else:
                     print(indent + " - " + block.id)
 

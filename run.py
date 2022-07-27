@@ -2,7 +2,7 @@ from configs.constants import Const
 from data.dataloader import load_data
 from runner.runner import Runner
 from library.examples.hate_speech_sklearn import (
-    sklearn_lemma_1_3,
+    sklearn_ensemble,
     preprocess_config,
 )
 from library.evaluation import classification_metrics
@@ -61,7 +61,7 @@ def run(
 
 if __name__ == "__main__":
     run(
-        sklearn_lemma_1_3,
+        sklearn_ensemble,
         hate_speech_data,
         preprocess_config,
         project_id="hate-speech-detection-full",

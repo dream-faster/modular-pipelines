@@ -89,7 +89,7 @@ def create_nlp_sklearn_pipeline(
 
 sklearn_no_lemma_1_3 = create_nlp_sklearn_pipeline(
     title="sklearn_no_lemma_13",
-    autocorrect=False,
+    autocorrect=True,
     lemmatization=False,
     tfidf_ngram_range=(1, 3),
     tfidf_min_df=None,
@@ -106,4 +106,18 @@ sklearn_lemma_1_3 = create_nlp_sklearn_pipeline(
     sklearn_config=sklearn_config,
 )
 
-# sklearn_ensemble = Ensemble("sklearn-ensemble", [])
+sklearn_lemma_1_2 = create_nlp_sklearn_pipeline(
+    title="sklearn_lemma_12",
+    autocorrect=False,
+    lemmatization=True,
+    tfidf_ngram_range=(1, 2),
+    tfidf_min_df=None,
+    tfidf_max_features=10000,
+    sklearn_config=sklearn_config,
+)
+
+
+sklearn_ensemble = Ensemble(
+    "sklearn-ensemble",
+    [sklearn_no_lemma_1_3, sklearn_lemma_1_3, sklearn_lemma_1_2],
+)
