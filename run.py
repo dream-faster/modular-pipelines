@@ -62,8 +62,8 @@ if __name__ == "__main__":
     ]
 
     run(
-        [run_configs],
         ensemble_pipeline,
         preprocess_config,
         project_id="hate-speech-detection",
+        run_configs=[run_configs],
     )
