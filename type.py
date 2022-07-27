@@ -3,9 +3,13 @@ from enum import Enum
 import pandas as pd
 from sklearn.base import ClassifierMixin
 from typing import Callable, List, Optional, Tuple, Union
+import pandas as pd
+from transformers.training_args import TrainingArguments
 
-from transformers import TrainingArguments
 
+
+TrainDataset = pd.DataFrame
+TestDataset = pd.DataFrame
 
 Label = int
 Probabilities = List[float]
