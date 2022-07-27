@@ -14,7 +14,6 @@ from library.examples.hate_speech import (
     # preprocess_config,
 )
 from type import PreprocessConfig
-from utils.balance_labels import balance_labels
 
 preprocess_config = PreprocessConfig(
     train_size=100,
@@ -22,7 +21,6 @@ preprocess_config = PreprocessConfig(
     test_size=100,
     input_col="text",
     label_col="label",
-    rebalance=False,
 )
 
 hate_speech_data = load_data("data/original", preprocess_config)

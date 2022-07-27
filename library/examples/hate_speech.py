@@ -30,7 +30,6 @@ preprocess_config = PreprocessConfig(
     test_size=100,
     input_col="text",
     label_col="label",
-    rebalance=False,
 )
 
 huggingface_config = HuggingfaceConfig(
