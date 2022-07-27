@@ -2,9 +2,12 @@ from dataclasses import dataclass
 from enum import Enum
 from sklearn.base import ClassifierMixin
 from typing import Callable, List, Tuple
+import pandas as pd
+from transformers.training_args import TrainingArguments
 
-from transformers import TrainingArguments
 
+TrainDataset = pd.DataFrame
+TestDataset = pd.DataFrame
 
 Label = int
 Probabilities = List[float]

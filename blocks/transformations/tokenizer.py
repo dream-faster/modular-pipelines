@@ -8,7 +8,7 @@ class SpacyTokenizer(Transformation):
 
     inputTypes = [DataType.List, DataType.Series]
     outputType = DataType.List
-
+        
     def load_remote(self):
         self.nlp = get_spacy()
 

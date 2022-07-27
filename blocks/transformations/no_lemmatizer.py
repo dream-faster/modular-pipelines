@@ -7,7 +7,7 @@ import spacy
 from type import DataType
 
 
-class Lemmatizer(Transformation):
+class NoLemmatizer(Transformation):
 
     inputTypes = DataType.List
     outputType = DataType.List
@@ -26,7 +26,7 @@ class Lemmatizer(Transformation):
 def preprocess(tokens: List[Any], remove_stopwords: bool) -> str:
     return " ".join(
         [
-            token.lemma_
+            token.text
             for token in tokens
             if (not token.is_stop if remove_stopwords else True)
             and not token.is_punct
