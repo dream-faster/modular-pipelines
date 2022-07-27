@@ -64,5 +64,5 @@ if __name__ == "__main__":
         sklearn_lemma_1_3,
         hate_speech_data,
         preprocess_config,
-        project_id="hate-speech-detection",
+        project_id="hate-speech-detection-full",
     )
