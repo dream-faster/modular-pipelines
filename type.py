@@ -2,9 +2,11 @@ from dataclasses import dataclass
 from enum import Enum
 import pandas as pd
 from sklearn.base import ClassifierMixin
-from typing import Callable, List, Optional, Tuple, Union
+from typing import Callable, List, Literal, Optional, Tuple, Union
 import pandas as pd
 from transformers.training_args import TrainingArguments
+
+from configs.constants import Const
 
 
 TrainDataset = pd.DataFrame
@@ -38,6 +40,7 @@ class BaseConfig:
     force_fit: bool
     save: bool
     save_remote: bool
+    preferred_load_origin: Literal[Const.remote, Const.local, Const.pretrained, None]
 
 
 @dataclass

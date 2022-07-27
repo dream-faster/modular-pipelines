@@ -1,3 +1,4 @@
+from threading import local
 from blocks.models.base import Model
 from utils.env_interface import get_env
 
@@ -78,30 +79,32 @@ class HuggingfaceModel(Model):
         self.pipeline_id = pipeline_id
         self.id += f"-{str(execution_order)}"
 
-        model = safe_load_pipeline(
-            f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}"
-        )
-        if model:
-            self.model = model
+        local_path = f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}"
+        remote_path = f"{self.config.user_name}/{self.id}"
+        pretrained_path = self.config.pretrained_model
+
+        if self.config.preferred_load_origin == Const.local:
+            load_order = [local_path, remote_path, pretrained_path]
+        elif self.config.preferred_load_origin == Const.remote:
+            load_order = [remote_path, local_path, pretrained_path]
+        elif self.config.preferred_load_origin == Const.pretrained:
+            load_order = [pretrained_path, remote_path, local_path]
         else:
-            print("    ├ ℹ️ No local model found")
+            load_order = [local_path, remote_path, pretrained_path]
+
+        for load_path in load_order:
+            model = safe_load_pipeline(load_path)
+            if model:
+                self.model = model
+                break
+            else:
+                print(f"    ├ ℹ️ No model found on {load_path}")
 
         self.training_args.output_dir = (
             f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}"
         )
 
         return execution_order + 1
-
-    def load_remote(self):
-        if self.model is None:
-            model = safe_load_pipeline(f"{self.config.user_name}/{self.id}")
-            if model:
-                self.model = model
-            else:
-                print(
-                    f"    ├ ℹ️ No fitted model found remotely, loading pretrained foundational model: {self.config.pretrained_model}"
-                )
-                self.model = safe_load_pipeline(self.config.pretrained_model)
 
     def fit(self, dataset: List[str], labels: Optional[pd.Series]) -> None:
 

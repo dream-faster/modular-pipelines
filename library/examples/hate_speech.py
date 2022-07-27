@@ -3,6 +3,7 @@ from blocks.pipeline import Pipeline
 from blocks.models.huggingface import HuggingfaceModel
 
 from blocks.models.sklearn import SKLearnModel
+from configs.constants import Const
 from library.evaluation import classification
 from type import PreprocessConfig, HuggingfaceConfig, SKLearnConfig
 from blocks.pipeline import Pipeline
@@ -33,6 +34,7 @@ preprocess_config = PreprocessConfig(
 )
 
 huggingface_config = HuggingfaceConfig(
+    preferred_load_origin=Const.local,
     pretrained_model="distilbert-base-uncased",
     user_name="semy",
     repo_name="finetuning-tweeteval-hate-speech",
@@ -63,6 +65,7 @@ huggingface_config = HuggingfaceConfig(
 sklearn_config = SKLearnConfig(
     force_fit=False,
     save=True,
+    preferred_load_origin=Const.local,
     classifier=VotingClassifier(
         estimators=[
             ("nb", MultinomialNB()),
@@ -81,6 +84,7 @@ sklearn_config = SKLearnConfig(
 )
 
 sklearn_config_simple = SKLearnConfig(
+    preferred_load_origin=Const.local,
     force_fit=False,
     save=True,
     classifier=MultinomialNB(),
