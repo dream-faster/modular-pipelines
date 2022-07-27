@@ -1,9 +1,8 @@
-from datasets.arrow_dataset import Dataset
 from configs.constants import Const
 from data.dataloader import load_data
 from runner.runner import Runner
-from library.examples.hate_speech import (
-    ensemble_pipeline,
+from library.examples.hate_speech_sklearn import (
+    sklearn_ensemble,
     preprocess_config,
 )
 from library.evaluation import classification_metrics
@@ -11,7 +10,7 @@ from library.evaluation import classification_metrics
 from blocks.pipeline import Pipeline
 from typing import Tuple
 from plugins import WandbPlugin, WandbConfig
-from type import PreprocessConfig
+from type import PreprocessConfig, TestDataset, TrainDataset
 
 
 hate_speech_data = load_data("data/original", preprocess_config)
@@ -19,7 +18,7 @@ hate_speech_data = load_data("data/original", preprocess_config)
 
 def run(
     pipeline: Pipeline,
-    data: Tuple[Dataset, Dataset],
+    data: Tuple[TrainDataset, TestDataset],
     preprocess_config: PreprocessConfig,
     project_id: str,
 ) -> None:
@@ -62,7 +61,7 @@ def run(
 
 if __name__ == "__main__":
     run(
-        ensemble_pipeline,
+        sklearn_ensemble,
         hate_speech_data,
         preprocess_config,
         project_id="hate-speech-detection",
