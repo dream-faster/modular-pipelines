@@ -7,7 +7,6 @@ import pandas as pd
 from transformers.training_args import TrainingArguments
 
 
-
 TrainDataset = pd.DataFrame
 TestDataset = pd.DataFrame
 
@@ -57,6 +56,13 @@ class SKLearnConfig(BaseConfig):
     one_vs_rest: bool
 
 
+@dataclass
+class PytorchConfig(BaseConfig):
+    hidden_size: int
+    output_size: int
+    val_size: float
+
+
 """ Preprocessing Configs """
 
 
@@ -72,11 +78,7 @@ class PreprocessConfig:
         return vars(self)
 
 
-@dataclass
-class PytorchConfig(BaseConfig):
-    hidden_size: int
-    output_size: int
-    val_size: float
+""" Run Configs """
 
 
 @dataclass
