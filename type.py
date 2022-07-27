@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 from enum import Enum
+import pandas as pd
 from sklearn.base import ClassifierMixin
-from typing import Callable, List, Tuple
+from typing import Callable, List, Optional, Tuple, Union
 import pandas as pd
 from transformers.training_args import TrainingArguments
+
 
 
 TrainDataset = pd.DataFrame
@@ -66,9 +68,29 @@ class PreprocessConfig:
     input_col: str
     label_col: str
 
+    def get_configs(self):
+        return vars(self)
+
 
 @dataclass
 class PytorchConfig(BaseConfig):
     hidden_size: int
     output_size: int
     val_size: float
+
+
+@dataclass
+class RunConfig:
+    run_name: str  # Get's appended as a prefix before the pipeline name
+    train: bool  # Weather the run should do training
+    dataset: pd.DataFrame
+    force_fit: Optional[bool] = None  # If set to True will make all models train
+    save_remote: Optional[
+        bool
+    ] = None  # If set True all models will try uploading (if configured), if set False it overwrites uploading of any models (even if configured)
+    remote_logging: Optional[
+        bool
+    ] = None  # Switches on and off all remote logging (eg.: wandb)
+
+    def get_configs(self):
+        return vars(self)
