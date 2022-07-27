@@ -14,6 +14,7 @@ from runner.store import Store
 import pandas as pd
 from utils.flatten import flatten
 import logging
+from utils.env_interface import get_env
 
 logger = logging.getLogger("Wandb-Plugin")
 
@@ -84,19 +85,11 @@ class WandbPlugin(Plugin):
 def launch_wandb(
     project_name: str, run_name: str, configs: Optional[Dict[str, Dict]] = None
 ) -> Optional[object]:
+
+    wsb_token = get_env("WANDB_API_KEY")
+
     try:
-        from dotenv import load_dotenv
-
-        load_dotenv()
-
-        wsb_token = os.environ.get("WANDB_API_KEY")
         wandb.login(key=wsb_token)
-
-    except Exception as e:
-        logger.debug(e, exc_info=True)
-        logger.warning("The environment variable WANDB_API_KEY is missing")
-
-    try:
         wandb.init(project=project_name, config=configs, reinit=True, name=run_name)
         return wandb
     except Exception as e:

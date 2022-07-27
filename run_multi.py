@@ -26,16 +26,13 @@ preprocess_config = PreprocessConfig(
 
 hate_speech_data = load_data("data/original", preprocess_config)
 
-
-train_data, test_data = hate_speech_data
-
-hate_speech_data = (balance_labels(train_data), balance_labels(test_data))
+# hate_speech_data = (balance_labels(hate_speech_data[0]), balance_labels(hate_speech_data[1]))
 
 for pipeline in [
     # ensemble_pipeline_hf,
-    # huggingface_baseline,
+    huggingface_baseline,
     # nlp_sklearn,
-    nlp_sklearn_simple,
+    # nlp_sklearn_simple,
     # nlp_sklearn_autocorrect,
     # text_statistics_pipeline,
     # ensemble_pipeline,
