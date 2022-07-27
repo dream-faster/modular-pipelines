@@ -1,8 +1,8 @@
 from configs.constants import Const
 from data.dataloader import load_data
 from runner.runner import Runner
-from library.examples.hate_speech_sklearn import (
-    sklearn_ensemble,
+from library.examples.hate_speech import (
+    ensemble_pipeline,
     preprocess_config,
 )
 from library.evaluation import classification_metrics
@@ -11,7 +11,6 @@ from blocks.pipeline import Pipeline
 from typing import List
 from plugins import WandbPlugin, WandbConfig
 from type import PreprocessConfig, TestDataset, TrainDataset, RunConfig
-
 
 
 hate_speech_data = load_data("data/original", preprocess_config)
