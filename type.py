@@ -62,6 +62,7 @@ class PreprocessConfig:
     test_size: int
     input_col: str
     label_col: str
+    rebalance: bool
 
 
 @dataclass

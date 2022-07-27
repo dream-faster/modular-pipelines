@@ -17,12 +17,14 @@ from type import PreprocessConfig
 from utils.balance_labels import balance_labels
 
 preprocess_config = PreprocessConfig(
-    train_size=2000,
-    val_size=2000,
-    test_size=2000,
+    train_size=100,
+    val_size=100,
+    test_size=100,
     input_col="text",
     label_col="label",
+    rebalance=False, 
 )
+
 
 hate_speech_data = load_data("data/original", preprocess_config)
 

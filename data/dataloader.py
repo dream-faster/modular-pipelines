@@ -2,6 +2,7 @@ from typing import Tuple
 import pandas as pd
 from type import PreprocessConfig
 from configs.constants import Const
+from utils.balance_labels import balance_labels
 
 
 def load_data(
@@ -25,5 +26,9 @@ def load_data(
             config.label_col: Const.label_col,
         }
     )
+
+    if config.rebalance is True:
+        df_train = balance_labels(df_train)
+        df_test = balance_labels(df_test)
 
     return df_train, df_test
