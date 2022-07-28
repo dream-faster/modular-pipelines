@@ -34,14 +34,14 @@ def add_position_to_block_names(pipeline: Pipeline) -> Pipeline:
 
     def add_position(block: Union[List[Element], Element], position: int, prefix: str):
         if isinstance(block, List):
-            if position > 0:
-                prefix += f"{position - 1}-"
+            # if position > 0:
+            prefix += f"{position - 1}-"
             for i, child in enumerate(block):
                 add_position(child, i, prefix)
         elif not isinstance(block, DataSource):
             block.id += f"{prefix}{position}"
 
-    add_position(entire_pipeline, 0, "-")
+    add_position(entire_pipeline, 1, "-")
 
     return pipeline
 
