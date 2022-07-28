@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from enum import Enum
+from typing import Any, Callable, List, Optional, Tuple, Union
+
 import pandas as pd
 from sklearn.base import ClassifierMixin
-from typing import Any, Callable, List, Optional, Tuple, Union, Callable
-import pandas as pd
 from transformers.training_args import TrainingArguments
 
 from configs.constants import Const
@@ -52,7 +52,6 @@ class BaseConfig:
 class HuggingfaceConfig(BaseConfig):
     pretrained_model: str
     user_name: str
-    repo_name: str
     num_classes: int
     val_size: float
     training_args: TrainingArguments
