@@ -4,7 +4,7 @@ from utils.env_interface import get_env
 
 from .infer import run_inference_pipeline
 from .train import run_training_pipeline
-from type import Evaluators, HuggingfaceConfig, DataType, PredsWithProbs
+from type import Evaluators, HuggingfaceConfig, DataType, LoadOrigin, PredsWithProbs
 from configs.constants import Const
 import pandas as pd
 from datasets import Dataset, Features, Value, ClassLabel
@@ -79,18 +79,17 @@ class HuggingfaceModel(Model):
         self.pipeline_id = pipeline_id
         self.id += f"-{str(execution_order)}"
 
-        local_path = f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}"
-        remote_path = f"{self.config.user_name}/{self.id}"
-        pretrained_path = self.config.pretrained_model
+        paths = {
+            LoadOrigin.local: f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}",
+            LoadOrigin.remote: f"{self.config.user_name}/{self.id}",
+            LoadOrigin.pretrained: self.config.pretrained_model,
+        }
 
-        if self.config.preferred_load_origin == Const.local:
-            load_order = [local_path, remote_path, pretrained_path]
-        elif self.config.preferred_load_origin == Const.remote:
-            load_order = [remote_path, local_path, pretrained_path]
-        elif self.config.preferred_load_origin == Const.pretrained:
-            load_order = [pretrained_path, remote_path, local_path]
-        else:
-            load_order = [local_path, remote_path, pretrained_path]
+        load_order = [paths[self.config.preferred_load_origin]] + [
+            path
+            for path in paths.values()
+            if path is not paths[self.config.preferred_load_origin]
+        ]
 
         for load_path in load_order:
             model = safe_load_pipeline(load_path)

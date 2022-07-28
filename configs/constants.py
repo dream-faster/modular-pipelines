@@ -15,10 +15,6 @@ class Const:
 
     final_eval_name = "final"
 
-    remote = "remote"
-    local = "local"
-    pretrained = "pretrained"
-
 
 class LogConst:
     plugin_prefix = "    ┣━━┯ 🔌  Plugin"

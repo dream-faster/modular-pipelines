@@ -35,12 +35,18 @@ Evaluators = List[Evaluator]
 """ Model Configs """
 
 
+class LoadOrigin(Enum):
+    remote = "remote"
+    local = "local"
+    pretrained = "pretrained"
+
+
 @dataclass
 class BaseConfig:
     force_fit: bool
     save: bool
     save_remote: bool
-    preferred_load_origin: Literal[Const.remote, Const.local, Const.pretrained, None]
+    preferred_load_origin: Optional[LoadOrigin]
 
 
 @dataclass
