@@ -21,9 +21,9 @@ class BaseConcat(DataSource):
 
         return collected
 
-    def load_remote(self):
+    def load(self):
         for block in self.blocks:
-            block.load_remote()
+            block.load()
 
     def transform(self, data: List[pd.Series]) -> pd.Series:
         raise NotImplementedError()

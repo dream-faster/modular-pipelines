@@ -15,7 +15,7 @@ class SynonymAugmenter(Augmenter):
         super().__init__()
         self.num_synonyms = num_synonyms
 
-    def load_remote(self):
+    def load(self):
         nltk.download("wordnet")
         nltk.download("omw-1.4")
 
