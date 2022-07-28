@@ -17,9 +17,6 @@ class SKLearnTransformation(Transformation):
         self.model = sklearn_transformation
         self.id += "-" + sklearn_transformation.__class__.__name__
 
-    def load(self):
-        pass
-
     def fit(
         self,
         dataset: Union[List, np.ndarray],

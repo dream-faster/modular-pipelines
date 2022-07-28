@@ -11,7 +11,7 @@ from library.evaluation import classification_metrics, calibration_metrics
 from blocks.pipeline import Pipeline
 from typing import List
 from plugins import WandbPlugin, WandbConfig
-from type import PreprocessConfig, TestDataset, TrainDataset, RunConfig
+from type import Evaluators, PreprocessConfig, TestDataset, TrainDataset, RunConfig
 
 
 def run(
@@ -19,6 +19,7 @@ def run(
     preprocess_config: PreprocessConfig,
     project_id: str,
     run_configs: List[RunConfig],
+    metrics: Evaluators,
 ) -> None:
 
     for config in run_configs:
@@ -80,4 +81,5 @@ if __name__ == "__main__":
         preprocess_config,
         project_id="hate-speech-detection",
         run_configs=run_configs,
+        metrics=metrics,
     )

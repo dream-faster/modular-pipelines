@@ -14,12 +14,8 @@ class SpellingSpelloAugmenter(Augmenter):
     outputType = DataType.List
 
     def load(self, pipeline_id: str, execution_order: int) -> int:
-        self.pipeline_id = pipeline_id
-        self.id += f"-{str(execution_order)}"
-
         self.sp = SpellCorrectionModel(language="en")
-
-        return execution_order + 1
+        return super().load(pipeline_id, execution_order)
 
     def predict(self, dataset: pd.Series) -> pd.Series:
         return dataset.apply(self.sp)

@@ -9,8 +9,9 @@ class SpacyTokenizer(Transformation):
     inputTypes = [DataType.List, DataType.Series]
     outputType = DataType.List
 
-    def load(self):
+    def load(self, pipeline_id: str, execution_order: int) -> int:
         self.nlp = get_spacy()
+        return super().load(pipeline_id, execution_order)
 
     def predict(self, dataset: List[str]) -> List:
         return [self.nlp(text) for text in dataset]
