@@ -1,30 +1,28 @@
 from copy import deepcopy
-from transformers import TrainingArguments
-from blocks.pipeline import Pipeline
-from blocks.models.huggingface import HuggingfaceModel
 
-from blocks.models.sklearn import SKLearnModel
-from configs.constants import Const
-from library.evaluation import classification
-from type import LoadOrigin, PreprocessConfig, HuggingfaceConfig, SKLearnConfig
-from blocks.pipeline import Pipeline
-from blocks.transformations import Lemmatizer, SpacyTokenizer
+from blocks.adaptors import ListOfListsToNumpy
+from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
 from blocks.data import DataSource
 from blocks.ensemble import Ensemble
-from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
-from blocks.transformations import SKLearnTransformation, TextStatisticTransformation
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import (
-    GradientBoostingClassifier,
-    VotingClassifier,
+from blocks.models.huggingface import HuggingfaceModel
+from blocks.models.sklearn import SKLearnModel
+from blocks.pipeline import Pipeline
+from blocks.transformations import (
+    Lemmatizer,
+    SKLearnTransformation,
+    SpacyTokenizer,
+    TextStatisticTransformation,
 )
-from utils.flatten import remove_none
+from configs.constants import Const
+from library.evaluation import classification, classification_metrics
+from sklearn.ensemble import GradientBoostingClassifier, VotingClassifier
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.preprocessing import MinMaxScaler
-from blocks.adaptors import ListOfListsToNumpy
-
-from library.evaluation import classification_metrics
+from transformers import TrainingArguments
+from type import HuggingfaceConfig, LoadOrigin, PreprocessConfig, SKLearnConfig
+from utils.flatten import remove_none
 
 preprocess_config = PreprocessConfig(
     train_size=100,
@@ -70,9 +68,9 @@ huggingface_base_config = HuggingfaceConfig(
 huggingface_distil_bert_config = deepcopy(huggingface_base_config)
 huggingface_distil_bert_config.pretrained_model = "distilbert-base-uncased"
 
-huggingface_byt5_config = deepcopy(huggingface_base_config)
-huggingface_byt5_config.pretrained_model = "Narrativa/byt5-base-tweet-hate-detection"
-huggingface_byt5_config.preferred_load_origin = LoadOrigin.pretrained
+huggingface_distilroberta_config = deepcopy(huggingface_base_config)
+huggingface_distilroberta_config.pretrained_model = "'distilroberta-base'"
+huggingface_distilroberta_config.preferred_load_origin = LoadOrigin.pretrained
 
 input_data = DataSource("input")
 
@@ -87,17 +85,17 @@ huggingface_baseline_distilbert = Pipeline(
     ),
 )
 
-huggingface_byt5 = Pipeline(
-    "nlp_hf_byt5",
+huggingface_distilroberta = Pipeline(
+    "nlp_hf_'distilroberta-base'",
     input_data,
     remove_none(
         [
-            HuggingfaceModel("hf-model-byt5", huggingface_byt5_config),
+            HuggingfaceModel("'distilroberta-base'", huggingface_distilroberta_config),
         ]
     ),
 )
 
 ensemble_hf_multi_transformer = Ensemble(
     "ensemble_hf_multi_transformer",
-    [huggingface_baseline_distilbert, huggingface_byt5],
+    [huggingface_baseline_distilbert, huggingface_distilroberta],
 )

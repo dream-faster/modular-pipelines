@@ -1,29 +1,28 @@
-from blocks.pipeline import Pipeline
-from blocks.models.huggingface import HuggingfaceModel
+from typing import Tuple, Union
 
-from blocks.models.sklearn import SKLearnModel
-from blocks.transformations.no_lemmatizer import NoLemmatizer
-from configs.constants import Const
-from library.evaluation import classification
-from type import LoadOrigin, PreprocessConfig, HuggingfaceConfig, SKLearnConfig
-from blocks.pipeline import Pipeline
-from blocks.transformations import Lemmatizer, SpacyTokenizer
+from blocks.adaptors import ListOfListsToNumpy
+from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
 from blocks.data import DataSource
 from blocks.ensemble import Ensemble
-from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
-from blocks.transformations import SKLearnTransformation, TextStatisticTransformation
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import (
-    GradientBoostingClassifier,
-    VotingClassifier,
+from blocks.models.huggingface import HuggingfaceModel
+from blocks.models.sklearn import SKLearnModel
+from blocks.pipeline import Pipeline
+from blocks.transformations import (
+    Lemmatizer,
+    SKLearnTransformation,
+    SpacyTokenizer,
+    TextStatisticTransformation,
 )
-from utils.flatten import remove_none
+from blocks.transformations.no_lemmatizer import NoLemmatizer
+from configs.constants import Const
+from library.evaluation import classification, classification_metrics
+from sklearn.ensemble import GradientBoostingClassifier, VotingClassifier
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.preprocessing import MinMaxScaler
-from blocks.adaptors import ListOfListsToNumpy
-from typing import Tuple, Union
-from library.evaluation import classification_metrics
+from type import HuggingfaceConfig, LoadOrigin, PreprocessConfig, SKLearnConfig
+from utils.flatten import remove_none
 
 preprocess_config = PreprocessConfig(
     train_size=-1,
