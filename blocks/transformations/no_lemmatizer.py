@@ -16,7 +16,7 @@ class NoLemmatizer(Transformation):
         super().__init__()
         self.remove_stopwords = remove_stopwords
 
-    def load_remote(self):
+    def load(self):
         self.nlp = get_spacy()
 
     def predict(self, dataset: List) -> List[str]:

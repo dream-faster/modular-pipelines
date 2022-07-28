@@ -49,9 +49,6 @@ class Block(Element):
 
         return execution_order + 1
 
-    def load_remote(self) -> None:
-        pass
-
     def fit(
         self,
         dataset: pd.Series,
@@ -85,7 +82,7 @@ class DataSource(Element):
     def deplate(self, store: Store) -> pd.Series:
         return store.get_data(self.id)
 
-    def load_remote(self) -> None:
+    def load(self) -> None:
         pass
 
     def children(self) -> List[Element]:

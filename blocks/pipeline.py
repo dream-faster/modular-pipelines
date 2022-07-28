@@ -27,11 +27,6 @@ class Pipeline(Block):
             self.models = [models]
         self.datasource = datasource
 
-    def load_remote(self):
-        self.datasource.load_remote()
-        for model in self.models:
-            model.load_remote()
-
     def load(self, plugins: List["Plugin"]) -> None:
         """Begin"""
         for plugin in plugins:
