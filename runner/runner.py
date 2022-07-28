@@ -60,9 +60,6 @@ class Runner:
         print("💈 Loading existing models")
         self.pipeline.load(self.plugins)
 
-        print("📡 Looking for remote models")
-        self.pipeline.load_remote()
-
         if self.config.train:
             print("🏋️ Training pipeline")
             self.pipeline.fit(self.store, self.plugins)

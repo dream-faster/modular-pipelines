@@ -41,9 +41,6 @@ class WandbCallback(TrainerCallback):
 class WandbPlugin(Plugin):
     def __init__(self, config: WandbConfig, configs: Optional[Dict[str, Dict]]):
         super().__init__()
-        if configs is not None:
-            configs["run_params"] = {"train": config.train}
-
         self.wandb = launch_wandb(
             config.project_id,
             config.run_name + ("_train" if config.train is True else "_test"),

@@ -1,9 +1,10 @@
+from threading import local
 from blocks.models.base import Model
 from utils.env_interface import get_env
 
 from .infer import run_inference_pipeline
 from .train import run_training_pipeline
-from type import Evaluators, HuggingfaceConfig, DataType, PredsWithProbs
+from type import Evaluators, HuggingfaceConfig, DataType, LoadOrigin, PredsWithProbs
 from configs.constants import Const
 import pandas as pd
 from datasets import Dataset, Features, Value, ClassLabel
@@ -78,30 +79,31 @@ class HuggingfaceModel(Model):
         self.pipeline_id = pipeline_id
         self.id += f"-{str(execution_order)}"
 
-        model = safe_load_pipeline(
-            f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}"
-        )
-        if model:
-            self.model = model
-        else:
-            print("    ├ ℹ️ No local model found")
+        paths = {
+            LoadOrigin.local: f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}",
+            LoadOrigin.remote: f"{self.config.user_name}/{self.id}",
+            LoadOrigin.pretrained: self.config.pretrained_model,
+        }
+
+        load_order = [paths[self.config.preferred_load_origin]] + [
+            path
+            for path in paths.values()
+            if path is not paths[self.config.preferred_load_origin]
+        ]
+
+        for load_path in load_order:
+            model = safe_load_pipeline(load_path)
+            if model:
+                self.model = model
+                break
+            else:
+                print(f"    ├ ℹ️ No model found on {load_path}")
 
         self.training_args.output_dir = (
             f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}"
         )
 
         return execution_order + 1
-
-    def load_remote(self):
-        if self.model is None:
-            model = safe_load_pipeline(f"{self.config.user_name}/{self.id}")
-            if model:
-                self.model = model
-            else:
-                print(
-                    f"    ├ ℹ️ No fitted model found remotely, loading pretrained foundational model: {self.config.pretrained_model}"
-                )
-                self.model = safe_load_pipeline(self.config.pretrained_model)
 
     def fit(self, dataset: List[str], labels: Optional[pd.Series]) -> None:
 

@@ -3,8 +3,9 @@ from blocks.models.huggingface import HuggingfaceModel
 
 from blocks.models.sklearn import SKLearnModel
 from blocks.transformations.no_lemmatizer import NoLemmatizer
+from configs.constants import Const
 from library.evaluation import classification
-from type import PreprocessConfig, HuggingfaceConfig, SKLearnConfig
+from type import LoadOrigin, PreprocessConfig, HuggingfaceConfig, SKLearnConfig
 from blocks.pipeline import Pipeline
 from blocks.transformations import Lemmatizer, SpacyTokenizer
 from blocks.data import DataSource
@@ -35,6 +36,7 @@ preprocess_config = PreprocessConfig(
 sklearn_config = SKLearnConfig(
     force_fit=False,
     save=True,
+    preferred_load_origin=LoadOrigin.local,
     classifier=VotingClassifier(
         estimators=[
             ("nb", MultinomialNB()),

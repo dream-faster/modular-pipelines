@@ -16,10 +16,6 @@ class Ensemble(Pipeline):
         for pipeline in self.pipelines:
             pipeline.load(plugins)
 
-    def load_remote(self):
-        for pipeline in self.pipelines:
-            pipeline.load_remote()
-
     def save_remote(self) -> None:
         for pipeline in self.pipelines:
             pipeline.save_remote()

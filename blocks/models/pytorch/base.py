@@ -17,13 +17,15 @@ class PytorchModel(Model):
     inputTypes = DataType.Series
     outputType = DataType.PredictionsWithProbs
 
-    def __init__(self, id: str, config: PytorchConfig, evaluators: Optional[Evaluators]= None):
+    def __init__(
+        self, id: str, config: PytorchConfig, evaluators: Optional[Evaluators] = None
+    ):
         self.config = config
         self.id = id
         self.model = LightningWrapper(Decoder(config))
         self.evaluators: Optional[Evaluators] = evaluators
 
-    def load_remote(self):
+    def load(self):
         pass
 
     def fit(self, dataset: pd.Series, labels: Optional[pd.Series]) -> None:

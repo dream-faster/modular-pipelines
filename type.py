@@ -2,10 +2,11 @@ from dataclasses import dataclass
 from enum import Enum
 import pandas as pd
 from sklearn.base import ClassifierMixin
-from typing import Callable, List, Optional, Tuple, Union
+from typing import Callable, List, Literal, Optional, Tuple, Union
 import pandas as pd
 from transformers.training_args import TrainingArguments
 
+from configs.constants import Const
 
 
 TrainDataset = pd.DataFrame
@@ -34,11 +35,18 @@ Evaluators = List[Evaluator]
 """ Model Configs """
 
 
+class LoadOrigin(Enum):
+    remote = "remote"
+    local = "local"
+    pretrained = "pretrained"
+
+
 @dataclass
 class BaseConfig:
     force_fit: bool
     save: bool
     save_remote: bool
+    preferred_load_origin: Optional[LoadOrigin]
 
 
 @dataclass
@@ -57,6 +65,13 @@ class SKLearnConfig(BaseConfig):
     one_vs_rest: bool
 
 
+@dataclass
+class PytorchConfig(BaseConfig):
+    hidden_size: int
+    output_size: int
+    val_size: float
+
+
 """ Preprocessing Configs """
 
 
@@ -72,11 +87,7 @@ class PreprocessConfig:
         return vars(self)
 
 
-@dataclass
-class PytorchConfig(BaseConfig):
-    hidden_size: int
-    output_size: int
-    val_size: float
+""" Run Configs """
 
 
 @dataclass

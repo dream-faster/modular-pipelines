@@ -13,7 +13,7 @@ class SpellAutocorrectAugmenter(Augmenter):
         super().__init__()
         self.fast = fast
 
-    def load_remote(self):
+    def load(self):
         self.spell = Speller(fast=self.fast)
 
     def predict(self, dataset: List[str]) -> List[str]:

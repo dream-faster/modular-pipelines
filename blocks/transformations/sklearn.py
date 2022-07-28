@@ -17,7 +17,7 @@ class SKLearnTransformation(Transformation):
         self.model = sklearn_transformation
         self.id += "-" + sklearn_transformation.__class__.__name__
 
-    def load_remote(self):
+    def load(self):
         pass
 
     def fit(

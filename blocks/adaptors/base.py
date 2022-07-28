@@ -5,7 +5,7 @@ from typing import Optional, List
 
 
 class Adaptor(Block):
-    def load_remote(self):
+    def load(self):
         pass
 
     def fit(self, dataset: pd.Series, labels: Optional[pd.Series]) -> None:

@@ -24,7 +24,12 @@ class Block(Element):
     ) -> None:
         self.id = self.__class__.__name__ if id is None else id
         self.config = (
-            BaseConfig(force_fit=False, save=True, save_remote=False)
+            BaseConfig(
+                force_fit=False,
+                save=True,
+                save_remote=False,
+                preferred_load_origin=None,
+            )
             if config is None
             else config
         )
@@ -43,9 +48,6 @@ class Block(Element):
             self.model = model
 
         return execution_order + 1
-
-    def load_remote(self) -> None:
-        pass
 
     def fit(
         self,
@@ -80,7 +82,7 @@ class DataSource(Element):
     def deplate(self, store: Store) -> pd.Series:
         return store.get_data(self.id)
 
-    def load_remote(self) -> None:
+    def load(self) -> None:
         pass
 
     def children(self) -> List[Element]:
