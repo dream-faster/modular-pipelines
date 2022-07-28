@@ -39,7 +39,7 @@ preprocess_config = PreprocessConfig(
 )
 
 huggingface_config = HuggingfaceConfig(
-    preferred_load_origin=LoadOrigin.local,
+    preferred_load_origin=LoadOrigin.remote,
     pretrained_model="distilbert-base-uncased",
     user_name="semy",
     repo_name="finetuning-tweeteval-hate-speech",
@@ -204,7 +204,7 @@ cross_dataset_run_configs = [
     # ),
     RunConfig(
         run_name="hate-speech-detection-cross-val",
-        dataset=data_hatecheck[0],
+        dataset=data_hatecheck[1],
         train=False,
     ),
 ]
