@@ -1,5 +1,6 @@
 from configs.constants import Const
-from data.dataloader import load_data
+from data.dataloader import transform_dataset
+from datasets import load_dataset
 from runner.runner import Runner
 from library.examples.hate_speech import (
     ensemble_pipeline,
@@ -11,6 +12,10 @@ from blocks.pipeline import Pipeline
 from typing import List
 from plugins import WandbPlugin, WandbConfig
 from type import PreprocessConfig, TestDataset, TrainDataset, RunConfig
+
+
+
+
 
 
 def run(
@@ -49,7 +54,9 @@ def run(
 
 
 if __name__ == "__main__":
-    hate_speech_data = load_data("data/original", preprocess_config)
+    hate_speech_data = transform_dataset(
+    load_dataset("tweet_eval", "hate"), preprocess_config
+    )
     run_configs = [
         RunConfig(
             run_name="hate-speech-detection", dataset=hate_speech_data[0], train=True
@@ -60,7 +67,7 @@ if __name__ == "__main__":
     ]
 
     run(
-        ensemble_pipeline,
+        sklearn_ensemble,
         preprocess_config,
         project_id="hate-speech-detection",
         run_configs=run_configs,
