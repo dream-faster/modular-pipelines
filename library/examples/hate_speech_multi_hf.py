@@ -69,7 +69,7 @@ huggingface_distil_bert_config = deepcopy(huggingface_base_config)
 huggingface_distil_bert_config.pretrained_model = "distilbert-base-uncased"
 
 huggingface_distilroberta_config = deepcopy(huggingface_base_config)
-huggingface_distilroberta_config.pretrained_model = "'distilroberta-base'"
+huggingface_distilroberta_config.pretrained_model = "distilroberta-base"
 huggingface_distilroberta_config.preferred_load_origin = LoadOrigin.pretrained
 
 input_data = DataSource("input")
@@ -86,11 +86,11 @@ huggingface_baseline_distilbert = Pipeline(
 )
 
 huggingface_distilroberta = Pipeline(
-    "nlp_hf_'distilroberta-base'",
+    "nlp_hf_distilroberta-base",
     input_data,
     remove_none(
         [
-            HuggingfaceModel("'distilroberta-base'", huggingface_distilroberta_config),
+            HuggingfaceModel("distilroberta-base", huggingface_distilroberta_config),
         ]
     ),
 )
