@@ -1,11 +1,18 @@
 from blocks.pipeline import Pipeline
 from blocks.models.huggingface import HuggingfaceModel
-
+from data.transformation import transform_dataset
+from datasets.load import load_dataset
 from blocks.models.sklearn import SKLearnModel
 from blocks.transformations.no_lemmatizer import NoLemmatizer
 from configs.constants import Const
 from library.evaluation import classification
-from type import LoadOrigin, PreprocessConfig, HuggingfaceConfig, SKLearnConfig
+from type import (
+    LoadOrigin,
+    PreprocessConfig,
+    HuggingfaceConfig,
+    SKLearnConfig,
+    RunConfig,
+)
 from blocks.pipeline import Pipeline
 from blocks.transformations import Lemmatizer, SpacyTokenizer
 from blocks.data import DataSource
@@ -138,3 +145,16 @@ sklearn_ensemble = Ensemble(
         sklearn_lemma_1_2_large,
     ],
 )
+
+hate_speech_data = transform_dataset(
+    load_dataset("tweet_eval", "hate"), preprocess_config
+)
+
+run_configs = [
+    RunConfig(
+        run_name="hate-speech-detection", dataset=hate_speech_data[0], train=True
+    ),
+    RunConfig(
+        run_name="hate-speech-detection", dataset=hate_speech_data[1], train=False
+    ),
+]
