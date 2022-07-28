@@ -183,11 +183,11 @@ data_hatecheck = transform_hatecheck_dataset(
 )
 
 tweeteval_hate_speech_run_configs = [
-    # RunConfig(
-    #     run_name="hate-speech-detection",
-    #     dataset=data_tweet_eval_hate_speech[0],
-    #     train=True,
-    # ),
+    RunConfig(
+        run_name="hate-speech-detection",
+        dataset=data_tweet_eval_hate_speech[0],
+        train=True,
+    ),
     RunConfig(
         run_name="hate-speech-detection",
         dataset=data_tweet_eval_hate_speech[1],
@@ -197,11 +197,11 @@ tweeteval_hate_speech_run_configs = [
 
 
 cross_dataset_run_configs = [
-    RunConfig(
-        run_name="hate-speech-detection-cross-val",
-        dataset=data_tweet_eval_hate_speech[0],
-        train=True,
-    ),
+    # RunConfig(
+    #     run_name="hate-speech-detection-cross-val",
+    #     dataset=data_tweet_eval_hate_speech[0],
+    #     train=True,
+    # ),
     RunConfig(
         run_name="hate-speech-detection-cross-val",
         dataset=data_hatecheck[0],
