@@ -2,12 +2,11 @@ from dataclasses import dataclass
 from enum import Enum
 import pandas as pd
 from sklearn.base import ClassifierMixin
-from typing import Callable, List, Literal, Optional, Tuple, Union
+from typing import Any, Callable, List, Optional, Tuple, Union, Callable
 import pandas as pd
 from transformers.training_args import TrainingArguments
 
 from configs.constants import Const
-
 
 TrainDataset = pd.DataFrame
 TestDataset = pd.DataFrame
@@ -28,7 +27,7 @@ class DataType(Enum):
 
 
 EvaluatorId = str
-Evaluator = Tuple[EvaluatorId, Callable]
+Evaluator = Tuple[EvaluatorId, Callable[[List, List[PredsWithProbs]], Any]]
 Evaluators = List[Evaluator]
 
 

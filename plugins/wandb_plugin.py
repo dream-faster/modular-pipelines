@@ -41,14 +41,16 @@ class WandbCallback(TrainerCallback):
 class WandbPlugin(Plugin):
     def __init__(self, config: WandbConfig, configs: Optional[Dict[str, Dict]]):
         super().__init__()
-        self.wandb = launch_wandb(
-            config.project_id,
-            config.run_name + ("_train" if config.train is True else "_test"),
-            configs,
-        )
         self.config = config
+        self.configs = configs
 
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
+        self.wandb = launch_wandb(
+            self.config.project_id,
+            self.config.run_name + ("_train" if self.config.train is True else "_test"),
+            self.configs,
+        )
+
         for element in flatten(pipeline.children()):
             if isinstance(element, HuggingfaceModel):
                 element.trainer_callbacks = [

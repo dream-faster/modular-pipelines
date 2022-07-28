@@ -4,7 +4,7 @@ from type import Evaluators
 from typing import Union, List
 import pandas as pd
 from utils.json import dump_json, dump_str
-
+from matplotlib.figure import Figure
 import os
 
 
@@ -20,9 +20,12 @@ def evaluate(
         if isinstance(output, (float, int, list)):
             stats[id] = output
         elif isinstance(output, dict):
-            dump_json(output, path + "/" + id + ".json")
+            for item in output.items():
+                stats[item[0]] = item[1]
         elif isinstance(output, str):
             dump_str(output, path + "/" + id + ".txt")
+        elif isinstance(output, Figure):
+            output.savefig(path + "/" + id + ".png")
         else:
             raise Exception(f"Evaluator returned an invalid type: {type(output)}")
 

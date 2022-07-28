@@ -69,10 +69,9 @@ class Runner:
 
         print("🔮 Predicting with pipeline")
         preds_probs = self.pipeline.predict(self.store, self.plugins)
-        predictions = [pred[0] for pred in preds_probs]
 
         print("🤔 Evaluating entire pipeline")
-        stats = evaluate(predictions, self.store, self.evaluators, self.run_path)
+        stats = evaluate(preds_probs, self.store, self.evaluators, self.run_path)
         self.store.set_stats(Const.final_eval_name, stats)
 
         for plugin in self.plugins:
