@@ -2,7 +2,7 @@ import datetime
 from typing import Dict, List, Optional, Union
 
 import pandas as pd
-from blocks.base import Element
+from blocks.base import Block, DataSource, Element
 from blocks.pipeline import Pipeline
 from configs import Const
 from configs.constants import LogConst
@@ -32,16 +32,14 @@ def add_position_to_block_names(pipeline: Pipeline) -> Pipeline:
     entire_pipeline = pipeline.children()
 
     def add_position(block: Union[List[Element], Element], position: int, prefix: str):
-        prefix += f"{position}-"
         if isinstance(block, List):
-
+            prefix += f"{position}-"
             for i, child in enumerate(block):
-                add_position(child, position + i, prefix)
-        else:
+                add_position(child, i, prefix)
+        elif not isinstance(block, DataSource):
             block.id += f"{prefix}{position}"
 
-    for child in entire_pipeline:
-        add_position(child, 0, "-")
+    add_position(entire_pipeline, 0, "-")
 
     return pipeline
 
@@ -64,7 +62,7 @@ class Runner:
         self.plugins = obligatory_plugins + plugins
 
         self.pipeline = overwrite_model_configs(self.config, self.pipeline)
-        # self.pipeline = add_position_to_block_names(self.pipeline)
+        self.pipeline = add_position_to_block_names(self.pipeline)
 
     def run(self):
         for plugin in self.plugins:
