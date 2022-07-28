@@ -1,17 +1,15 @@
-from configs.constants import Const
-from data.dataloader import transform_dataset
+from typing import List
+
 from datasets import load_dataset
-from runner.runner import Runner
-from library.examples.hate_speech import (
-    ensemble_pipeline,
-    preprocess_config,
-)
-from library.evaluation import classification_metrics
 
 from blocks.pipeline import Pipeline
-from typing import List
-from plugins import WandbPlugin, WandbConfig
-from type import PreprocessConfig, TestDataset, TrainDataset, RunConfig
+from configs.constants import Const
+from data.dataloader import transform_dataset
+from library.evaluation import classification_metrics
+from library.examples.hate_speech import ensemble_pipeline, preprocess_config
+from plugins import WandbConfig, WandbPlugin
+from runner.runner import Runner
+from type import PreprocessConfig, RunConfig, TestDataset, TrainDataset
 
 
 def run(
@@ -44,7 +42,7 @@ def run(
             if hasattr(config.dataset, Const.label_col)
             else None,
             evaluators=classification_metrics,
-            plugins=logger_plugins if config.remote_logging else [],
+            plugins=logger_plugins if config.remote_logging is not False else [],
         )
         runner.run()
 
