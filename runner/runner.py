@@ -1,4 +1,5 @@
 import datetime
+from copy import deepcopy
 from typing import Dict, List, Optional, Union
 
 import pandas as pd
@@ -23,7 +24,7 @@ def overwrite_model_configs(config: RunConfig, pipeline: Pipeline) -> Pipeline:
             for model in flatten(pipeline.children()):
                 if hasattr(model, "config"):
                     if hasattr(model.config, key):
-                        model.config[key] = value
+                        vars(model.config)[key] = value
 
     return pipeline
 
@@ -33,13 +34,26 @@ def add_position_to_block_names(pipeline: Pipeline) -> Pipeline:
 
     def add_position(block: Union[List[Element], Element], position: int, prefix: str):
         if isinstance(block, List):
-            prefix += f"{position}-"
+            if position > 0:
+                prefix += f"{position-1}-"
             for i, child in enumerate(block):
                 add_position(child, i, prefix)
         elif not isinstance(block, DataSource):
             block.id += f"{prefix}{position}"
 
     add_position(entire_pipeline, 0, "-")
+
+    return pipeline
+
+
+def replace_duplicates_with_copy(pipeline: Pipeline) -> Pipeline:
+    entire_pipeline = flatten(pipeline.children())
+    seen = []
+    for block in entire_pipeline:
+        if block not in seen:
+            seen.append(block)
+        else:
+            block = deepcopy(block)
 
     return pipeline
 
@@ -62,6 +76,7 @@ class Runner:
         self.plugins = obligatory_plugins + plugins
 
         self.pipeline = overwrite_model_configs(self.config, self.pipeline)
+        self.pipeline = replace_duplicates_with_copy(self.pipeline)
         self.pipeline = add_position_to_block_names(self.pipeline)
 
     def run(self):
