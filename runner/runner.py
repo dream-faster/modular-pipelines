@@ -1,19 +1,17 @@
-from typing import Dict, Optional
+import datetime
+from typing import Dict, List, Optional, Union
+
 import pandas as pd
 from blocks.pipeline import Pipeline
+from configs import Const
 from configs.constants import LogConst
-from plugins import PipelineAnalyser, IntegrityChecker
+from plugins import IntegrityChecker, PipelineAnalyser
 from plugins.base import Plugin
-
-
 from type import Evaluators, RunConfig
 from utils.flatten import flatten
-from .store import Store
-from typing import List, Union
 
 from .evaluation import evaluate
-import datetime
-from configs import Const
+from .store import Store
 
 obligatory_plugins = [PipelineAnalyser(), IntegrityChecker()]
 
@@ -28,7 +26,7 @@ def overwrite_model_configs(config: RunConfig, pipeline: Pipeline) -> Pipeline:
             for model in flatten(pipeline.children()):
                 if hasattr(model, "config"):
                     if hasattr(model.config, key):
-                        model.config[key] = value
+                        vars(model.config)[key] = value
 
     return pipeline
 
