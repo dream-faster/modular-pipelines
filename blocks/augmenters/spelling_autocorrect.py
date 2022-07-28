@@ -16,12 +16,8 @@ class SpellAutocorrectAugmenter(Augmenter):
         self.fast = fast
 
     def load(self, pipeline_id: str, execution_order: int) -> int:
-        self.pipeline_id = pipeline_id
-        self.id += f"-{str(execution_order)}"
-
         self.spell = Speller(fast=self.fast)
-
-        return execution_order + 1
+        return super().load(pipeline_id, execution_order)
 
     def predict(self, dataset: List[str]) -> List[str]:
         return [self.spell(text) for text in dataset]
