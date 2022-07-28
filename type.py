@@ -1,13 +1,12 @@
 from dataclasses import dataclass
 from enum import Enum
+from typing import Callable, List, Optional, Tuple
+
 import pandas as pd
 from sklearn.base import ClassifierMixin
-from typing import Callable, List, Literal, Optional, Tuple, Union
-import pandas as pd
 from transformers.training_args import TrainingArguments
 
 from configs.constants import Const
-
 
 TrainDataset = pd.DataFrame
 TestDataset = pd.DataFrame
