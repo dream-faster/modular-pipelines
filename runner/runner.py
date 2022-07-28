@@ -1,25 +1,20 @@
-from typing import Dict, Optional
+import datetime
+from typing import Dict, List, Optional, Union
+
 import pandas as pd
+from blocks.base import Element
 from blocks.pipeline import Pipeline
+from configs import Const
 from configs.constants import LogConst
-from plugins import PipelineAnalyser, IntegrityChecker
+from plugins import IntegrityChecker, PipelineAnalyser
 from plugins.base import Plugin
-
-
 from type import Evaluators, RunConfig
 from utils.flatten import flatten
-from .store import Store
-from typing import List, Union
 
 from .evaluation import evaluate
-import datetime
-from configs import Const
+from .store import Store
 
 obligatory_plugins = [PipelineAnalyser(), IntegrityChecker()]
-
-
-def print_checker(function_origin, text):
-    type(self).on_run_begin.__qualname__.split(".")[0]
 
 
 def overwrite_model_configs(config: RunConfig, pipeline: Pipeline) -> Pipeline:
@@ -29,6 +24,24 @@ def overwrite_model_configs(config: RunConfig, pipeline: Pipeline) -> Pipeline:
                 if hasattr(model, "config"):
                     if hasattr(model.config, key):
                         model.config[key] = value
+
+    return pipeline
+
+
+def add_position_to_block_names(pipeline: Pipeline) -> Pipeline:
+    entire_pipeline = pipeline.children()
+
+    def add_position(block: Union[List[Element], Element], position: int, prefix: str):
+        prefix += f"{position}-"
+        if isinstance(block, List):
+
+            for i, child in enumerate(block):
+                add_position(child, position + i, prefix)
+        else:
+            block.id += f"{prefix}{position}"
+
+    for child in entire_pipeline:
+        add_position(child, 0, "-")
 
     return pipeline
 
@@ -51,6 +64,7 @@ class Runner:
         self.plugins = obligatory_plugins + plugins
 
         self.pipeline = overwrite_model_configs(self.config, self.pipeline)
+        # self.pipeline = add_position_to_block_names(self.pipeline)
 
     def run(self):
         for plugin in self.plugins:

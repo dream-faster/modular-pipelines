@@ -1,9 +1,11 @@
+from typing import Any, List, Optional
+
 import nltk
-from nltk.corpus import wordnet as wn
-from .base import Augmenter
-from typing import List, Any, Optional
 import pandas as pd
+from nltk.corpus import wordnet as wn
 from type import DataType
+
+from .base import Augmenter
 
 
 class SynonymAugmenter(Augmenter):
@@ -15,9 +17,14 @@ class SynonymAugmenter(Augmenter):
         super().__init__()
         self.num_synonyms = num_synonyms
 
-    def load(self):
+    def load(self, pipeline_id: str, execution_order: int) -> int:
+        self.pipeline_id = pipeline_id
+        self.id += f"-{str(execution_order)}"
+
         nltk.download("wordnet")
         nltk.download("omw-1.4")
+
+        return execution_order + 1
 
     def predict(self, dataset: List) -> List[str]:
         return [
