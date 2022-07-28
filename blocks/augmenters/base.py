@@ -5,8 +5,11 @@ from typing import Optional, List
 
 
 class Augmenter(Block):
-    def load(self):
-        pass
+    def load(self, pipeline_id: str, execution_order: int) -> int:
+        self.pipeline_id = pipeline_id
+        self.id += f"-{str(execution_order)}"
+
+        return execution_order + 1
 
     def fit(self, dataset: pd.Series, labels: Optional[pd.Series]) -> None:
         pass
