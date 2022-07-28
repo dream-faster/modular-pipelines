@@ -85,13 +85,19 @@ class HuggingfaceModel(Model):
             LoadOrigin.pretrained: self.config.pretrained_model,
         }
 
-        load_order = [paths[self.config.preferred_load_origin]] + [
-            path
-            for path in paths.values()
+        load_order = [
+            (
+                self.config.preferred_load_origin,
+                paths[self.config.preferred_load_origin],
+            )
+        ] + [
+            (key, path)
+            for key, path in paths.items()
             if path is not paths[self.config.preferred_load_origin]
         ]
 
-        for load_path in load_order:
+        for key, load_path in load_order:
+            print(f"    ├ ℹ️ Loading from {key}")
             model = safe_load_pipeline(load_path)
             if model:
                 self.model = model

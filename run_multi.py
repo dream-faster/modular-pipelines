@@ -1,7 +1,5 @@
-from cgi import test
-from dataclasses import dataclass
-from typing import Optional
-from data.dataloader import load_data
+from datasets import load_dataset
+from data.dataloader import transform_dataset
 from run import run
 
 
@@ -16,6 +14,7 @@ from library.examples.hate_speech import (
     nlp_sklearn_simple,
     # preprocess_config,
 )
+from library.examples.hate_speech_multi_hf import ensemble_hf_multi_transformer
 from type import PreprocessConfig, RunConfig
 
 preprocess_config = PreprocessConfig(
@@ -27,25 +26,28 @@ preprocess_config = PreprocessConfig(
 )
 
 
-hate_speech_data = load_data("data/original", preprocess_config)
+hate_speech_data = transform_dataset(
+    load_dataset("tweet_eval", "hate"), preprocess_config
+)
 
 train_dataset, test_dataset = hate_speech_data
-run_name = "nlp-ensemble"
+run_name = "hf-distilbert-ByT5"
 run_configs = [
-    # RunConfig(
-    #     run_name=run_name, dataset=train_dataset, train=True, remote_logging=False
-    # ),
+    RunConfig(
+        run_name=run_name, dataset=train_dataset, train=True, remote_logging=False
+    ),
     RunConfig(run_name=run_name, dataset=test_dataset, train=False),
 ]
 
 for pipeline in [
     # ensemble_pipeline_hf,
-    huggingface_baseline,
+    # huggingface_baseline,
     # nlp_sklearn,
     # nlp_sklearn_simple,
     # nlp_sklearn_autocorrect,
     # text_statistics_pipeline,
     # ensemble_pipeline,
+    ensemble_hf_multi_transformer
 ]:
     run(
         pipeline,
