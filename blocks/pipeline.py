@@ -101,19 +101,15 @@ class Pipeline(Block):
         return self.datasource.children() + [self] + [self.models]
 
     def dict_children(self) -> dict:
-        source_id = self.datasource.dict_children()
-        new_dict = dict()
-        new_dict[source_id] = {
-            "name": source_id,
-            "children": {
-                "name": self.id,
-                "obj": self,
-                "children": [child.dict_children() for child in self.models]
-                if hasattr(self, "models")
-                else [],
-            },
-        }
-        return new_dict
+        source_dict = self.datasource.dict_children()
+
+        source_dict["children"] = (
+            [child.dict_children() for child in self.models]
+            if hasattr(self, "models")
+            else []
+        )
+
+        return source_dict
 
     def get_configs(self) -> List[BaseConfig]:
         entire_pipeline = self.children()

@@ -90,5 +90,5 @@ class DataSource(Element):
     def children(self) -> List[Element]:
         return [self]
 
-    def dict_children(self) -> str:
-        return self.id
+    def dict_children(self) -> dict:
+        return {"name": self.id, "obj": self}

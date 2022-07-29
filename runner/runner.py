@@ -46,25 +46,18 @@ def add_position_to_block_names(pipeline: Pipeline) -> Pipeline:
     return pipeline
 
 
-def create_hierarchical_dict(pipeline: Pipeline) -> dict:
+def append_pipeline_id(pipeline: Pipeline) -> Pipeline:
     entire_pipeline = pipeline.dict_children()
 
-    def get_child(block):
+    def append_id(block, pipeline_id):
+        block["obj"].pipeline_id = pipeline_id
 
-        if isinstance(block, List):
-            new_dict = dict()
-            new_dict[block.id] = {
-                "name": block.id,
-                "children": [get_child(child) for child in block],
-            }
-        else:
-            return block.id
+        if "children" in block:
+            for child in block["children"]:
+                append_id(child, f"{pipeline_id}/{block['name']}")
 
-        return dict
-
-    hierarchy = get_child(entire_pipeline)
-
-    return hierarchy
+    append_id(entire_pipeline, pipeline.id)
+    return pipeline
 
 
 class Runner:
@@ -84,9 +77,9 @@ class Runner:
         self.evaluators = evaluators
         self.plugins = obligatory_plugins + plugins
 
-        hierarchical_dict = create_hierarchical_dict(self.pipeline)
         self.pipeline = overwrite_model_configs(self.config, self.pipeline)
         self.pipeline = add_position_to_block_names(self.pipeline)
+        self.pipeline = append_pipeline_id(self.pipeline)
 
     def run(self):
         for plugin in self.plugins:
