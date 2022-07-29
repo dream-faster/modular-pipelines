@@ -49,14 +49,14 @@ def add_position_to_block_names(pipeline: Pipeline) -> Pipeline:
 def append_pipeline_id(pipeline: Pipeline) -> Pipeline:
     entire_pipeline = pipeline.dict_children()
 
-    def append_id(block, pipeline_id):
+    def append_id(block, pipeline_id: str):
         block["obj"].pipeline_id = pipeline_id
 
         if "children" in block:
             for child in block["children"]:
-                append_id(child, f"{pipeline_id}/{block['name']}")
+                append_id(child, f"{pipeline_id}/{block['name']}/{child['name']}")
 
-    append_id(entire_pipeline, pipeline.id)
+    append_id(entire_pipeline, Const.output_pipelines_path)
     return pipeline
 
 
