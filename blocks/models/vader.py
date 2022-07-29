@@ -3,8 +3,9 @@ from typing import List, Optional
 import nltk
 import numpy as np
 import pandas as pd
-from blocks.models.base import Model
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
+from blocks.models.base import Model
 from type import DataType, PredsWithProbs
 
 

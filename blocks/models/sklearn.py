@@ -1,11 +1,11 @@
 from typing import List, Optional
 
 import pandas as pd
-from blocks.models.base import Model
-from type import DataType, Evaluators, PredsWithProbs, SKLearnConfig
-
 from sklearn.base import BaseEstimator, ClassifierMixin, clone
 from sklearn.multiclass import OneVsRestClassifier
+
+from blocks.models.base import Model
+from type import DataType, Evaluators, PredsWithProbs, SKLearnConfig
 
 
 class SKLearnModel(Model):

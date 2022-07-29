@@ -1,9 +1,9 @@
 import datetime
-
 from copy import deepcopy
 from typing import Dict, List, Optional, Union
 
 import pandas as pd
+
 from blocks.base import Block, DataSource, Element
 from blocks.pipeline import Pipeline
 from configs import Const
@@ -26,7 +26,6 @@ def overwrite_model_configs(config: RunConfig, pipeline: Pipeline) -> Pipeline:
                 if hasattr(model, "config"):
                     if hasattr(model.config, key):
                         vars(model.config)[key] = value
-
 
     return pipeline
 

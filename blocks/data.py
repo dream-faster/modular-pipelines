@@ -1,10 +1,13 @@
-from .base import DataSource
-import pandas as pd
 from typing import List, Union
-from .pipeline import Pipeline, process_block
-from runner.store import Store
-from configs.constants import Const
+
 import numpy as np
+import pandas as pd
+
+from configs.constants import Const
+from runner.store import Store
+
+from .base import DataSource
+from .pipeline import Pipeline, process_block
 
 
 class BaseConcat(DataSource):

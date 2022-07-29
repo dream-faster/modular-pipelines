@@ -1,12 +1,13 @@
+from copy import deepcopy
 from typing import Callable, List, Optional, Union
 
 import pandas as pd
+
 from configs.constants import LogConst
 from runner.store import Store
 from runner.train import predict, train_predict
 from type import BaseConfig
 from utils.flatten import flatten
-from copy import deepcopy
 
 from .base import Block, DataSource, Element
 

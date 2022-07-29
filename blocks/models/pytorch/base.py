@@ -1,15 +1,17 @@
-from type import Evaluators, PytorchConfig, DataType
+from typing import Optional
+
 import pandas as pd
 import pytorch_lightning as pl
-from blocks.models.base import Model
 import torch
 from torch import nn
 from torch.nn import functional as F
-from torch.utils.data import DataLoader
-from torch.utils.data import random_split
-from .decoder import Decoder
-from typing import Optional
+from torch.utils.data import DataLoader, random_split
+
+from blocks.models.base import Model
 from configs.constants import Const
+from type import DataType, Evaluators, PytorchConfig
+
+from .decoder import Decoder
 
 
 class PytorchModel(Model):

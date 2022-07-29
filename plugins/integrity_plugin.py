@@ -1,9 +1,10 @@
+from typing import List
+
 from blocks.pipeline import Pipeline
+from type import DataType
+from utils.flatten import flatten
 
 from .base import Plugin
-from utils.flatten import flatten
-from type import DataType
-from typing import List
 
 
 class IntegrityChecker(Plugin):

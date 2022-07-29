@@ -2,10 +2,10 @@ from abc import ABC
 from typing import Callable, List, Optional, Union
 
 import pandas as pd
-from runner.store import Store
-from type import BaseConfig, DataType
 
 from blocks.iomanager import safe_loading, safe_saving
+from runner.store import Store
+from type import BaseConfig, DataType
 
 
 class Element(ABC):

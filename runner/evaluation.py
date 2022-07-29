@@ -1,11 +1,14 @@
-from utils.printing import pprint_indent
-from .store import Store
-from type import Evaluators, PredsWithProbs
-from typing import Union, List
-import pandas as pd
-from utils.json import dump_json, dump_str
-from matplotlib.figure import Figure
 import os
+from typing import List, Union
+
+import pandas as pd
+from matplotlib.figure import Figure
+
+from type import Evaluators, PredsWithProbs
+from utils.json import dump_json, dump_str
+from utils.printing import pprint_indent
+
+from .store import Store
 
 
 def evaluate(

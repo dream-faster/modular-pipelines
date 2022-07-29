@@ -1,8 +1,10 @@
 from typing import Tuple
-from datasets.arrow_dataset import Dataset
+
 import pandas as pd
-from type import PreprocessConfig, TestDataset, TrainDataset
+from datasets.arrow_dataset import Dataset
+
 from configs.constants import Const
+from type import PreprocessConfig, TestDataset, TrainDataset
 
 
 def transform_dataset(
@@ -15,7 +17,6 @@ def transform_dataset(
         df_train = pd.concat([df_train, df_val], axis=0).reset_index(drop=True)
 
     df_test = pd.DataFrame(dataset["test"][: config.test_size])
-
 
     cols_to_rename = {
         config.input_col: Const.input_col,

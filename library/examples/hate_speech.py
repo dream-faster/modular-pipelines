@@ -15,6 +15,9 @@ from blocks.transformations import (
 )
 from data.transformation import transform_dataset
 from data.transformation_hatecheck import transform_hatecheck_dataset
+from data.transformation_hatespeech_detection import (
+    transform_hatespeech_detection_dataset,
+)
 from datasets.load import load_dataset
 from library.evaluation import classification_metrics
 from sklearn.ensemble import GradientBoostingClassifier, VotingClassifier

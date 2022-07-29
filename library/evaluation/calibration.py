@@ -1,8 +1,10 @@
-from pycaleva import CalibrationEvaluator
-from type import Evaluators, PredsWithProbs
 from typing import List
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
+from pycaleva import CalibrationEvaluator
+
+from type import Evaluators, PredsWithProbs
 
 
 def __calibration_report(y_true: List, predicted: List[PredsWithProbs]) -> dict:

@@ -1,9 +1,11 @@
 from typing import Callable, List, Tuple
-from type import HuggingfaceConfig, PredsWithProbs
-from datasets import Dataset
+
 import numpy as np
-from configs.constants import Const
 import pandas as pd
+from datasets import Dataset
+
+from configs.constants import Const
+from type import HuggingfaceConfig, PredsWithProbs
 
 
 def run_inference_pipeline(

@@ -1,10 +1,13 @@
-from typing import List, Tuple, Union
-from type import DataType
-from collections import Counter
-from urlextract import URLExtract
-from emoji import EMOJI_DATA
 import re
+from collections import Counter
+from typing import List, Tuple, Union
+
 import numpy as np
+from emoji import EMOJI_DATA
+from urlextract import URLExtract
+
+from type import DataType
+
 from .base import Transformation
 
 

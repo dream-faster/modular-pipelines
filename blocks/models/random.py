@@ -1,8 +1,10 @@
-import pandas as pd
-from blocks.models.base import Model
-from type import PredsWithProbs, DataType
-from typing import Optional, List
 import random
+from typing import List, Optional
+
+import pandas as pd
+
+from blocks.models.base import Model
+from type import DataType, PredsWithProbs
 
 
 class AllZerosModel(Model):

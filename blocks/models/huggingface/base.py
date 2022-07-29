@@ -4,8 +4,6 @@ from typing import Callable, List, Optional, Tuple, Union
 
 import pandas as pd
 import torch
-from blocks.models.base import Model
-from configs.constants import Const
 from datasets import ClassLabel, Dataset, Features, Value
 from sklearn.model_selection import train_test_split
 from transformers import (
@@ -16,6 +14,9 @@ from transformers import (
     TrainingArguments,
     pipeline,
 )
+
+from blocks.models.base import Model
+from configs.constants import Const
 from type import DataType, Evaluators, HuggingfaceConfig, LoadOrigin, PredsWithProbs
 from utils.env_interface import get_env
 
