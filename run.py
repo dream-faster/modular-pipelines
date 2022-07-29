@@ -61,7 +61,7 @@ if __name__ == "__main__":
     metrics = classification_metrics + calibration_metrics
 
     run(
-        vader,
+        huggingface_baseline,
         preprocess_config,
         project_id="hate-speech-detection",
         run_configs=cross_dataset_run_configs,

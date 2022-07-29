@@ -4,6 +4,8 @@ from typing import Callable, List, Optional, Tuple, Union
 
 import pandas as pd
 import torch
+from blocks.models.base import Model
+from configs.constants import Const
 from datasets import ClassLabel, Dataset, Features, Value
 from sklearn.model_selection import train_test_split
 from transformers import (
@@ -14,9 +16,6 @@ from transformers import (
     TrainingArguments,
     pipeline,
 )
-
-from blocks.models.base import Model
-from configs.constants import Const
 from type import DataType, Evaluators, HuggingfaceConfig, LoadOrigin, PredsWithProbs
 from utils.env_interface import get_env
 
@@ -41,10 +40,10 @@ def safe_load_pipeline(
             )
         else:
             loaded_pipeline = pipeline(
-                task="sentiment-analysis", model=module, device=device
+                task=config.task_type.value, model=module, device=device
             )
         print(
-            f"    ┣━━━ Pipeline loaded: {module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}"
+            f"    ┣━━━ Pipeline loaded {config.task_type.value}: {module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}"
         )
     except:
         print(f"    ├ Couldn't load {module} pipeline. Skipping.")
