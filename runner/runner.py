@@ -50,11 +50,11 @@ def append_pipeline_id(pipeline: Pipeline) -> Pipeline:
     entire_pipeline = pipeline.dict_children()
 
     def append_id(block, pipeline_id: str):
-        block["obj"].pipeline_id = pipeline_id
+        block["obj"].pipeline_id = f"{pipeline_id}/{block['name']}"
 
         if "children" in block:
             for child in block["children"]:
-                append_id(child, f"{pipeline_id}/{block['name']}/{child['name']}")
+                append_id(child, f"{pipeline_id}/{block['name']}")
 
     append_id(entire_pipeline, Const.output_pipelines_path)
     return pipeline
