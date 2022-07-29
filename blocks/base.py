@@ -41,15 +41,10 @@ class Block(Element):
         if self.outputType is None:
             print("outputType must be set")
 
-    def load(self, pipeline_id: str, execution_order: int) -> int:
-        self.pipeline_id = pipeline_id
-        self.id += f"-{str(execution_order)}"
-
-        model = safe_loading(pipeline_id, self.id)
+    def load(self) -> None:
+        model = safe_loading(self.pipeline_id, self.id)
         if model is not None:
             self.model = model
-
-        return execution_order + 1
 
     def fit(
         self,

@@ -36,12 +36,11 @@ class Pipeline(Block):
             plugin.on_load_begin()
 
         """ Core """
-        last_i = 0
         if isinstance(self.datasource, Pipeline):
-            last_i = self.datasource.load(f"{self.datasource.id}/{self.id}", 0)
+            self.datasource.load()
 
-        for i, model in enumerate(self.models):
-            model.load(f"{self.datasource.id}/{self.id}", i + last_i)
+        for model in self.models:
+            model.load()
 
         """ End """
         for plugin in plugins:
