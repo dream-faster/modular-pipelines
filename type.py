@@ -40,6 +40,10 @@ class LoadOrigin(Enum):
     pretrained = "pretrained"
 
 
+class HFTaskTypes(Enum):
+    sentiment_analysis = "sentiment-analysis"
+
+
 @dataclass
 class BaseConfig:
     force_fit: bool
@@ -51,6 +55,7 @@ class BaseConfig:
 @dataclass
 class HuggingfaceConfig(BaseConfig):
     pretrained_model: str
+    task_type: HFTaskTypes
     user_name: str
     num_classes: int
     val_size: float

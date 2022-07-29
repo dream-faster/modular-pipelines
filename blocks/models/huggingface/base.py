@@ -28,12 +28,13 @@ device = 0 if torch.cuda.is_available() else -1
 
 def safe_load_pipeline(
     module: Union[str, PreTrainedModel],
+    config: HuggingfaceConfig,
     tokenizer: Optional[PreTrainedTokenizerBase] = None,
 ) -> Optional[Callable]:
     try:
         if tokenizer is not None:
             loaded_pipeline = pipeline(
-                task="sentiment-analysis",
+                task=config.task_type.value,
                 model=module,
                 tokenizer=tokenizer,
                 device=device,
@@ -97,7 +98,7 @@ class HuggingfaceModel(Model):
 
         for key, load_path in load_order:
             print(f"    ├ ℹ️ Loading from {key}")
-            model = safe_load_pipeline(load_path)
+            model = safe_load_pipeline(load_path, config=self.config)
             if model:
                 self.model = model
                 break
@@ -124,7 +125,7 @@ class HuggingfaceModel(Model):
             self.id,
             self.trainer_callbacks if hasattr(self, "trainer_callbacks") else None,
         )
-        self.model = safe_load_pipeline(trainer.model, trainer.tokenizer)
+        self.model = safe_load_pipeline(trainer.model, self.config, trainer.tokenizer)
 
         self.trainer = trainer
         self.trained = True
