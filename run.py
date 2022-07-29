@@ -1,19 +1,19 @@
+from typing import List
 
+from blocks.pipeline import Pipeline
 from configs.constants import Const
-from runner.runner import Runner
+from library.evaluation import calibration_metrics, classification_metrics
 from library.examples.hate_speech import (
-    preprocess_config,
-    tweeteval_hate_speech_run_configs,
     cross_dataset_run_configs,
     ensemble_pipeline_hf,
-    huggingface_baseline
+    huggingface_baseline,
+    preprocess_config,
+    tweeteval_hate_speech_run_configs,
+    vader,
 )
-from library.evaluation import classification_metrics, calibration_metrics
-from blocks.pipeline import Pipeline
-from typing import List
-from plugins import WandbPlugin, WandbConfig
+from plugins import WandbConfig, WandbPlugin
+from runner.runner import Runner
 from type import Evaluators, PreprocessConfig, RunConfig
-
 
 
 def run(
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     metrics = classification_metrics + calibration_metrics
 
     run(
-        huggingface_baseline,
+        vader,
         preprocess_config,
         project_id="hate-speech-detection",
         run_configs=cross_dataset_run_configs,

@@ -5,6 +5,7 @@ from blocks.ensemble import Ensemble
 from blocks.models.huggingface import HuggingfaceModel
 from blocks.models.random import RandomModel
 from blocks.models.sklearn import SKLearnModel
+from blocks.models.vader import VaderModel
 from blocks.pipeline import Pipeline
 from blocks.transformations import (
     Lemmatizer,
@@ -156,6 +157,7 @@ nlp_sklearn_autocorrect = create_nlp_sklearn_pipeline(autocorrect=True)
 
 nlp_sklearn_simple = create_nlp_sklearn_pipeline(autocorrect=False)
 random = Pipeline("random", input_data, [RandomModel("random")])
+vader = Pipeline("vader", input_data, [VaderModel("vader")])
 
 ensemble_pipeline = Ensemble(
     "ensemble", [nlp_sklearn, nlp_sklearn_autocorrect, text_statistics_pipeline]
