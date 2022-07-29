@@ -8,11 +8,15 @@ from blocks.models.base import Model
 from configs.constants import Const
 from datasets import ClassLabel, Dataset, Features, Value
 from sklearn.model_selection import train_test_split
-from transformers import (AutoModelForSequenceClassification, PreTrainedModel,
-                          PreTrainedTokenizerBase, Trainer, TrainingArguments,
-                          pipeline)
-from type import (DataType, Evaluators, HuggingfaceConfig, LoadOrigin,
-                  PredsWithProbs)
+from transformers import (
+    AutoModelForSequenceClassification,
+    PreTrainedModel,
+    PreTrainedTokenizerBase,
+    Trainer,
+    TrainingArguments,
+    pipeline,
+)
+from type import DataType, Evaluators, HuggingfaceConfig, LoadOrigin, PredsWithProbs
 from utils.env_interface import get_env
 
 from .infer import run_inference_pipeline
@@ -73,7 +77,9 @@ class HuggingfaceModel(Model):
     def load(self) -> None:
         paths = {
             LoadOrigin.local: f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}",
-            LoadOrigin.remote: f"{self.config.user_name}/{self.id}",
+            LoadOrigin.remote: f"{self.config.user_name}/{self.id}"
+            if self.config.remote_name_override is None
+            else self.config.remote_name_override,
             LoadOrigin.pretrained: self.config.pretrained_model,
         }
 
@@ -94,7 +100,6 @@ class HuggingfaceModel(Model):
         self.training_args.output_dir = (
             f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}"
         )
-
 
     def fit(self, dataset: List[str], labels: Optional[pd.Series]) -> None:
 

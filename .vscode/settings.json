@@ -11,4 +11,7 @@
     "search.exclude": {
         "data/derived/**": true,
     },
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+    },
 }
