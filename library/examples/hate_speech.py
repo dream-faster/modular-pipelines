@@ -21,7 +21,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.preprocessing import MinMaxScaler
-from transformers import TrainingArguments
+from transformers.training_args import TrainingArguments
 from type import (
     HuggingfaceConfig,
     LoadOrigin,
@@ -38,6 +38,8 @@ preprocess_config = PreprocessConfig(
     input_col="text",
     label_col="label",
 )
+
+### Models
 
 huggingface_config = HuggingfaceConfig(
     preferred_load_origin=LoadOrigin.remote,
@@ -100,6 +102,9 @@ sklearn_config_simple = SKLearnConfig(
 
 
 input_data = DataSource("input")
+
+
+### Pipelines
 
 
 def create_nlp_sklearn_pipeline(autocorrect: bool, simple: bool = False) -> Pipeline:
@@ -175,14 +180,47 @@ ensemble_pipeline_hf_statistic_sklearn = Ensemble(
 )
 
 
-data_emoji = transform_dataset(load_dataset("tweet_eval", "emoji"), preprocess_config)
+### Datasets
 
 data_tweet_eval_hate_speech = transform_dataset(
     load_dataset("tweet_eval", "hate"), preprocess_config
 )
+
+data_tweets_hate_speech_detection = transform_hatespeech_detection_dataset(
+    load_dataset("tweets_hate_speech_detection"),
+    config=PreprocessConfig(
+        train_size=-1,
+        val_size=-1,
+        test_size=-1,
+        input_col="tweet",
+        label_col="label",
+    ),
+)
 data_hatecheck = transform_hatecheck_dataset(
     load_dataset("Paul/hatecheck"), preprocess_config
 )
+
+data_hate_speech_offensive = transform_hatespeech_offensive_dataset(
+    load_dataset("hate_speech_offensive"),
+    config=PreprocessConfig(
+        train_size=-1,
+        val_size=-1,
+        test_size=-1,
+        input_col="tweet",
+        label_col="class",
+    ),
+)
+
+
+data_merged_train = merge_datasets(
+    [
+        data_tweet_eval_hate_speech[0],
+        data_tweets_hate_speech_detection[0],
+        data_hate_speech_offensive[0],
+    ]
+)
+
+### Run Configs
 
 tweeteval_hate_speech_run_configs = [
     RunConfig(
@@ -199,11 +237,11 @@ tweeteval_hate_speech_run_configs = [
 
 
 cross_dataset_run_configs = [
-    # RunConfig(
-    #     run_name="hate-speech-detection-cross-val",
-    #     dataset=data_tweet_eval_hate_speech[0],
-    #     train=True,
-    # ),
+    RunConfig(
+        run_name="hate-speech-detection-cross-val",
+        dataset=data_merged_train,
+        train=True,
+    ),
     RunConfig(
         run_name="hatecheck",
         dataset=data_hatecheck[1],
