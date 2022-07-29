@@ -1,35 +1,35 @@
-from transformers import TrainingArguments
-from blocks.models.random import RandomModel
-from blocks.pipeline import Pipeline
-from blocks.models.huggingface import HuggingfaceModel
-from data.transformation import transform_dataset
-from data.transformation_hatecheck import transform_hatecheck_dataset
-from blocks.models.sklearn import SKLearnModel
-from type import (
-    LoadOrigin,
-    PreprocessConfig,
-    HuggingfaceConfig,
-    SKLearnConfig,
-    RunConfig,
-)
-from blocks.pipeline import Pipeline
-from blocks.transformations import Lemmatizer, SpacyTokenizer
+from blocks.adaptors import ListOfListsToNumpy
+from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
 from blocks.data import DataSource
 from blocks.ensemble import Ensemble
-from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
-from blocks.transformations import SKLearnTransformation, TextStatisticTransformation
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import (
-    GradientBoostingClassifier,
-    VotingClassifier,
+from blocks.models.huggingface import HuggingfaceModel
+from blocks.models.random import RandomModel
+from blocks.models.sklearn import SKLearnModel
+from blocks.pipeline import Pipeline
+from blocks.transformations import (
+    Lemmatizer,
+    SKLearnTransformation,
+    SpacyTokenizer,
+    TextStatisticTransformation,
 )
-from utils.flatten import remove_none
-from sklearn.preprocessing import MinMaxScaler
-from blocks.adaptors import ListOfListsToNumpy
+from data.transformation import transform_dataset
+from data.transformation_hatecheck import transform_hatecheck_dataset
 from datasets.load import load_dataset
 from library.evaluation import classification_metrics
+from sklearn.ensemble import GradientBoostingClassifier, VotingClassifier
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.preprocessing import MinMaxScaler
+from transformers import TrainingArguments
+from type import (
+    HuggingfaceConfig,
+    LoadOrigin,
+    PreprocessConfig,
+    RunConfig,
+    SKLearnConfig,
+)
+from utils.flatten import remove_none
 
 preprocess_config = PreprocessConfig(
     train_size=-1,
@@ -48,6 +48,7 @@ huggingface_config = HuggingfaceConfig(
     num_classes=2,
     val_size=0.1,
     force_fit=False,
+    remote_name_override="BLALBAS",
     training_args=TrainingArguments(
         output_dir="",
         learning_rate=2e-5,
