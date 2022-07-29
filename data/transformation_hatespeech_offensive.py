@@ -1,9 +1,10 @@
 from typing import Tuple
 
 import pandas as pd
-from configs.constants import Const
 from datasets.arrow_dataset import Dataset
 from sklearn.model_selection import train_test_split
+
+from configs.constants import Const
 from type import PreprocessConfig, TestDataset, TrainDataset
 
 

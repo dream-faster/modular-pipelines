@@ -1,8 +1,9 @@
 from typing import Optional
 
 import pandas as pd
-from configs import Const
 from spello.model import SpellCorrectionModel
+
+from configs import Const
 from type import DataType
 
 from .base import Augmenter

@@ -1,7 +1,10 @@
 from typing import List
-from .base import Adaptor
+
 import pandas as pd
+
 from type import DataType
+
+from .base import Adaptor
 
 
 class SeriesToList(Adaptor):

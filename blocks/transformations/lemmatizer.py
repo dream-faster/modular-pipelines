@@ -2,6 +2,7 @@ from typing import Any, List
 
 import pandas as pd
 import spacy
+
 from configs.constants import Const
 from type import DataType
 from utils.spacy import get_spacy
@@ -20,7 +21,6 @@ class Lemmatizer(Transformation):
 
     def load(self) -> None:
         self.nlp = get_spacy()
-
 
     def predict(self, dataset: List) -> List[str]:
         return [preprocess(item, self.remove_stopwords) for item in dataset]

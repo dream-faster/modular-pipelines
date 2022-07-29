@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 import pandas as pd
+
 from blocks.base import Block, Element
 from type import BaseConfig
 

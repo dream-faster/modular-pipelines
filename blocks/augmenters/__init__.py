@@ -1,2 +1,2 @@
-from .synonyms import SynonymAugmenter
 from .spelling_autocorrect import SpellAutocorrectAugmenter
+from .synonyms import SynonymAugmenter

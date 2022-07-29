@@ -1,10 +1,12 @@
 from typing import Callable, List, Optional
-from blocks.base import Block
+
 import pandas as pd
 
+from blocks.base import Block
 from blocks.models.base import Model
-from .store import Store
+
 from .evaluation import evaluate
+from .store import Store
 
 
 def train_predict(
@@ -31,9 +33,7 @@ def predict(model: Block, dataset: pd.Series, store: Store) -> List:
         and hasattr(model, "evaluators")
         and model.evaluators is not None
     ):
-        stats = evaluate(
-            output, store, model.evaluators, f"{store.path}/{model.id}"
-        )
+        stats = evaluate(output, store, model.evaluators, f"{store.path}/{model.id}")
 
         store.set_stats(model.id, stats)
 

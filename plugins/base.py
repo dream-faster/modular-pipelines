@@ -1,12 +1,12 @@
 from abc import ABC
-from typing import Callable, List, Tuple, Any
+from typing import Any, Callable, List, Tuple
+
+import pandas as pd
 
 from blocks.pipeline import Pipeline
 from configs.constants import LogConst
-
-from utils.random import random_string
 from runner.store import Store
-import pandas as pd
+from utils.random import random_string
 
 
 def just_custom_functions(obj) -> List[Tuple]:

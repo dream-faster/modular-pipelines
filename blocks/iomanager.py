@@ -1,6 +1,8 @@
 import os
-import joblib
 from typing import Union
+
+import joblib
+
 from configs.constants import Const
 
 

@@ -1,6 +1,5 @@
 from typing import List
 
-
 from blocks.pipeline import Pipeline
 from configs.constants import Const
 from library.evaluation import calibration_metrics, classification_metrics
@@ -15,7 +14,6 @@ from library.examples.hate_speech import (
 from plugins import WandbConfig, WandbPlugin
 from runner.runner import Runner
 from type import Evaluators, PreprocessConfig, RunConfig
-
 
 
 def run(
@@ -52,10 +50,8 @@ def run(
             labels=config.dataset[Const.label_col]
             if hasattr(config.dataset, Const.label_col)
             else None,
-
             evaluators=metrics,
             plugins=logger_plugins,
-
         )
         runner.run()
 
@@ -66,7 +62,6 @@ if __name__ == "__main__":
 
     run(
         vader,
-
         preprocess_config,
         project_id="hate-speech-detection",
         run_configs=cross_dataset_run_configs,

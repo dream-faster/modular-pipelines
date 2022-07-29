@@ -1,12 +1,14 @@
 from typing import Callable, List
+
 from sklearn.metrics import (
+    accuracy_score,
     classification_report,
     f1_score,
-    accuracy_score,
     precision_score,
     recall_score,
     roc_auc_score,
 )
+
 from type import Evaluators, PredsWithProbs
 
 

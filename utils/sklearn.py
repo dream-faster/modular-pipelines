@@ -1,5 +1,5 @@
-from sklearn.preprocessing import FunctionTransformer
 import swifter
+from sklearn.preprocessing import FunctionTransformer
 
 
 def pipelinize(function, active=True):

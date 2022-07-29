@@ -8,5 +8,6 @@ def flatten(input: List) -> List:
     else:
         return [input]
 
+
 def remove_none(input: List) -> List:
     return [i for i in input if i is not None]
