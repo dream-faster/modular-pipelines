@@ -1,27 +1,26 @@
+import os
 from threading import local
+from typing import Callable, List, Optional, Tuple, Union
+
+import pandas as pd
+import torch
 from blocks.models.base import Model
+from configs.constants import Const
+from datasets import ClassLabel, Dataset, Features, Value
+from sklearn.model_selection import train_test_split
+from transformers import (
+    AutoModelForSequenceClassification,
+    PreTrainedModel,
+    PreTrainedTokenizerBase,
+    Trainer,
+    TrainingArguments,
+    pipeline,
+)
+from type import DataType, Evaluators, HuggingfaceConfig, LoadOrigin, PredsWithProbs
 from utils.env_interface import get_env
 
 from .infer import run_inference_pipeline
 from .train import run_training_pipeline
-from type import Evaluators, HuggingfaceConfig, DataType, LoadOrigin, PredsWithProbs
-from configs.constants import Const
-import pandas as pd
-from datasets import Dataset, Features, Value, ClassLabel
-from typing import List, Tuple, Callable, Optional, Union
-from transformers import (
-    TrainingArguments,
-    pipeline,
-    Trainer,
-    PreTrainedModel,
-    AutoModelForSequenceClassification,
-    PreTrainedTokenizerBase,
-)
-from sklearn.model_selection import train_test_split
-
-from configs.constants import Const
-import os
-import torch
 
 device = 0 if torch.cuda.is_available() else -1
 
@@ -75,13 +74,12 @@ class HuggingfaceModel(Model):
         self.training_args = self.config.training_args
         self.training_args.hub_token = get_env("HF_HUB_TOKEN")
 
-    def load(self, pipeline_id: str, execution_order: int) -> int:
-        self.pipeline_id = pipeline_id
-        self.id += f"-{str(execution_order)}"
-
+    def load(self) -> None:
         paths = {
             LoadOrigin.local: f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}",
-            LoadOrigin.remote: f"{self.config.user_name}/{self.id}",
+            LoadOrigin.remote: f"{self.config.user_name}/{self.id}"
+            if self.config.remote_name_override is None
+            else self.config.remote_name_override,
             LoadOrigin.pretrained: self.config.pretrained_model,
         }
 
@@ -108,8 +106,6 @@ class HuggingfaceModel(Model):
         self.training_args.output_dir = (
             f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}"
         )
-
-        return execution_order + 1
 
     def fit(self, dataset: List[str], labels: Optional[pd.Series]) -> None:
 

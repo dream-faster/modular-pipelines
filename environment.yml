@@ -26,6 +26,8 @@ dependencies:
   - swifter
   - huggingface_hub
   - pytorch-lightning
+  - matplotlib
+  - scipy
   - pip
   - pip:
       - URLExtract
@@ -34,5 +36,6 @@ dependencies:
       - spello
       - joblib
       - pydeps
+      - pycaleva
 
 prefix: /usr/local/anaconda3/envs/nlp

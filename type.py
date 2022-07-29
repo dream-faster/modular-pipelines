@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Callable, List, Optional, Tuple
+
+from typing import Any, Callable, List, Optional, Tuple, Union
 
 import pandas as pd
 from sklearn.base import ClassifierMixin
@@ -27,7 +28,7 @@ class DataType(Enum):
 
 
 EvaluatorId = str
-Evaluator = Tuple[EvaluatorId, Callable]
+Evaluator = Tuple[EvaluatorId, Callable[[List, List[PredsWithProbs]], Any]]
 Evaluators = List[Evaluator]
 
 
@@ -52,10 +53,10 @@ class BaseConfig:
 class HuggingfaceConfig(BaseConfig):
     pretrained_model: str
     user_name: str
-    repo_name: str
     num_classes: int
     val_size: float
     training_args: TrainingArguments
+    remote_name_override: Optional[str]
 
 
 @dataclass

@@ -1,10 +1,8 @@
-from typing import Tuple, Union
 
-from blocks.adaptors import ListOfListsToNumpy
-from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
-from blocks.data import DataSource
-from blocks.ensemble import Ensemble
+from blocks.pipeline import Pipeline
 from blocks.models.huggingface import HuggingfaceModel
+from data.transformation import transform_dataset
+from datasets.load import load_dataset
 from blocks.models.sklearn import SKLearnModel
 from blocks.pipeline import Pipeline
 from blocks.transformations import (
@@ -15,8 +13,21 @@ from blocks.transformations import (
 )
 from blocks.transformations.no_lemmatizer import NoLemmatizer
 from configs.constants import Const
-from library.evaluation import classification, classification_metrics
-from sklearn.ensemble import GradientBoostingClassifier, VotingClassifier
+
+from library.evaluation import classification
+from type import (
+    LoadOrigin,
+    PreprocessConfig,
+    HuggingfaceConfig,
+    SKLearnConfig,
+    RunConfig,
+)
+from blocks.pipeline import Pipeline
+from blocks.transformations import Lemmatizer, SpacyTokenizer
+from blocks.data import DataSource
+from blocks.ensemble import Ensemble
+from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
+from blocks.transformations import SKLearnTransformation, TextStatisticTransformation
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import MultinomialNB
@@ -25,9 +36,9 @@ from type import HuggingfaceConfig, LoadOrigin, PreprocessConfig, SKLearnConfig
 from utils.flatten import remove_none
 
 preprocess_config = PreprocessConfig(
-    train_size=-1,
-    val_size=-1,
-    test_size=-1,
+    train_size=100,
+    val_size=100,
+    test_size=100,
     input_col="text",
     label_col="label",
 )
@@ -137,3 +148,16 @@ sklearn_ensemble = Ensemble(
         sklearn_lemma_1_2_large,
     ],
 )
+
+hate_speech_data = transform_dataset(
+    load_dataset("tweet_eval", "hate"), preprocess_config
+)
+
+run_configs = [
+    RunConfig(
+        run_name="hate-speech-detection", dataset=hate_speech_data[0], train=True
+    ),
+    RunConfig(
+        run_name="hate-speech-detection", dataset=hate_speech_data[1], train=False
+    ),
+]

@@ -1,10 +1,12 @@
-from .base import Transformation
-from configs.constants import Const
+from typing import Any, List
+
 import pandas as pd
-from utils.spacy import get_spacy
-from typing import List, Any
 import spacy
+from configs.constants import Const
 from type import DataType
+from utils.spacy import get_spacy
+
+from .base import Transformation
 
 
 class Lemmatizer(Transformation):
@@ -16,8 +18,9 @@ class Lemmatizer(Transformation):
         super().__init__()
         self.remove_stopwords = remove_stopwords
 
-    def load(self):
+    def load(self) -> None:
         self.nlp = get_spacy()
+
 
     def predict(self, dataset: List) -> List[str]:
         return [preprocess(item, self.remove_stopwords) for item in dataset]

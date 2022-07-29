@@ -1,6 +1,7 @@
 from pprint import pprint
 from typing import List
-from blocks.base import Block, Element
+
+from blocks.base import Block, DataSource, Element
 from blocks.pipeline import Pipeline
 
 from .base import Plugin
@@ -17,7 +18,10 @@ class PipelineAnalyser(Plugin):
                 if isinstance(block, List):
                     indent += "    "
                     print_all(block, indent)
-                    indent = indent[:len(indent) - len("    ")]
+                    indent = indent[: len(indent) - len("    ")]
+                elif isinstance(block, DataSource):
+                    print(indent + " - " + block.id)
+                    indent += "    "
                 else:
                     print(indent + " - " + block.id)
 

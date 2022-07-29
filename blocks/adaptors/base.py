@@ -1,13 +1,11 @@
-from blocks.base import Block, Element
+from typing import List, Optional
+
 import pandas as pd
+from blocks.base import Block, Element
 from type import BaseConfig
-from typing import Optional, List
 
 
 class Adaptor(Block):
-    def load(self):
-        pass
-
     def fit(self, dataset: pd.Series, labels: Optional[pd.Series]) -> None:
         pass
 
@@ -19,3 +17,6 @@ class Adaptor(Block):
 
     def children(self) -> List[Element]:
         return [self]
+
+    def dict_children(self) -> dict:
+        return {"name": self.id, "obj": self}

@@ -25,9 +25,6 @@ class PytorchModel(Model):
         self.model = LightningWrapper(Decoder(config))
         self.evaluators: Optional[Evaluators] = evaluators
 
-    def load(self):
-        pass
-
     def fit(self, dataset: pd.Series, labels: Optional[pd.Series]) -> None:
         dataset = pd.DataFrame(
             {Const.input_col: dataset[Const.input_col], Const.label_col: labels}

@@ -1,48 +1,55 @@
-from transformers import TrainingArguments
-from blocks.pipeline import Pipeline
-from blocks.models.huggingface import HuggingfaceModel
-
-from blocks.models.sklearn import SKLearnModel
-from configs.constants import Const
-from library.evaluation import classification
-from type import LoadOrigin, PreprocessConfig, HuggingfaceConfig, SKLearnConfig
-from blocks.pipeline import Pipeline
-from blocks.transformations import Lemmatizer, SpacyTokenizer
+from blocks.adaptors import ListOfListsToNumpy
+from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
 from blocks.data import DataSource
 from blocks.ensemble import Ensemble
-from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
-from blocks.transformations import SKLearnTransformation, TextStatisticTransformation
+from blocks.models.huggingface import HuggingfaceModel
+from blocks.models.random import RandomModel
+from blocks.models.sklearn import SKLearnModel
+from blocks.models.vader import VaderModel
+from blocks.pipeline import Pipeline
+from blocks.transformations import (
+    Lemmatizer,
+    SKLearnTransformation,
+    SpacyTokenizer,
+    TextStatisticTransformation,
+)
+from data.transformation import transform_dataset
+from data.transformation_hatecheck import transform_hatecheck_dataset
+from datasets.load import load_dataset
+from library.evaluation import classification_metrics
+from sklearn.ensemble import GradientBoostingClassifier, VotingClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import (
-    GradientBoostingClassifier,
-    VotingClassifier,
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.preprocessing import MinMaxScaler
+from transformers import TrainingArguments
+from type import (
+    HuggingfaceConfig,
+    LoadOrigin,
+    PreprocessConfig,
+    RunConfig,
+    SKLearnConfig,
 )
 from utils.flatten import remove_none
-from sklearn.preprocessing import MinMaxScaler
-from blocks.adaptors import ListOfListsToNumpy
-
-from library.evaluation import classification_metrics
 
 preprocess_config = PreprocessConfig(
-    train_size=100,
-    val_size=100,
-    test_size=100,
+    train_size=-1,
+    val_size=-1,
+    test_size=-1,
     input_col="text",
     label_col="label",
 )
 
 huggingface_config = HuggingfaceConfig(
-    preferred_load_origin=LoadOrigin.local,
+    preferred_load_origin=LoadOrigin.remote,
     pretrained_model="distilbert-base-uncased",
     user_name="semy",
-    repo_name="finetuning-tweeteval-hate-speech",
     save_remote=True,
     save=True,
     num_classes=2,
     val_size=0.1,
     force_fit=False,
+    remote_name_override=None,
     training_args=TrainingArguments(
         output_dir="",
         learning_rate=2e-5,
@@ -149,6 +156,8 @@ nlp_sklearn = create_nlp_sklearn_pipeline(autocorrect=False)
 nlp_sklearn_autocorrect = create_nlp_sklearn_pipeline(autocorrect=True)
 
 nlp_sklearn_simple = create_nlp_sklearn_pipeline(autocorrect=False)
+random = Pipeline("random", input_data, [RandomModel("random")])
+vader = Pipeline("vader", input_data, [VaderModel("vader")])
 
 ensemble_pipeline = Ensemble(
     "ensemble", [nlp_sklearn, nlp_sklearn_autocorrect, text_statistics_pipeline]
@@ -166,3 +175,40 @@ ensemble_pipeline_hf_statistic_sklearn = Ensemble(
     "ensemble_hf_statistic_sklearn",
     [nlp_sklearn, text_statistics_pipeline, huggingface_baseline],
 )
+
+
+data_emoji = transform_dataset(load_dataset("tweet_eval", "emoji"), preprocess_config)
+
+data_tweet_eval_hate_speech = transform_dataset(
+    load_dataset("tweet_eval", "hate"), preprocess_config
+)
+data_hatecheck = transform_hatecheck_dataset(
+    load_dataset("Paul/hatecheck"), preprocess_config
+)
+
+tweeteval_hate_speech_run_configs = [
+    RunConfig(
+        run_name="hate-speech-detection",
+        dataset=data_tweet_eval_hate_speech[0],
+        train=True,
+    ),
+    RunConfig(
+        run_name="hate-speech-detection",
+        dataset=data_tweet_eval_hate_speech[1],
+        train=False,
+    ),
+]
+
+
+cross_dataset_run_configs = [
+    # RunConfig(
+    #     run_name="hate-speech-detection-cross-val",
+    #     dataset=data_tweet_eval_hate_speech[0],
+    #     train=True,
+    # ),
+    RunConfig(
+        run_name="hatecheck",
+        dataset=data_hatecheck[1],
+        train=False,
+    ),
+]
