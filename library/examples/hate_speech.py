@@ -1,4 +1,5 @@
 from transformers import TrainingArguments
+from blocks.models.random import RandomModel
 from blocks.pipeline import Pipeline
 from blocks.models.huggingface import HuggingfaceModel
 from data.transformation import transform_dataset
@@ -154,6 +155,7 @@ nlp_sklearn = create_nlp_sklearn_pipeline(autocorrect=False)
 nlp_sklearn_autocorrect = create_nlp_sklearn_pipeline(autocorrect=True)
 
 nlp_sklearn_simple = create_nlp_sklearn_pipeline(autocorrect=False)
+random = Pipeline("random", input_data, [RandomModel("random")])
 
 ensemble_pipeline = Ensemble(
     "ensemble", [nlp_sklearn, nlp_sklearn_autocorrect, text_statistics_pipeline]
@@ -203,7 +205,7 @@ cross_dataset_run_configs = [
     #     train=True,
     # ),
     RunConfig(
-        run_name="hate-speech-detection-cross-val",
+        run_name="hatecheck",
         dataset=data_hatecheck[1],
         train=False,
     ),

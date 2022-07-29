@@ -1,6 +1,6 @@
 from utils.printing import pprint_indent
 from .store import Store
-from type import Evaluators
+from type import Evaluators, PredsWithProbs
 from typing import Union, List
 import pandas as pd
 from utils.json import dump_json, dump_str
@@ -9,7 +9,7 @@ import os
 
 
 def evaluate(
-    predictions: Union[List, pd.Series], store: Store, evaluators: Evaluators, path: str
+    predictions: List[PredsWithProbs], store: Store, evaluators: Evaluators, path: str
 ) -> pd.Series:
     stats = pd.Series(dtype="float64")
     if not os.path.isdir(path):
