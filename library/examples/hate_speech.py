@@ -13,6 +13,7 @@ from blocks.transformations import (
     SpacyTokenizer,
     TextStatisticTransformation,
 )
+from data.merge import merge_datasets
 from data.transformation import transform_dataset
 from data.transformation_hatecheck import transform_hatecheck_dataset
 from data.transformation_hatespeech_detection import (
