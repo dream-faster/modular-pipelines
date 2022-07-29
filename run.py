@@ -60,12 +60,12 @@ if __name__ == "__main__":
     )
 
     run_configs = [
-        # RunConfig(
-        #     run_name="hate-speech-detection",
-        #     dataset=hate_speech_data[0],
-        #     train=True,
-        #     remote_logging=False,
-        # ),
+        RunConfig(
+            run_name="hate-speech-detection",
+            dataset=hate_speech_data[0],
+            train=True,
+            remote_logging=False,
+        ),
         RunConfig(
             run_name="hate-speech-detection",
             dataset=hate_speech_data[1],
