@@ -43,7 +43,6 @@ huggingface_config = HuggingfaceConfig(
     preferred_load_origin=LoadOrigin.remote,
     pretrained_model="distilbert-base-uncased",
     user_name="semy",
-    repo_name="finetuning-tweeteval-hate-speech",
     save_remote=True,
     save=True,
     num_classes=2,

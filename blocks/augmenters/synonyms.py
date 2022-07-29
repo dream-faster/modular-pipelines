@@ -17,10 +17,9 @@ class SynonymAugmenter(Augmenter):
         super().__init__()
         self.num_synonyms = num_synonyms
 
-    def load(self, pipeline_id: str, execution_order: int) -> int:
+    def load(self) -> None:
         nltk.download("wordnet")
         nltk.download("omw-1.4")
-        return super().load(pipeline_id, execution_order)
 
     def predict(self, dataset: List) -> List[str]:
         return [

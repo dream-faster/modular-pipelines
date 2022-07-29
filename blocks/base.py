@@ -1,8 +1,10 @@
-from type import BaseConfig, DataType
 from abc import ABC
+from typing import Callable, List, Optional, Union
+
 import pandas as pd
-from typing import Callable, Optional, Union, List
 from runner.store import Store
+from type import BaseConfig, DataType
+
 from blocks.iomanager import safe_loading, safe_saving
 
 
@@ -39,15 +41,10 @@ class Block(Element):
         if self.outputType is None:
             print("outputType must be set")
 
-    def load(self, pipeline_id: str, execution_order: int) -> int:
-        self.pipeline_id = pipeline_id
-        self.id += f"-{str(execution_order)}"
-
-        model = safe_loading(pipeline_id, self.id)
+    def load(self) -> None:
+        model = safe_loading(self.pipeline_id, self.id)
         if model is not None:
             self.model = model
-
-        return execution_order + 1
 
     def fit(
         self,
@@ -87,3 +84,6 @@ class DataSource(Element):
 
     def children(self) -> List[Element]:
         return [self]
+
+    def dict_children(self) -> dict:
+        return {"name": self.id, "obj": self}

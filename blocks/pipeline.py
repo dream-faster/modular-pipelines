@@ -1,12 +1,14 @@
-from configs.constants import LogConst
-from .base import Block, DataSource, Element
+from typing import Callable, List, Optional, Union
+
 import pandas as pd
-from typing import List, Union, Optional, Callable
-from runner.train import train_predict, predict
+from configs.constants import LogConst
 from runner.store import Store
+from runner.train import predict, train_predict
 from type import BaseConfig
 from utils.flatten import flatten
 from copy import deepcopy
+
+from .base import Block, DataSource, Element
 
 
 class Pipeline(Block):
@@ -35,12 +37,11 @@ class Pipeline(Block):
             plugin.on_load_begin()
 
         """ Core """
-        last_i = 0
         if isinstance(self.datasource, Pipeline):
-            last_i = self.datasource.load(f"{self.datasource.id}/{self.id}", 0)
+            self.datasource.load()
 
-        for i, model in enumerate(self.models):
-            model.load(f"{self.datasource.id}/{self.id}", i + last_i)
+        for model in self.models:
+            model.load()
 
         """ End """
         for plugin in plugins:
@@ -98,6 +99,21 @@ class Pipeline(Block):
 
     def children(self) -> List[Element]:
         return self.datasource.children() + [self] + [self.models]
+
+    def dict_children(self) -> dict:
+        source_dict = self.datasource.dict_children()
+
+        source_dict["children"] = [
+            {
+                "name": self.id,
+                "obj": self,
+                "children": [child.dict_children() for child in self.models]
+                if hasattr(self, "models")
+                else [],
+            }
+        ]
+
+        return source_dict
 
     def get_configs(self) -> List[BaseConfig]:
         entire_pipeline = self.children()

@@ -1,6 +1,7 @@
-from type import BaseConfig, Evaluators
-from blocks.base import Block, Element
 from typing import List, Optional
+
+from blocks.base import Block, Element
+from type import BaseConfig, Evaluators
 
 
 class Model(Block):
@@ -10,3 +11,6 @@ class Model(Block):
 
     def children(self) -> List[Element]:
         return [self]
+
+    def dict_children(self) -> dict:
+        return {"name": self.id, "obj": self}

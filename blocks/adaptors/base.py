@@ -6,12 +6,6 @@ from type import BaseConfig
 
 
 class Adaptor(Block):
-    def load(self, pipeline_id: str, execution_order: int) -> int:
-        self.pipeline_id = pipeline_id
-        self.id += f"-{str(execution_order)}"
-
-        return execution_order + 1
-
     def fit(self, dataset: pd.Series, labels: Optional[pd.Series]) -> None:
         pass
 
@@ -23,3 +17,6 @@ class Adaptor(Block):
 
     def children(self) -> List[Element]:
         return [self]
+
+    def dict_children(self) -> dict:
+        return {"name": self.id, "obj": self}
