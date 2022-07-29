@@ -28,14 +28,15 @@ dependencies:
   - pytorch-lightning
   - matplotlib
   - scipy
+  - joblib
+  - pydeps
+  - isort
   - pip
   - pip:
       - URLExtract
       - emoji>=2.0.0
       - autocorrect
       - spello
-      - joblib
-      - pydeps
       - pycaleva
 
 prefix: /usr/local/anaconda3/envs/nlp
