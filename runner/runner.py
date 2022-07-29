@@ -1,4 +1,5 @@
 import datetime
+
 from copy import deepcopy
 from typing import Dict, List, Optional, Union
 
@@ -25,6 +26,7 @@ def overwrite_model_configs(config: RunConfig, pipeline: Pipeline) -> Pipeline:
                 if hasattr(model, "config"):
                     if hasattr(model.config, key):
                         vars(model.config)[key] = value
+
 
     return pipeline
 
