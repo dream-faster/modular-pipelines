@@ -6,6 +6,7 @@ from runner.store import Store
 from runner.train import predict, train_predict
 from type import BaseConfig
 from utils.flatten import flatten
+from copy import deepcopy
 
 from .base import Block, DataSource, Element
 
@@ -24,9 +25,9 @@ class Pipeline(Block):
     ):
         self.id = id
         if isinstance(models, List):
-            self.models = models
+            self.models = [deepcopy(model) for model in models]
         else:
-            self.models = [models]
+            self.models = [deepcopy(models)]
         self.datasource = datasource
 
     def load(self, plugins: List["Plugin"]) -> None:

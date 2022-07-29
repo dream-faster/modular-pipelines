@@ -5,22 +5,23 @@ from type import PreprocessConfig, TestDataset, TrainDataset
 from configs.constants import Const
 
 
-def transform_dataset(
+def transform_hatecheck_dataset(
     dataset: Dataset, config: PreprocessConfig
 ) -> Tuple[TrainDataset, TestDataset]:
 
-    df_train = pd.DataFrame(dataset["train"][: config.train_size])
-    df_val = pd.DataFrame(dataset["validation"][: config.val_size])
+    df_train = pd.DataFrame()
     df_test = pd.DataFrame(dataset["test"][: config.test_size])
 
-    df_train = pd.concat([df_train, df_val], axis=0).reset_index(drop=True)
-
     cols_to_rename = {
-        config.input_col: Const.input_col,
-        config.label_col: Const.label_col,
+        "test_case": Const.input_col,
+        "label_gold": Const.label_col,
     }
 
-    df_train = df_train.rename(columns=cols_to_rename)
     df_test = df_test.rename(columns=cols_to_rename)
+    df_test = df_test[[Const.input_col, Const.label_col]]
+
+    df_test[Const.label_col] = df_test[Const.label_col].apply(
+        lambda x: 1 if x == "hateful" else 0
+    )
 
     return df_train, df_test
