@@ -1,10 +1,12 @@
+from typing import List
+
+import numpy as np
+import pandas as pd
+from runner.store import Store
+from type import PredsWithProbs
+
 from .base import Block, Element
 from .pipeline import Pipeline
-import pandas as pd
-from typing import List
-from runner.store import Store
-import numpy as np
-from type import PredsWithProbs
 
 
 class Ensemble(Pipeline):
@@ -39,6 +41,15 @@ class Ensemble(Pipeline):
 
     def children(self) -> List[Element]:
         return [self] + [pipeline.children() for pipeline in self.pipelines]
+
+    def dict_children(self) -> dict:
+        return {
+            "name": self.id,
+            "obj": self,
+            "children": [child.dict_children() for child in self.pipelines]
+            if hasattr(self, "pipelines")
+            else [],
+        }
 
 
 def average_output(outputs: List[List[PredsWithProbs]]) -> List[PredsWithProbs]:

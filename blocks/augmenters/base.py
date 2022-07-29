@@ -1,7 +1,8 @@
-from blocks.base import Block, Element
+from typing import List, Optional
+
 import pandas as pd
+from blocks.base import Block, Element
 from type import BaseConfig
-from typing import Optional, List
 
 
 class Augmenter(Block):
@@ -22,3 +23,6 @@ class Augmenter(Block):
 
     def children(self) -> List[Element]:
         return [self]
+
+    def dict_children(self) -> dict:
+        return {"name": self.id, "obj": self}

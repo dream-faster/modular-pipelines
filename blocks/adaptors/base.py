@@ -23,3 +23,6 @@ class Adaptor(Block):
 
     def children(self) -> List[Element]:
         return [self]
+
+    def dict_children(self) -> dict:
+        return {"name": self.id, "obj": self}

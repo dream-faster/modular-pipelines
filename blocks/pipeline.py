@@ -1,11 +1,13 @@
-from configs.constants import LogConst
-from .base import Block, DataSource, Element
+from typing import Callable, List, Optional, Union
+
 import pandas as pd
-from typing import List, Union, Optional, Callable
-from runner.train import train_predict, predict
+from configs.constants import LogConst
 from runner.store import Store
+from runner.train import predict, train_predict
 from type import BaseConfig
 from utils.flatten import flatten
+
+from .base import Block, DataSource, Element
 
 
 class Pipeline(Block):
@@ -97,6 +99,21 @@ class Pipeline(Block):
 
     def children(self) -> List[Element]:
         return self.datasource.children() + [self] + [self.models]
+
+    def dict_children(self) -> dict:
+        source_id = self.datasource.dict_children()
+        new_dict = dict()
+        new_dict[source_id] = {
+            "name": source_id,
+            "children": {
+                "name": self.id,
+                "obj": self,
+                "children": [child.dict_children() for child in self.models]
+                if hasattr(self, "models")
+                else [],
+            },
+        }
+        return new_dict
 
     def get_configs(self) -> List[BaseConfig]:
         entire_pipeline = self.children()

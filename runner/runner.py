@@ -34,8 +34,8 @@ def add_position_to_block_names(pipeline: Pipeline) -> Pipeline:
 
     def add_position(block: Union[List[Element], Element], position: int, prefix: str):
         if isinstance(block, List):
-            # if position > 0:
-            prefix += f"{position - 1}-"
+            if position > 0:
+                prefix += f"{position - 1}-"
             for i, child in enumerate(block):
                 add_position(child, i, prefix)
         elif not isinstance(block, DataSource):
@@ -46,16 +46,25 @@ def add_position_to_block_names(pipeline: Pipeline) -> Pipeline:
     return pipeline
 
 
-def replace_duplicates_with_copy(pipeline: Pipeline) -> Pipeline:
-    entire_pipeline = flatten(pipeline.children())
-    seen = []
-    for block in entire_pipeline:
-        if block not in seen:
-            seen.append(block)
-        else:
-            block = deepcopy(block)
+def create_hierarchical_dict(pipeline: Pipeline) -> dict:
+    entire_pipeline = pipeline.dict_children()
 
-    return pipeline
+    def get_child(block):
+
+        if isinstance(block, List):
+            new_dict = dict()
+            new_dict[block.id] = {
+                "name": block.id,
+                "children": [get_child(child) for child in block],
+            }
+        else:
+            return block.id
+
+        return dict
+
+    hierarchy = get_child(entire_pipeline)
+
+    return hierarchy
 
 
 class Runner:
@@ -75,8 +84,8 @@ class Runner:
         self.evaluators = evaluators
         self.plugins = obligatory_plugins + plugins
 
+        hierarchical_dict = create_hierarchical_dict(self.pipeline)
         self.pipeline = overwrite_model_configs(self.config, self.pipeline)
-        self.pipeline = replace_duplicates_with_copy(self.pipeline)
         self.pipeline = add_position_to_block_names(self.pipeline)
 
     def run(self):

@@ -1,8 +1,10 @@
-from type import BaseConfig, DataType
 from abc import ABC
+from typing import Callable, List, Optional, Union
+
 import pandas as pd
-from typing import Callable, Optional, Union, List
 from runner.store import Store
+from type import BaseConfig, DataType
+
 from blocks.iomanager import safe_loading, safe_saving
 
 
@@ -87,3 +89,6 @@ class DataSource(Element):
 
     def children(self) -> List[Element]:
         return [self]
+
+    def dict_children(self) -> str:
+        return self.id

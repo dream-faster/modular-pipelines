@@ -3,17 +3,10 @@ from datasets import load_dataset
 from data.dataloader import transform_dataset
 from library.evaluation import calibration_metrics, classification_metrics
 from library.examples.hate_speech import (  # preprocess_config,
-    ensemble_pipeline,
-    ensemble_pipeline_hf,
-    ensemble_pipeline_hf_statistic,
-    huggingface_baseline,
-    nlp_sklearn,
-    nlp_sklearn_autocorrect,
-    nlp_sklearn_simple,
-    text_statistics_pipeline,
-)
+    ensemble_pipeline, ensemble_pipeline_hf, ensemble_pipeline_hf_statistic,
+    huggingface_baseline, nlp_sklearn, nlp_sklearn_autocorrect,
+    nlp_sklearn_simple, text_statistics_pipeline)
 from run import run
-
 # from library.examples.hate_speech_multi_hf import ensemble_hf_multi_transformer
 from type import PreprocessConfig, RunConfig
 
