@@ -4,6 +4,7 @@ channels:
   - huggingface
 dependencies:
   - python=3.9
+  - pyarrow>=3.0
   - black
   - ipython
   - notebook
