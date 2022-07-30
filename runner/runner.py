@@ -3,12 +3,11 @@ from copy import deepcopy
 from typing import Dict, List, Optional, Union
 
 import pandas as pd
-
 from blocks.base import Block, DataSource, Element
 from blocks.pipeline import Pipeline
 from configs import Const
 from configs.constants import LogConst
-from plugins import IntegrityChecker, PipelineAnalyser
+from plugins import IDPopulator, IntegrityChecker, PipelineAnalyser
 from plugins.base import Plugin
 from type import Evaluators, RunConfig
 from utils.flatten import flatten
@@ -16,7 +15,7 @@ from utils.flatten import flatten
 from .evaluation import evaluate
 from .store import Store
 
-obligatory_plugins = [PipelineAnalyser(), IntegrityChecker()]
+obligatory_plugins = [IDPopulator(), PipelineAnalyser(), IntegrityChecker()]
 
 
 def overwrite_model_configs(config: RunConfig, pipeline: Pipeline) -> Pipeline:
@@ -27,37 +26,6 @@ def overwrite_model_configs(config: RunConfig, pipeline: Pipeline) -> Pipeline:
                     if hasattr(model.config, key):
                         vars(model.config)[key] = value
 
-    return pipeline
-
-
-def add_position_to_block_names(pipeline: Pipeline) -> Pipeline:
-    entire_pipeline = pipeline.children()
-
-    def add_position(block: Union[List[Element], Element], position: int, prefix: str):
-        if isinstance(block, List):
-            if position > 0:
-                prefix += f"{position - 1}-"
-            for i, child in enumerate(block):
-                add_position(child, i, prefix)
-        elif not isinstance(block, DataSource):
-            block.id += f"{prefix}{position}"
-
-    add_position(entire_pipeline, 1, "-")
-
-    return pipeline
-
-
-def append_pipeline_id(pipeline: Pipeline) -> Pipeline:
-    entire_pipeline = pipeline.dict_children()
-
-    def append_id(block, pipeline_id: str):
-        block["obj"].pipeline_id = f"{pipeline_id}"
-
-        if "children" in block:
-            for child in block["children"]:
-                append_id(child, f"{pipeline_id}/{block['name']}")
-
-    append_id(entire_pipeline, Const.output_pipelines_path)
     return pipeline
 
 
@@ -79,8 +47,6 @@ class Runner:
         self.plugins = obligatory_plugins + plugins
 
         self.pipeline = overwrite_model_configs(self.config, self.pipeline)
-        self.pipeline = add_position_to_block_names(self.pipeline)
-        self.pipeline = append_pipeline_id(self.pipeline)
 
     def run(self):
         for plugin in self.plugins:
