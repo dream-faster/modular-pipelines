@@ -23,6 +23,7 @@ from data.transformation_hatespeech_offensive import (
     transform_hatespeech_offensive_dataset,
 )
 from datasets.load import load_dataset
+from library.evaluation import calibration_metrics, classification_metrics
 from sklearn.ensemble import GradientBoostingClassifier, VotingClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
@@ -30,10 +31,10 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.preprocessing import MinMaxScaler
 from transformers.training_args import TrainingArguments
 from type import (
+    Experiment,
     HuggingfaceConfig,
     LoadOrigin,
     PreprocessConfig,
-    RunConfig,
     SKLearnConfig,
 )
 from utils.flatten import remove_none
@@ -228,31 +229,52 @@ data_merged_train = merge_datasets(
     ]
 )
 
+### Metrics
+
+metrics = classification_metrics + calibration_metrics
+
+
 ### Run Configs
 
-tweeteval_hate_speech_run_configs = [
-    RunConfig(
-        run_name="hate-speech-detection",
+tweeteval_hate_speech_experiments = [
+    Experiment(
+        project_name="hate-speech-detection",
+        run_name="tweeteval",
         dataset=data_tweet_eval_hate_speech[0],
+        pipeline=ensemble_pipeline,
+        preprocessing_config=preprocess_config,
+        metrics=metrics,
         train=True,
     ),
-    RunConfig(
-        run_name="hate-speech-detection",
+    Experiment(
+        project_name="hate-speech-detection",
+        run_name="tweeteval",
         dataset=data_tweet_eval_hate_speech[1],
+        pipeline=ensemble_pipeline,
+        preprocessing_config=preprocess_config,
+        metrics=metrics,
         train=False,
     ),
 ]
 
 
-cross_dataset_run_configs = [
-    RunConfig(
-        run_name="hate-speech-detection-cross-val",
+cross_dataset_experiments = [
+    Experiment(
+        project_name="hate-speech-detection-cross-val",
+        run_name="merged_dataset",
         dataset=data_merged_train,
+        pipeline=ensemble_pipeline,
+        preprocessing_config=preprocess_config,
+        metrics=metrics,
         train=True,
     ),
-    RunConfig(
+    Experiment(
+        project_name="hate-speech-detection-cross-val",
         run_name="hatecheck",
         dataset=data_hatecheck[1],
+        pipeline=ensemble_pipeline,
+        preprocessing_config=preprocess_config,
+        metrics=metrics,
         train=False,
     ),
 ]
