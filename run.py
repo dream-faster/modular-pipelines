@@ -1,15 +1,10 @@
 from typing import List, Optional
 
-from blocks.pipeline import Pipeline
 from configs.constants import Const
-from library.evaluation import calibration_metrics, classification_metrics
-from library.examples.hate_speech import (
-    preprocess_config,
-    tweeteval_hate_speech_experiments,
-)
+from library.examples.hate_speech import all_cross_dataset_experiments
 from plugins import WandbConfig, WandbPlugin
 from runner.runner import Runner
-from type import Evaluators, Experiment, PreprocessConfig
+from type import Experiment
 
 
 def run(
@@ -53,7 +48,7 @@ def run(
 if __name__ == "__main__":
 
     run(
-        tweeteval_hate_speech_experiments,
+        all_cross_dataset_experiments,
         save_remote=False,
         remote_logging=True,
     )

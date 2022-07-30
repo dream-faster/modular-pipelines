@@ -37,7 +37,7 @@ from type import (
     PreprocessConfig,
     SKLearnConfig,
 )
-from utils.flatten import remove_none
+from utils.flatten import flatten, remove_none
 
 preprocess_config = PreprocessConfig(
     train_size=-1,
@@ -164,28 +164,25 @@ text_statistics_pipeline = Pipeline(
 )
 
 huggingface_baseline = create_nlp_huggingface_pipeline(autocorrect=False)
-nlp_sklearn = create_nlp_sklearn_pipeline(autocorrect=False)
-nlp_sklearn_autocorrect = create_nlp_sklearn_pipeline(autocorrect=True)
+sklearn = create_nlp_sklearn_pipeline(autocorrect=False)
+sklearn_autocorrect = create_nlp_sklearn_pipeline(autocorrect=True)
 
-nlp_sklearn_simple = create_nlp_sklearn_pipeline(autocorrect=False)
+sklearn_simple = create_nlp_sklearn_pipeline(autocorrect=False)
 random = Pipeline("random", input_data, [RandomModel("random")])
 vader = Pipeline("vader", input_data, [VaderModel("vader")])
 
-ensemble_pipeline = Ensemble(
-    "ensemble", [nlp_sklearn, nlp_sklearn_autocorrect, text_statistics_pipeline]
+ensemble_all = Ensemble(
+    "ensemble_all-all",
+    [sklearn, huggingface_baseline, text_statistics_pipeline, vader],
 )
 
-ensemble_pipeline_hf = Ensemble(
-    "ensemble_hf_sklearn", [nlp_sklearn, huggingface_baseline]
-)
+ensemble_sklearn_vader = Ensemble("ensemble_sklearn_vader", [sklearn, vader])
 
-ensemble_pipeline_hf_statistic = Ensemble(
-    "ensemble_hf_statistic", [text_statistics_pipeline, huggingface_baseline]
-)
+ensemble_sklearn_hf = Ensemble("ensemble_sklearn_hf", [sklearn, huggingface_baseline])
 
-ensemble_pipeline_hf_statistic_sklearn = Ensemble(
-    "ensemble_hf_statistic_sklearn",
-    [nlp_sklearn, text_statistics_pipeline, huggingface_baseline],
+ensemble_hf_vader = Ensemble(
+    "ensemble_hf_vader",
+    [huggingface_baseline],
 )
 
 
@@ -241,7 +238,7 @@ tweeteval_hate_speech_experiments = [
         project_name="hate-speech-detection",
         run_name="tweeteval",
         dataset=data_tweet_eval_hate_speech[0],
-        pipeline=ensemble_pipeline,
+        pipeline=sklearn,
         preprocessing_config=preprocess_config,
         metrics=metrics,
         train=True,
@@ -250,7 +247,7 @@ tweeteval_hate_speech_experiments = [
         project_name="hate-speech-detection",
         run_name="tweeteval",
         dataset=data_tweet_eval_hate_speech[1],
-        pipeline=ensemble_pipeline,
+        pipeline=sklearn,
         preprocessing_config=preprocess_config,
         metrics=metrics,
         train=False,
@@ -263,7 +260,7 @@ cross_dataset_experiments = [
         project_name="hate-speech-detection-cross-val",
         run_name="merged_dataset",
         dataset=data_merged_train,
-        pipeline=ensemble_pipeline,
+        pipeline=sklearn,
         preprocessing_config=preprocess_config,
         metrics=metrics,
         train=True,
@@ -272,9 +269,39 @@ cross_dataset_experiments = [
         project_name="hate-speech-detection-cross-val",
         run_name="hatecheck",
         dataset=data_hatecheck[1],
-        pipeline=ensemble_pipeline,
+        pipeline=sklearn,
         preprocessing_config=preprocess_config,
         metrics=metrics,
         train=False,
     ),
 ]
+
+pipelines_to_evaluate = [
+    sklearn,
+    sklearn_autocorrect,
+    random,
+    vader,
+    huggingface_baseline,
+    ensemble_all,
+    ensemble_hf_vader,
+    ensemble_sklearn_hf,
+    ensemble_sklearn_vader,
+]
+
+
+def set_pipeline(experiment: Experiment, pipeline: Pipeline) -> Experiment:
+    experiment.pipeline = pipeline
+    return experiment
+
+
+all_cross_dataset_experiments = flatten(
+    [
+        [
+            [
+                set_pipeline(experiment, pipeline)
+                for experiment in cross_dataset_experiments
+            ]
+        ]
+        for pipeline in pipelines_to_evaluate
+    ]
+)
