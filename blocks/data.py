@@ -8,6 +8,7 @@ from runner.store import Store
 
 from .base import DataSource
 from .pipeline import Pipeline, process_block
+from .base import Element
 
 
 class BaseConcat(DataSource):
@@ -31,6 +32,12 @@ class BaseConcat(DataSource):
 
     def transform(self, data: List[pd.Series]) -> pd.Series:
         raise NotImplementedError()
+
+    def children(self) -> List[Element]:
+        return [self] + [self.blocks]
+
+    def dict_children(self) -> dict:
+        return {"name": self.id, "obj": self, "children": self.blocks}
 
 
 class StrConcat(BaseConcat):
