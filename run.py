@@ -11,6 +11,7 @@ from library.examples.hate_speech import (
     tweeteval_hate_speech_run_configs,
     vader,
 )
+from library.examples.hate_speech_multi_hf import multi_hf_run_configs, full_pipeline
 from plugins import WandbConfig, WandbPlugin
 from runner.runner import Runner
 from type import Evaluators, PreprocessConfig, RunConfig
@@ -61,9 +62,9 @@ if __name__ == "__main__":
     metrics = classification_metrics + calibration_metrics
 
     run(
-        huggingface_baseline,
-        preprocess_config,
-        project_id="hate-speech-detection",
-        run_configs=cross_dataset_run_configs,
+        pipeline=full_pipeline,
+        preprocess_config=preprocess_config,
+        project_id="hate-speech-detection-hf",
+        run_configs=multi_hf_run_configs,
         metrics=metrics,
     )

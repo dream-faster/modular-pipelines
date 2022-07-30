@@ -60,7 +60,7 @@ class HuggingfaceConfig(BaseConfig):
     num_classes: int
     val_size: float
     training_args: TrainingArguments
-    remote_name_override: Optional[str]
+    remote_name_override: Optional[str] = None
 
 
 @dataclass

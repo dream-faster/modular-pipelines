@@ -126,10 +126,12 @@ class Pipeline(Block):
 
 
 def process_block(
-    block: Union[DataSource, Pipeline], store: Store, plugins: List["Plugin"]
+    block: Union[DataSource, Pipeline],
+    store: Store,
+    plugins: List["Plugin"],
 ) -> pd.Series:
     if isinstance(block, DataSource):
-        return block.deplate(store)
+        return block.deplate(store, plugins)
     elif isinstance(block, Pipeline):
         if not block.is_fitted():
             block.fit(store, plugins)
