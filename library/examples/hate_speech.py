@@ -50,7 +50,7 @@ preprocess_config = PreprocessConfig(
 ### Models
 
 huggingface_config = HuggingfaceConfig(
-    preferred_load_origin=LoadOrigin.remote,
+    preferred_load_origin=LoadOrigin.local,
     pretrained_model="distilbert-base-uncased",
     user_name="semy",
     save_remote=True,
