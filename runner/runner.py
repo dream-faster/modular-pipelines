@@ -27,32 +27,43 @@ def overwrite_model_configs_(config: RunConfig, pipeline: Pipeline) -> None:
                         vars(model.config)[key] = value
 
 
-def add_position_to_block_names_(pipeline: Pipeline) -> Pipeline:
-    entire_pipeline = pipeline.children()
-
-    def add_position(block: Union[List[Element], Element], position: int, prefix: str):
-        if isinstance(block, List):
-            if position > 0:
-                prefix += f"{position - 1}-"
-            for i, child in enumerate(block):
-                add_position(child, i, prefix)
-        elif not isinstance(block, DataSource):
-            block.id += f"{prefix}{position}"
-
-    add_position(entire_pipeline, 1, "-")
-
-
-def append_pipeline_id_(pipeline: Pipeline) -> None:
+def append_parent_path_and_id(pipeline: Pipeline) -> None:
     entire_pipeline = pipeline.dict_children()
 
-    def append_id(block, pipeline_id: str):
-        block["obj"].pipeline_id = f"{pipeline_id}"
+    blocks_encountered = []
+
+    def append(block, parent_path: str, id_with_prefix: str):
+        block["obj"].parent_path = f"{parent_path}"
+        block["obj"].id += f"{id_with_prefix}"
+        blocks_encountered.append(id(block["obj"]))
 
         if "children" in block:
-            for child in block["children"]:
-                append_id(child, f"{pipeline_id}/{block['name']}")
+            for i, child in enumerate(block["children"]):
+                child_id = (
+                    f"{id_with_prefix}-{i}"
+                    if id(child["obj"]) not in blocks_encountered
+                    else f"{id_with_prefix}+{i}"
+                )
+                append(
+                    child,
+                    parent_path=f"{parent_path}/{block['obj'].id}",
+                    id_with_prefix=child_id,
+                )
 
-    append_id(entire_pipeline, Const.output_pipelines_path)
+    append(entire_pipeline, Const.output_pipelines_path, "")
+
+
+def rename_input_id_(
+    pipeline: Pipeline, data: Dict[str, Union[pd.Series, List]]
+) -> None:
+    datasources = [
+        block
+        for block in flatten(pipeline.children())
+        if type(block) is DataSource
+        and block.id.split("-")[0].split("+")[0] == Const.input_col
+    ]
+
+    data[datasources[0].id] = data.pop(Const.input_col)
 
 
 class Runner:
@@ -65,16 +76,18 @@ class Runner:
         evaluators: Evaluators,
         plugins: List[Optional[Plugin]],
     ) -> None:
+        self.pipeline = deepcopy(pipeline)
+
+        overwrite_model_configs_(run_config, self.pipeline)
+        append_parent_path_and_id(self.pipeline)
+        rename_input_id_(self.pipeline, data)
+
         self.config = run_config
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
-        self.pipeline = deepcopy(pipeline)
-        self.store = Store(data, labels, self.run_path)
         self.evaluators = evaluators
         self.plugins = obligatory_plugins + plugins
 
-        overwrite_model_configs_(self.config, self.pipeline)
-        add_position_to_block_names_(self.pipeline)
-        append_pipeline_id_(self.pipeline)
+        self.store = Store(data, labels, self.run_path)
 
     def run(self):
         for plugin in self.plugins:
