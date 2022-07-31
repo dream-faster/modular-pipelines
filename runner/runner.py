@@ -1,4 +1,5 @@
 import datetime
+from copy import deepcopy
 from typing import Dict, List, Optional, Union
 
 import pandas as pd
@@ -71,7 +72,7 @@ class Runner:
         self.store = Store(data, labels, self.run_path)
         self.plugins = obligatory_plugins + plugins
 
-        self.pipeline = experiment.pipeline  # maybe we want to deepcopy it first?
+        self.pipeline = deepcopy(experiment.pipeline)
         self.pipeline = overwrite_model_configs(self.experiment, self.pipeline)
         self.pipeline = add_position_to_block_names(self.pipeline)
         self.pipeline = append_pipeline_id(self.pipeline)
