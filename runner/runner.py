@@ -3,7 +3,6 @@ from copy import deepcopy
 from typing import Dict, List, Optional, Union
 
 import pandas as pd
-
 from blocks.base import Block, DataSource, Element
 from blocks.pipeline import Pipeline
 from configs import Const
@@ -19,7 +18,7 @@ from .store import Store
 obligatory_plugins = [PipelineAnalyser(), IntegrityChecker()]
 
 
-def overwrite_model_configs(config: RunConfig, pipeline: Pipeline) -> Pipeline:
+def overwrite_model_configs_(config: RunConfig, pipeline: Pipeline) -> None:
     for key, value in vars(config).items():
         if value is not None:
             for model in flatten(pipeline.children()):
@@ -27,10 +26,8 @@ def overwrite_model_configs(config: RunConfig, pipeline: Pipeline) -> Pipeline:
                     if hasattr(model.config, key):
                         vars(model.config)[key] = value
 
-    return pipeline
 
-
-def add_position_to_block_names(pipeline: Pipeline) -> Pipeline:
+def add_position_to_block_names_(pipeline: Pipeline) -> Pipeline:
     entire_pipeline = pipeline.children()
 
     def add_position(block: Union[List[Element], Element], position: int, prefix: str):
@@ -44,10 +41,8 @@ def add_position_to_block_names(pipeline: Pipeline) -> Pipeline:
 
     add_position(entire_pipeline, 1, "-")
 
-    return pipeline
 
-
-def append_pipeline_id(pipeline: Pipeline) -> Pipeline:
+def append_pipeline_id_(pipeline: Pipeline) -> None:
     entire_pipeline = pipeline.dict_children()
 
     def append_id(block, pipeline_id: str):
@@ -58,7 +53,6 @@ def append_pipeline_id(pipeline: Pipeline) -> Pipeline:
                 append_id(child, f"{pipeline_id}/{block['name']}")
 
     append_id(entire_pipeline, Const.output_pipelines_path)
-    return pipeline
 
 
 class Runner:
@@ -73,14 +67,14 @@ class Runner:
     ) -> None:
         self.config = run_config
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
-        self.pipeline = pipeline
+        self.pipeline = deepcopy(pipeline)
         self.store = Store(data, labels, self.run_path)
         self.evaluators = evaluators
         self.plugins = obligatory_plugins + plugins
 
-        self.pipeline = overwrite_model_configs(self.config, self.pipeline)
-        self.pipeline = add_position_to_block_names(self.pipeline)
-        self.pipeline = append_pipeline_id(self.pipeline)
+        overwrite_model_configs_(self.config, self.pipeline)
+        add_position_to_block_names_(self.pipeline)
+        append_pipeline_id_(self.pipeline)
 
     def run(self):
         for plugin in self.plugins:
