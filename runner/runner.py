@@ -18,6 +18,28 @@ obligatory_plugins = [PipelineAnalyser(), IntegrityChecker()]
 
 
 def overwrite_model_configs_(config: Experiment, pipeline: Pipeline) -> None:
+    """
+    Takes global config values and overwrites the config of
+    each model in the pipeline (if they have that attribute already).
+
+    Parameters
+    ----------
+    config
+        Configurations of the experiment
+    pipeline
+        The entire pipeline
+
+    Example
+    -------
+    if ``save_remote`` is set in the experiment configuration file,
+    it will overwrite ``save_remote`` in all models that have that attribute.
+
+    Returns
+    -------
+    None
+
+    """
+
     for key, value in vars(config).items():
         if value is not None:
             for model in flatten(pipeline.children()):
@@ -63,7 +85,6 @@ class Runner:
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
         self.store = Store(data, labels, self.run_path)
         self.plugins = obligatory_plugins + plugins
-
 
     def run(self):
         for plugin in self.plugins:
