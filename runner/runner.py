@@ -1,16 +1,13 @@
 import datetime
-from copy import deepcopy
 from typing import Dict, List, Optional, Union
 
 import pandas as pd
-
-from blocks.base import Block, DataSource, Element
+from blocks.base import DataSource, Element
 from blocks.pipeline import Pipeline
 from configs import Const
-from configs.constants import LogConst
 from plugins import IntegrityChecker, PipelineAnalyser
 from plugins.base import Plugin
-from type import Evaluators, RunConfig
+from type import Experiment
 from utils.flatten import flatten
 
 from .evaluation import evaluate
@@ -19,7 +16,7 @@ from .store import Store
 obligatory_plugins = [PipelineAnalyser(), IntegrityChecker()]
 
 
-def overwrite_model_configs(config: RunConfig, pipeline: Pipeline) -> Pipeline:
+def overwrite_model_configs(config: Experiment, pipeline: Pipeline) -> Pipeline:
     for key, value in vars(config).items():
         if value is not None:
             for model in flatten(pipeline.children()):
@@ -64,21 +61,18 @@ def append_pipeline_id(pipeline: Pipeline) -> Pipeline:
 class Runner:
     def __init__(
         self,
-        run_config: RunConfig,
-        pipeline: Pipeline,
+        experiment: Experiment,
         data: Dict[str, Union[pd.Series, List]],
         labels: pd.Series,
-        evaluators: Evaluators,
         plugins: List[Optional[Plugin]],
     ) -> None:
-        self.config = run_config
+        self.experiment = experiment
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
-        self.pipeline = pipeline
         self.store = Store(data, labels, self.run_path)
-        self.evaluators = evaluators
         self.plugins = obligatory_plugins + plugins
 
-        self.pipeline = overwrite_model_configs(self.config, self.pipeline)
+        self.pipeline = experiment.pipeline  # maybe we want to deepcopy it first?
+        self.pipeline = overwrite_model_configs(self.experiment, self.pipeline)
         self.pipeline = add_position_to_block_names(self.pipeline)
         self.pipeline = append_pipeline_id(self.pipeline)
 
@@ -90,7 +84,7 @@ class Runner:
         print("💈 Loading existing models")
         self.pipeline.load(self.plugins)
 
-        if self.config.train:
+        if self.experiment.train:
             print("🏋️ Training pipeline")
             self.pipeline.fit(self.store, self.plugins)
 
@@ -101,7 +95,9 @@ class Runner:
         preds_probs = self.pipeline.predict(self.store, self.plugins)
 
         print("🤔 Evaluating entire pipeline")
-        stats = evaluate(preds_probs, self.store, self.evaluators, self.run_path)
+        stats = evaluate(
+            preds_probs, self.store, self.experiment.metrics, self.run_path
+        )
         self.store.set_stats(Const.final_eval_name, stats)
 
         for plugin in self.plugins:

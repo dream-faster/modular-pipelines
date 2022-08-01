@@ -91,21 +91,19 @@ class PreprocessConfig:
         return vars(self)
 
 
-""" Run Configs """
+""" Experiment """
 
 
 @dataclass
-class RunConfig:
+class Experiment:
+    project_name: str
     run_name: str  # Get's appended as a prefix before the pipeline name
     train: bool  # Weather the run should do training
     dataset: pd.DataFrame
+    pipeline: "Pipeline"
+    metrics: Evaluators
+    preprocessing_config: PreprocessConfig
     force_fit: Optional[bool] = None  # If set to True will make all models train
-    save_remote: Optional[
-        bool
-    ] = None  # If set True all models will try uploading (if configured), if set False it overwrites uploading of any models (even if configured)
-    remote_logging: Optional[
-        bool
-    ] = None  # Switches on and off all remote logging (eg.: wandb)
 
     def get_configs(self):
         return vars(self)
