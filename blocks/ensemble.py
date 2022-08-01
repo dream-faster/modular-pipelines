@@ -51,13 +51,6 @@ class Ensemble(Pipeline):
             if hasattr(self, "pipelines")
             else [],
         )
-        # return {
-        #     "name": self.id,
-        #     "obj": self,
-        #     "children": [child.get_hierarchy() for child in self.pipelines]
-        #     if hasattr(self, "pipelines")
-        #     else [],
-        # }
 
 
 def average_output(outputs: List[List[PredsWithProbs]]) -> List[PredsWithProbs]:

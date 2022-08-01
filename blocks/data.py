@@ -43,11 +43,6 @@ class BaseConcat(DataSource):
             obj=self,
             children=[block.get_hierarchy() for block in self.blocks],
         )
-        # return {
-        #     "name": self.id,
-        #     "obj": self,
-        #     "children": [block.get_hierarchy() for block in self.blocks],
-        # }
 
 
 class StrConcat(BaseConcat):
