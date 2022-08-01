@@ -45,11 +45,11 @@ def run(
 if __name__ == "__main__":
 
     prod_config = StagingConfig(
-        name=StagingNames.prod, remote_save=True, remote_logging=True
+        name=StagingNames.prod, save_remote=True, log_remote=True
     )
 
     dev_config = StagingConfig(
-        name=StagingNames.prod, remote_save=False, remote_logging=False
+        name=StagingNames.prod, save_remote=False, log_remote=False
     )
 
     run(
