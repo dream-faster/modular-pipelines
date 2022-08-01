@@ -17,10 +17,10 @@ def run(
     ] = None,  # Switches on and off all remote logging (eg.: wandb)
 ) -> None:
 
-    experiment.save_remote = save_remote
-    experiment.remote_logging = remote_logging
-
     for experiment in experiments:
+        experiment.save_remote = save_remote
+        experiment.remote_logging = remote_logging
+
         logger_plugins = (
             [
                 WandbPlugin(
