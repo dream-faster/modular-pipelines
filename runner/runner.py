@@ -79,7 +79,7 @@ class Runner:
 
         overwrite_model_configs_(experiment, self.pipeline)
         append_parent_path_and_id_(self.pipeline)
-        rename_input_id_(self.pipeline, data)
+        # rename_input_id_(self.pipeline, data)
 
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
         self.store = Store(data, labels, self.run_path)

@@ -17,6 +17,9 @@ def run(
     ] = None,  # Switches on and off all remote logging (eg.: wandb)
 ) -> None:
 
+    experiment.save_remote = save_remote
+    experiment.remote_logging = remote_logging
+
     for experiment in experiments:
         logger_plugins = (
             [
@@ -46,7 +49,6 @@ def run(
 
 
 if __name__ == "__main__":
-
     run(
         all_cross_dataset_experiments,
         save_remote=False,
