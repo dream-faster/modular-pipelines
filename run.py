@@ -24,7 +24,7 @@ def run(
                     WandbConfig(
                         project_id=experiment.project_name,
                         run_name=experiment.run_name + "-" + experiment.pipeline.id,
-                        train=True,
+                        train=experiment.train,
                     ),
                     dict(
                         run_config=experiment.get_configs(),
