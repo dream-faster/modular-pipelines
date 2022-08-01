@@ -16,7 +16,7 @@ def run(
 
     for experiment in experiments:
         experiment.save_remote = staging_config.save_remote
-        experiment.remote_logging = staging_config.remote_logging
+        experiment.log_remote = staging_config.log_remote
 
         logger_plugins = (
             [
