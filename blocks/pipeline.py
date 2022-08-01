@@ -104,36 +104,26 @@ class Pipeline(Block):
     def get_hierarchy(self) -> Hierarchy:
         source_hierarchy = self.datasource.get_hierarchy()
 
+        current_pipeline_hierarchy = Hierarchy(
+            name=self.id,
+            obj=self,
+            children=[child.get_hierarchy() for child in self.models]
+            if hasattr(self, "models")
+            else [],
+        )
+
         if (
             hasattr(source_hierarchy, "children")
             and source_hierarchy.children is not None
             and len(source_hierarchy.children) > 0
         ):
-
             return Hierarchy(
                 name="full-pipeline",
                 obj=None,
-                children=[
-                    source_hierarchy,
-                    Hierarchy(
-                        name=self.id,
-                        obj=self,
-                        children=[child.get_hierarchy() for child in self.models]
-                        if hasattr(self, "models")
-                        else [],
-                    ),
-                ],
+                children=[source_hierarchy, current_pipeline_hierarchy],
             )
         else:
-            source_hierarchy.children = [
-                Hierarchy(
-                    name=self.id,
-                    obj=self,
-                    children=[child.get_hierarchy() for child in self.models]
-                    if hasattr(self, "models")
-                    else [],
-                )
-            ]
+            source_hierarchy.children = [current_pipeline_hierarchy]
             return source_hierarchy
 
     def get_configs(self) -> List[BaseConfig]:
