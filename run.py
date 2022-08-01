@@ -15,6 +15,9 @@ def run(
 ) -> None:
 
     for experiment in experiments:
+        experiment.save_remote = save_remote
+        experiment.remote_logging = remote_logging
+
         logger_plugins = (
             [
                 WandbPlugin(
@@ -43,7 +46,6 @@ def run(
 
 
 if __name__ == "__main__":
-
     prod_config = StagingConfig(
         name=StagingNames.prod, save_remote=True, log_remote=True
     )
@@ -51,6 +53,7 @@ if __name__ == "__main__":
     dev_config = StagingConfig(
         name=StagingNames.prod, save_remote=False, log_remote=False
     )
+
 
     run(
         multi_hf_run_experiments,

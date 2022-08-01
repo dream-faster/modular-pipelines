@@ -42,7 +42,7 @@ class Block(Element):
             print("outputType must be set")
 
     def load(self) -> None:
-        model = safe_loading(self.pipeline_id, self.id)
+        model = safe_loading(self.parent_path, self.id)
         if model is not None:
             self.model = model
 
@@ -60,7 +60,7 @@ class Block(Element):
         raise NotImplementedError()
 
     def save(self) -> None:
-        safe_saving(self.model, self.pipeline_id, self.id)
+        safe_saving(self.model, self.parent_path, self.id)
 
     def save_remote(self) -> None:
         pass
