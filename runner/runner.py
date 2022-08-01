@@ -64,6 +64,7 @@ class Runner:
         self.store = Store(data, labels, self.run_path)
         self.plugins = obligatory_plugins + plugins
 
+
     def run(self):
         for plugin in self.plugins:
             plugin.print_me("on_run_begin")
