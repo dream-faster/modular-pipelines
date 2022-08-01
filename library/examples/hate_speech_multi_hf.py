@@ -18,7 +18,7 @@ from blocks.transformations import (
 from configs.constants import Const
 from data.transformation import transform_dataset
 from datasets.load import load_dataset
-from library.evaluation import classification, classification_metrics
+from library.evaluation import calibration_metrics, classification_metrics
 from sklearn.ensemble import GradientBoostingClassifier, VotingClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
@@ -29,10 +29,11 @@ from type import (
     HuggingfaceConfig,
     LoadOrigin,
     PreprocessConfig,
-    RunConfig,
+    Experiment,
     SKLearnConfig,
     HFTaskTypes,
 )
+from blocks.models.sklearn import SKLearnModel
 
 from utils.flatten import remove_none
 
@@ -150,18 +151,26 @@ full_pipeline = Pipeline(
     ),
 )
 
+metrics = classification_metrics + calibration_metrics
 
-""" Run Configs """
-
-multi_hf_run_configs = [
-    RunConfig(
-        run_name="hate-speech-detection-train",
+""" Experiments """
+multi_hf_run_experiments = [
+    Experiment(
+        project_name="hate-speech-detection-hf",
+        run_name="multi-hf-meta-train",
         dataset=hate_speech_data[0],
+        pipeline=full_pipeline,
+        preprocessing_config=preprocess_config,
+        metrics=metrics,
         train=True,
     ),
-    RunConfig(
-        run_name="hate-speech-detection-train-test",
+    Experiment(
+        project_name="hate-speech-detection-hf",
+        run_name="multi-hf-meta-test",
         dataset=hate_speech_data[1],
+        pipeline=full_pipeline,
+        preprocessing_config=preprocess_config,
+        metrics=metrics,
         train=False,
     ),
 ]
