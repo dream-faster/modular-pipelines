@@ -6,17 +6,12 @@ from configs.constants import Const
 from library.examples.hate_speech_multi_hf import multi_hf_run_experiments
 from plugins import WandbConfig, WandbPlugin
 from runner.runner import Runner
-from type import Experiment
+from type import Experiment, StagingConfig, StagingNames
 
 
 def run(
     experiments: List[Experiment],
-    save_remote: Optional[
-        bool
-    ] = None,  # If set True all models will try uploading (if configured), if set False it overwrites uploading of any models (even if configured)
-    remote_logging: Optional[
-        bool
-    ] = None,  # Switches on and off all remote logging (eg.: wandb)
+    staging_config: StagingConfig,
 ) -> None:
 
     for experiment in experiments:
@@ -35,7 +30,7 @@ def run(
                     ),
                 )
             ]
-            if remote_logging
+            if staging_config.log_remote
             else []
         )
         runner = Runner(
@@ -49,8 +44,15 @@ def run(
 
 if __name__ == "__main__":
 
+    prod_config = StagingConfig(
+        name=StagingNames.prod, remote_save=True, remote_logging=True
+    )
+
+    dev_config = StagingConfig(
+        name=StagingNames.prod, remote_save=False, remote_logging=False
+    )
+
     run(
         multi_hf_run_experiments,
-        save_remote=False,
-        remote_logging=False,
+        staging_config=dev_config,
     )
