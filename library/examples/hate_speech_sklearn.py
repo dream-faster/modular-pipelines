@@ -1,41 +1,18 @@
-from datasets.load import load_dataset
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.preprocessing import MinMaxScaler
+from typing import Tuple, Union
 
 from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
 from blocks.data import DataSource
 from blocks.ensemble import Ensemble
-from blocks.models.huggingface import HuggingfaceModel
 from blocks.models.sklearn import SKLearnModel
 from blocks.pipeline import Pipeline
-from blocks.transformations import (
-    Lemmatizer,
-    SKLearnTransformation,
-    SpacyTokenizer,
-    TextStatisticTransformation,
-)
+from blocks.transformations import Lemmatizer, SKLearnTransformation, SpacyTokenizer
 from blocks.transformations.no_lemmatizer import NoLemmatizer
-from configs.constants import Const
-from data.transformation import transform_dataset
-from library.evaluation import classification
-from type import (
-    HuggingfaceConfig,
-    LoadOrigin,
-    PreprocessConfig,
-    RunConfig,
-    SKLearnConfig,
-)
+from sklearn.ensemble import GradientBoostingClassifier, VotingClassifier
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import MultinomialNB
+from type import LoadOrigin, SKLearnConfig
 from utils.flatten import remove_none
-
-preprocess_config = PreprocessConfig(
-    train_size=100,
-    val_size=100,
-    test_size=100,
-    input_col="text",
-    label_col="label",
-)
 
 sklearn_config = SKLearnConfig(
     force_fit=False,
@@ -77,9 +54,9 @@ def create_nlp_sklearn_pipeline(
             [
                 SpellAutocorrectAugmenter(fast=True) if autocorrect else None,
                 SpacyTokenizer(),
-                Lemmatizer(remove_stopwords=False)
+                Lemmatizer(remove_stopwords=True)
                 if lemmatization
-                else NoLemmatizer(remove_stopwords=False),
+                else NoLemmatizer(remove_stopwords=True),
                 SKLearnTransformation(
                     TfidfVectorizer(
                         max_features=tfidf_max_features,
@@ -142,16 +119,3 @@ sklearn_ensemble = Ensemble(
         sklearn_lemma_1_2_large,
     ],
 )
-
-hate_speech_data = transform_dataset(
-    load_dataset("tweet_eval", "hate"), preprocess_config
-)
-
-run_configs = [
-    RunConfig(
-        run_name="hate-speech-detection", dataset=hate_speech_data[0], train=True
-    ),
-    RunConfig(
-        run_name="hate-speech-detection", dataset=hate_speech_data[1], train=False
-    ),
-]
