@@ -1,8 +1,8 @@
 import datetime
+from copy import deepcopy
 from typing import Dict, List, Optional, Union
 
 import pandas as pd
-
 from blocks.base import Block, DataSource, Element
 from blocks.pipeline import Pipeline
 from configs import Const
@@ -17,7 +17,6 @@ from .store import Store
 obligatory_plugins = [PipelineAnalyser(), IntegrityChecker()]
 
 
-
 def overwrite_model_configs_(config: Experiment, pipeline: Pipeline) -> None:
     for key, value in vars(config).items():
         if value is not None:
@@ -27,7 +26,7 @@ def overwrite_model_configs_(config: Experiment, pipeline: Pipeline) -> None:
                         vars(model.config)[key] = value
 
 
-def append_parent_path_and_id(pipeline: Pipeline) -> None:
+def append_parent_path_and_id_(pipeline: Pipeline) -> None:
     entire_pipeline = pipeline.dict_children()
 
     blocks_encountered = []
@@ -77,15 +76,14 @@ class Runner:
 
         self.experiment = experiment
         self.pipeline = deepcopy(experiment.pipeline)
-        
+
         overwrite_model_configs_(experiment, self.pipeline)
-        append_parent_path_and_id(self.pipeline)
+        append_parent_path_and_id_(self.pipeline)
         rename_input_id_(self.pipeline, data)
-        
+
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
         self.store = Store(data, labels, self.run_path)
         self.plugins = obligatory_plugins + plugins
-
 
     def run(self):
         for plugin in self.plugins:
