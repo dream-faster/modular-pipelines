@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from blocks.adaptors import ListOfListsToNumpy
 from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
 from blocks.data import DataSource
@@ -117,7 +119,7 @@ input_data = DataSource("input")
 
 def create_nlp_sklearn_pipeline(autocorrect: bool, simple: bool = False) -> Pipeline:
     return Pipeline(
-        "nlp_sklearn_autocorrect" if autocorrect else "nlp_sklearn",
+        "sklearn_autocorrect" if autocorrect else "sklearn",
         input_data,
         remove_none(
             [
@@ -140,7 +142,7 @@ def create_nlp_sklearn_pipeline(autocorrect: bool, simple: bool = False) -> Pipe
 
 def create_nlp_huggingface_pipeline(autocorrect: bool) -> Pipeline:
     return Pipeline(
-        "nlp_hf_autocorrect" if autocorrect else "nlp_hf",
+        "hf_autocorrect" if autocorrect else "hf",
         input_data,
         remove_none(
             [
@@ -298,7 +300,7 @@ all_cross_dataset_experiments = flatten(
     [
         [
             [
-                set_pipeline(experiment, pipeline)
+                set_pipeline(deepcopy(experiment), pipeline)
                 for experiment in cross_dataset_experiments
             ]
         ]
