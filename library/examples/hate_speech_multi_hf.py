@@ -39,9 +39,9 @@ from utils.flatten import remove_none
 
 """ Models """
 preprocess_config = PreprocessConfig(
-    train_size=100,
-    val_size=100,
-    test_size=100,
+    train_size=-1,
+    val_size=-1,
+    test_size=-1,
     input_col="text",
     label_col="label",
 )
@@ -146,6 +146,7 @@ full_pipeline = Pipeline(
     ),
     remove_none(
         [
+            ListOfListsToNumpy(replace_nan=True),
             SKLearnModel("sklearn-meta-model", sklearn_config),
         ]
     ),
