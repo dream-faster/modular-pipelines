@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 
 import numpy as np
 
@@ -9,7 +9,7 @@ from .base import Adaptor
 
 class ListOfListsToNumpy(Adaptor):
 
-    inputTypes = DataType.List
+    inputTypes = [DataType.List, DataType.PredictionsWithProbs]
     outputType = DataType.NpArray
 
     def __init__(self, replace_nan: bool) -> None:

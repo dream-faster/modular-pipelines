@@ -146,6 +146,7 @@ full_pipeline = Pipeline(
     ),
     remove_none(
         [
+            ListOfListsToNumpy(replace_nan=True),
             SKLearnModel("sklearn-meta-model", sklearn_config),
         ]
     ),
