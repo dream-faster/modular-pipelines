@@ -32,8 +32,8 @@ def append_parent_path_and_id_(pipeline: Pipeline) -> None:
     blocks_encountered = []
 
     def append(block, parent_path: str, id_with_prefix: str):
-        block["obj"].parent_path = f"{parent_path}"
-        block["obj"].id += f"{id_with_prefix}"
+        block["obj"].parent_path = parent_path
+        block["obj"].id += id_with_prefix
         blocks_encountered.append(id(block["obj"]))
 
         if "children" in block:
