@@ -30,9 +30,15 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.preprocessing import MinMaxScaler
 from transformers.training_args import TrainingArguments
-from type import (HFTaskTypes, HuggingfaceConfig, LoadOrigin, PreprocessConfig,
-                  Experiment, SKLearnConfig)
-from utils.flatten import remove_none
+from type import (
+    HFTaskTypes,
+    HuggingfaceConfig,
+    LoadOrigin,
+    PreprocessConfig,
+    Experiment,
+    SKLearnConfig,
+)
+from utils.flatten import remove_none, flatten
 
 
 preprocess_config = PreprocessConfig(
@@ -48,7 +54,7 @@ preprocess_config = PreprocessConfig(
 huggingface_config = HuggingfaceConfig(
     preferred_load_origin=LoadOrigin.local,
     pretrained_model="distilbert-base-uncased",
-    task_type = HFTaskTypes.sentiment_analysis,
+    task_type=HFTaskTypes.sentiment_analysis,
     user_name="semy",
     save_remote=True,
     save=True,

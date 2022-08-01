@@ -34,10 +34,14 @@ class BaseConcat(DataSource):
         raise NotImplementedError()
 
     def children(self) -> List[Element]:
-        return [self] + [self.blocks]
+        return [self] + [block.children() for block in self.blocks]
 
     def dict_children(self) -> dict:
-        return {"name": self.id, "obj": self, "children": self.blocks}
+        return {
+            "name": self.id,
+            "obj": self,
+            "children": [block.dict_children() for block in self.blocks],
+        }
 
 
 class StrConcat(BaseConcat):

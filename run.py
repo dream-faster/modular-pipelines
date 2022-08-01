@@ -2,7 +2,8 @@ from typing import List, Optional
 
 from configs.constants import Const
 
-from library.examples.hate_speech import all_cross_dataset_experiments
+# from library.examples.hate_speech import all_cross_dataset_experiments
+from library.examples.hate_speech_multi_hf import multi_hf_run_experiments
 from plugins import WandbConfig, WandbPlugin
 from runner.runner import Runner
 from type import Experiment
@@ -49,7 +50,7 @@ def run(
 if __name__ == "__main__":
 
     run(
-        all_cross_dataset_experiments,
+        multi_hf_run_experiments,
         save_remote=False,
-        remote_logging=True,
+        remote_logging=False,
     )

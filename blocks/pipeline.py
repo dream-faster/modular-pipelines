@@ -104,15 +104,16 @@ class Pipeline(Block):
     def dict_children(self) -> dict:
         source_dict = self.datasource.dict_children()
 
-        source_dict["children"] = [
-            {
-                "name": self.id,
-                "obj": self,
-                "children": [child.dict_children() for child in self.models]
-                if hasattr(self, "models")
-                else [],
-            }
-        ]
+        if not "children" in source_dict or len(source_dict["children"]) == 0:
+            source_dict["children"] = [
+                {
+                    "name": self.id,
+                    "obj": self,
+                    "children": [child.dict_children() for child in self.models]
+                    if hasattr(self, "models")
+                    else [],
+                }
+            ]
 
         return source_dict
 
