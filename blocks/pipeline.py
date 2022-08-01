@@ -104,15 +104,16 @@ class Pipeline(Block):
     def dict_children(self) -> dict:
         source_dict = self.datasource.dict_children()
 
-        source_dict["children"] = [
-            {
-                "name": self.id,
-                "obj": self,
-                "children": [child.dict_children() for child in self.models]
-                if hasattr(self, "models")
-                else [],
-            }
-        ]
+        if not "children" in source_dict or len(source_dict["children"]) == 0:
+            source_dict["children"] = [
+                {
+                    "name": self.id,
+                    "obj": self,
+                    "children": [child.dict_children() for child in self.models]
+                    if hasattr(self, "models")
+                    else [],
+                }
+            ]
 
         return source_dict
 
@@ -126,10 +127,12 @@ class Pipeline(Block):
 
 
 def process_block(
-    block: Union[DataSource, Pipeline], store: Store, plugins: List["Plugin"]
+    block: Union[DataSource, Pipeline],
+    store: Store,
+    plugins: List["Plugin"],
 ) -> pd.Series:
     if isinstance(block, DataSource):
-        return block.deplate(store)
+        return block.deplate(store, plugins)
     elif isinstance(block, Pipeline):
         if not block.is_fitted():
             block.fit(store, plugins)

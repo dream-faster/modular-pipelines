@@ -8,28 +8,40 @@ from runner.store import Store
 
 from .base import DataSource
 from .pipeline import Pipeline, process_block
+from .base import Element
 
 
 class BaseConcat(DataSource):
 
     blocks: List[Union[DataSource, Pipeline]]
 
-    def __init__(self, blocks: List[Union[DataSource, Pipeline]]):
+    def __init__(self, id: str, blocks: List[Union[DataSource, Pipeline]]):
         self.blocks = blocks
+        self.id = id
 
-    def deplate(self, store: Store) -> pd.DataFrame:
+    def deplate(self, store: Store, plugins: List["Plugin"]) -> pd.DataFrame:
         collected = self.transform(
-            [process_block(block, store) for block in self.blocks]
+            [process_block(block, store, plugins) for block in self.blocks]
         )
 
         return collected
 
-    def load(self):
+    def load(self, plugins: List["Plugin"]):
         for block in self.blocks:
-            block.load()
+            block.load(plugins)
 
     def transform(self, data: List[pd.Series]) -> pd.Series:
         raise NotImplementedError()
+
+    def children(self) -> List[Element]:
+        return [self] + [block.children() for block in self.blocks]
+
+    def dict_children(self) -> dict:
+        return {
+            "name": self.id,
+            "obj": self,
+            "children": [block.dict_children() for block in self.blocks],
+        }
 
 
 class StrConcat(BaseConcat):

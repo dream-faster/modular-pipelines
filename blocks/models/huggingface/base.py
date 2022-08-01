@@ -4,6 +4,8 @@ from typing import Callable, List, Optional, Tuple, Union
 
 import pandas as pd
 import torch
+from blocks.models.base import Model
+from configs.constants import Const
 from datasets import ClassLabel, Dataset, Features, Value
 from sklearn.model_selection import train_test_split
 from transformers import (
@@ -14,9 +16,6 @@ from transformers import (
     TrainingArguments,
     pipeline,
 )
-
-from blocks.models.base import Model
-from configs.constants import Const
 from type import DataType, Evaluators, HuggingfaceConfig, LoadOrigin, PredsWithProbs
 from utils.env_interface import get_env
 
@@ -28,22 +27,23 @@ device = 0 if torch.cuda.is_available() else -1
 
 def safe_load_pipeline(
     module: Union[str, PreTrainedModel],
+    config: HuggingfaceConfig,
     tokenizer: Optional[PreTrainedTokenizerBase] = None,
 ) -> Optional[Callable]:
     try:
         if tokenizer is not None:
             loaded_pipeline = pipeline(
-                task="sentiment-analysis",
+                task=config.task_type.value,
                 model=module,
                 tokenizer=tokenizer,
                 device=device,
             )
         else:
             loaded_pipeline = pipeline(
-                task="sentiment-analysis", model=module, device=device
+                task=config.task_type.value, model=module, device=device
             )
         print(
-            f"    ┣━━━ Pipeline loaded: {module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}"
+            f"    ┣━━━ Pipeline loaded {config.task_type.value}: {module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}"
         )
     except:
         print(f"    ├ Couldn't load {module} pipeline. Skipping.")
@@ -97,7 +97,7 @@ class HuggingfaceModel(Model):
 
         for key, load_path in load_order:
             print(f"    ├ ℹ️ Loading from {key}")
-            model = safe_load_pipeline(load_path)
+            model = safe_load_pipeline(load_path, config=self.config)
             if model:
                 self.model = model
                 break
@@ -124,7 +124,7 @@ class HuggingfaceModel(Model):
             self.id,
             self.trainer_callbacks if hasattr(self, "trainer_callbacks") else None,
         )
-        self.model = safe_load_pipeline(trainer.model, trainer.tokenizer)
+        self.model = safe_load_pipeline(trainer.model, self.config, trainer.tokenizer)
 
         self.trainer = trainer
         self.trained = True

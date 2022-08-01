@@ -40,6 +40,10 @@ class LoadOrigin(Enum):
     pretrained = "pretrained"
 
 
+class HFTaskTypes(Enum):
+    sentiment_analysis = "sentiment-analysis"
+
+
 @dataclass
 class BaseConfig:
     force_fit: bool
@@ -51,11 +55,12 @@ class BaseConfig:
 @dataclass
 class HuggingfaceConfig(BaseConfig):
     pretrained_model: str
+    task_type: HFTaskTypes
     user_name: str
     num_classes: int
     val_size: float
     training_args: TrainingArguments
-    remote_name_override: Optional[str]
+    remote_name_override: Optional[str] = None
 
 
 @dataclass
@@ -102,3 +107,18 @@ class Experiment:
 
     def get_configs(self):
         return vars(self)
+
+
+class StagingNames(Enum):
+    dev = "development"
+    prod = "production"
+    exp = "experiment"
+
+
+@dataclass
+class StagingConfig:
+    name: StagingNames
+    save_remote: Optional[
+        bool
+    ]  # If set True all models will try uploading (if configured), if set False it overwrites uploading of any models (even if configured)
+    log_remote: Optional[bool]  # Switches on and off all remote logging (eg.: wandb)
