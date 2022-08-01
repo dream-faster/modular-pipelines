@@ -10,39 +10,12 @@ from plugins import IntegrityChecker, PipelineAnalyser
 from plugins.base import Plugin
 from type import Experiment
 from utils.flatten import flatten
-
+from utils.run_helpers import overwrite_model_configs_, append_parent_path_and_id_
 from .evaluation import evaluate
 from .store import Store
 
+
 obligatory_plugins = [PipelineAnalyser(), IntegrityChecker()]
-
-
-def overwrite_model_configs_(config: Experiment, pipeline: Pipeline) -> None:
-    for key, value in vars(config).items():
-        if value is not None:
-            for model in flatten(pipeline.children()):
-                if hasattr(model, "config"):
-                    if hasattr(model.config, key):
-                        vars(model.config)[key] = value
-
-
-def append_parent_path_and_id_(pipeline: Pipeline) -> None:
-    entire_pipeline = pipeline.dict_children()
-
-    def append(block, parent_path: str, id_with_prefix: str):
-        block["obj"].parent_path = parent_path
-        if not isinstance(block["obj"], DataSource):
-            block["obj"].id += id_with_prefix
-
-        if "children" in block:
-            for i, child in enumerate(block["children"]):
-                append(
-                    child,
-                    parent_path=f"{parent_path}/{block['obj'].id}",
-                    id_with_prefix=f"{id_with_prefix}-{i}",
-                )
-
-    append(entire_pipeline, Const.output_pipelines_path, "")
 
 
 class Runner:
@@ -63,7 +36,6 @@ class Runner:
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
         self.store = Store(data, labels, self.run_path)
         self.plugins = obligatory_plugins + plugins
-
 
     def run(self):
         for plugin in self.plugins:

@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from blocks.base import Block, Element
-from type import BaseConfig, Evaluators
+from type import BaseConfig, Evaluators, Hierarchy
 
 
 class Model(Block):
@@ -12,5 +12,5 @@ class Model(Block):
     def children(self) -> List[Element]:
         return [self]
 
-    def dict_children(self) -> dict:
-        return {"name": self.id, "obj": self}
+    def get_hierarchy(self) -> Hierarchy:
+        return Hierarchy(name=self.id, obj=self)

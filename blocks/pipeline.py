@@ -6,7 +6,7 @@ import pandas as pd
 from configs.constants import LogConst
 from runner.store import Store
 from runner.train import predict, train_predict
-from type import BaseConfig
+from type import BaseConfig, Hierarchy
 from utils.flatten import flatten
 
 from .base import Block, DataSource, Element
@@ -101,21 +101,22 @@ class Pipeline(Block):
     def children(self) -> List[Element]:
         return self.datasource.children() + [self] + [self.models]
 
-    def dict_children(self) -> dict:
-        source_dict = self.datasource.dict_children()
+    def get_hierarchy(self) -> dict:
+        source_hierarchy = self.datasource.get_hierarchy()
 
-        if not "children" in source_dict or len(source_dict["children"]) == 0:
-            source_dict["children"] = [
-                {
-                    "name": self.id,
-                    "obj": self,
-                    "children": [child.dict_children() for child in self.models]
-                    if hasattr(self, "models")
-                    else [],
-                }
-            ]
+        if not hasattr(source_hierarchy, "children"):
+            if len(source_hierarchy.children == 0):
+                source_hierarchy.children = [
+                    Hierarchy(
+                        name=self.id,
+                        obj=self,
+                        children=[child.get_hierarchy() for child in self.models]
+                        if hasattr(self, "models")
+                        else [],
+                    )
+                ]
 
-        return source_dict
+        return source_hierarchy
 
     def get_configs(self) -> List[BaseConfig]:
         entire_pipeline = self.children()
