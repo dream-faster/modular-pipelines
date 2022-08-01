@@ -101,22 +101,40 @@ class Pipeline(Block):
     def children(self) -> List[Element]:
         return self.datasource.children() + [self] + [self.models]
 
-    def get_hierarchy(self) -> dict:
+    def get_hierarchy(self) -> Hierarchy:
         source_hierarchy = self.datasource.get_hierarchy()
 
-        if not hasattr(source_hierarchy, "children"):
-            if len(source_hierarchy.children == 0):
-                source_hierarchy.children = [
+        if (
+            hasattr(source_hierarchy, "children")
+            and source_hierarchy.children is not None
+            and len(source_hierarchy.children) > 0
+        ):
+
+            return Hierarchy(
+                name="full-pipeline",
+                obj=None,
+                children=[
+                    source_hierarchy,
                     Hierarchy(
                         name=self.id,
                         obj=self,
                         children=[child.get_hierarchy() for child in self.models]
                         if hasattr(self, "models")
                         else [],
-                    )
-                ]
-
-        return source_hierarchy
+                    ),
+                ],
+            )
+        else:
+            source_hierarchy.children = [
+                Hierarchy(
+                    name=self.id,
+                    obj=self,
+                    children=[child.get_hierarchy() for child in self.models]
+                    if hasattr(self, "models")
+                    else [],
+                )
+            ]
+            return source_hierarchy
 
     def get_configs(self) -> List[BaseConfig]:
         entire_pipeline = self.children()
