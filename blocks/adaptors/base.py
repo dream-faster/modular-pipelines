@@ -3,7 +3,7 @@ from typing import List, Optional
 import pandas as pd
 
 from blocks.base import Block, Element
-from type import BaseConfig
+from type import BaseConfig, Hierarchy
 
 
 class Adaptor(Block):
@@ -19,5 +19,5 @@ class Adaptor(Block):
     def children(self) -> List[Element]:
         return [self]
 
-    def dict_children(self) -> dict:
-        return {"name": self.id, "obj": self}
+    def get_hierarchy(self) -> Hierarchy:
+        return Hierarchy(name=self.id, obj=self)
