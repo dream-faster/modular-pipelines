@@ -18,6 +18,9 @@ def run(
 ) -> None:
 
     for experiment in experiments:
+        experiment.save_remote = save_remote
+        experiment.remote_logging = remote_logging
+
         logger_plugins = (
             [
                 WandbPlugin(
@@ -46,7 +49,6 @@ def run(
 
 
 if __name__ == "__main__":
-
     run(
         all_cross_dataset_experiments,
         save_remote=False,

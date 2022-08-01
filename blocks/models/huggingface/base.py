@@ -77,7 +77,7 @@ class HuggingfaceModel(Model):
 
     def load(self) -> None:
         paths = {
-            LoadOrigin.local: f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}",
+            LoadOrigin.local: f"{Const.output_pipelines_path}/{self.parent_path}/{self.id}",
             LoadOrigin.remote: f"{self.config.user_name}/{self.id}"
             if self.config.remote_name_override is None
             else self.config.remote_name_override,
@@ -105,7 +105,7 @@ class HuggingfaceModel(Model):
                 print(f"    ├ ℹ️ No model found on {load_path}")
 
         self.training_args.output_dir = (
-            f"{Const.output_pipelines_path}/{self.pipeline_id}/{self.id}"
+            f"{Const.output_pipelines_path}/{self.parent_path}/{self.id}"
         )
 
     def fit(self, dataset: List[str], labels: Optional[pd.Series]) -> None:
@@ -120,7 +120,7 @@ class HuggingfaceModel(Model):
             from_pandas(train_dataset, self.config.num_classes),
             from_pandas(val_dataset, self.config.num_classes),
             self.config,
-            self.pipeline_id,
+            self.parent_path,
             self.id,
             self.trainer_callbacks if hasattr(self, "trainer_callbacks") else None,
         )
