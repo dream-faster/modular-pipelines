@@ -35,7 +35,7 @@ def run_training_pipeline(
     train_data: Dataset,
     val_data: Dataset,
     config: HuggingfaceConfig,
-    pipeline_id: str,
+    parent_path: str,
     id: str,
     trainer_callbacks: Optional[List[Callable]],
 ) -> Trainer:
