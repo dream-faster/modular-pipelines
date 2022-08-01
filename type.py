@@ -128,4 +128,4 @@ class StagingConfig:
 class Hierarchy:
     name: str
     obj: "Element"
-    children: List["Hierarchy"]
+    children: Optional[List["Hierarchy"]] = None

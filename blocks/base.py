@@ -5,7 +5,7 @@ import pandas as pd
 
 from blocks.iomanager import safe_loading, safe_saving
 from runner.store import Store
-from type import BaseConfig, DataType
+from type import BaseConfig, DataType, Hierarchy
 
 
 class Element(ABC):
@@ -85,5 +85,5 @@ class DataSource(Element):
     def children(self) -> List[Element]:
         return [self]
 
-    def dict_children(self) -> dict:
-        return {"name": self.id, "obj": self}
+    def get_hierarchy(self) -> Hierarchy:
+        return Hierarchy(name=self.id, obj=self)

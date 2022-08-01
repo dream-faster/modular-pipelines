@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 from runner.store import Store
-from type import PredsWithProbs
+from type import PredsWithProbs, Hierarchy
 
 from .base import Block, Element
 from .pipeline import Pipeline
@@ -43,14 +43,21 @@ class Ensemble(Pipeline):
     def children(self) -> List[Element]:
         return [self] + [pipeline.children() for pipeline in self.pipelines]
 
-    def dict_children(self) -> dict:
-        return {
-            "name": self.id,
-            "obj": self,
-            "children": [child.dict_children() for child in self.pipelines]
+    def get_hierarchy(self) -> Hierarchy:
+        return Hierarchy(
+            name=self.id,
+            obj=self,
+            children=[child.get_hierarchy() for child in self.pipelines]
             if hasattr(self, "pipelines")
             else [],
-        }
+        )
+        # return {
+        #     "name": self.id,
+        #     "obj": self,
+        #     "children": [child.get_hierarchy() for child in self.pipelines]
+        #     if hasattr(self, "pipelines")
+        #     else [],
+        # }
 
 
 def average_output(outputs: List[List[PredsWithProbs]]) -> List[PredsWithProbs]:

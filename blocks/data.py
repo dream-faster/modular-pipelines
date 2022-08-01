@@ -9,6 +9,7 @@ from runner.store import Store
 from .base import DataSource
 from .pipeline import Pipeline, process_block
 from .base import Element
+from type import Hierarchy
 
 
 class BaseConcat(DataSource):
@@ -36,12 +37,17 @@ class BaseConcat(DataSource):
     def children(self) -> List[Element]:
         return [self] + [block.children() for block in self.blocks]
 
-    def dict_children(self) -> dict:
-        return {
-            "name": self.id,
-            "obj": self,
-            "children": [block.dict_children() for block in self.blocks],
-        }
+    def get_hierarchy(self) -> Hierarchy:
+        return Hierarchy(
+            name=self.id,
+            obj=self,
+            children=[block.get_hierarchy() for block in self.blocks],
+        )
+        # return {
+        #     "name": self.id,
+        #     "obj": self,
+        #     "children": [block.get_hierarchy() for block in self.blocks],
+        # }
 
 
 class StrConcat(BaseConcat):
