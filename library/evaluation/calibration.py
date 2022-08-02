@@ -35,7 +35,9 @@ def __calibration_plot(y_true: List, predicted: List[PredsWithProbs]):
     return fig
 
 
-calibration_metrics: Evaluators = [
-    ("calibration", __calibration_report),
-    ("calibration_plot", __calibration_plot),
-]
+# calibration_metrics: Evaluators = [
+#     ("calibration", __calibration_report),
+#     ("calibration_plot", __calibration_plot),
+# ]
+
+calibration_metrics = []
