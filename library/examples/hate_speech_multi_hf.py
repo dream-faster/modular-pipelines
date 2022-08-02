@@ -3,7 +3,7 @@ from copy import deepcopy
 
 from blocks.adaptors import ListOfListsToNumpy
 from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
-from blocks.data import DataSource, VectorConcat
+from blocks.concat import DataSource, VectorConcat
 
 from blocks.ensemble import Ensemble
 from blocks.models.huggingface import HuggingfaceModel

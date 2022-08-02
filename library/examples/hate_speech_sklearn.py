@@ -1,7 +1,7 @@
 from typing import Tuple, Union
 
 from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
-from blocks.data import DataSource
+from blocks.concat import DataSource
 from blocks.ensemble import Ensemble
 from blocks.models.sklearn import SKLearnModel
 from blocks.pipeline import Pipeline

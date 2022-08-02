@@ -3,7 +3,6 @@ from typing import Callable, List, Optional, Union
 
 import pandas as pd
 
-from configs.constants import LogConst
 from runner.store import Store
 from runner.train import predict, train_predict
 from type import BaseConfig, Hierarchy
@@ -15,13 +14,13 @@ from .base import Block, DataSource, Element
 class Pipeline(Block):
 
     id: str
-    datasource: Union[DataSource, "Pipeline"]
+    datasource: Union[DataSource, "Pipeline", "Concat"]
     models: List[Block]
 
     def __init__(
         self,
         id: str,
-        datasource: Union[DataSource, "Pipeline"],
+        datasource: Union[DataSource, "Pipeline", "Concat"],
         models: Union[List[Block], Block],
     ):
         self.id = id
@@ -136,11 +135,11 @@ class Pipeline(Block):
 
 
 def process_block(
-    block: Union[DataSource, Pipeline],
+    block: Union[DataSource, Pipeline, "Concat"],
     store: Store,
     plugins: List["Plugin"],
 ) -> pd.Series:
-    if isinstance(block, DataSource):
+    if isinstance(block, DataSource) or isinstance(block, "Concat"):
         return block.deplate(store, plugins)
     elif isinstance(block, Pipeline):
         if not block.is_fitted():

@@ -3,7 +3,6 @@ from typing import List, Union
 import numpy as np
 import pandas as pd
 
-from configs.constants import Const
 from runner.store import Store
 
 from .base import DataSource
@@ -12,11 +11,11 @@ from .base import Element
 from type import Hierarchy
 
 
-class BaseConcat(DataSource):
+class Concat:
 
-    blocks: List[Union[DataSource, Pipeline]]
+    blocks: List[Union[DataSource, Pipeline, "Concat"]]
 
-    def __init__(self, id: str, blocks: List[Union[DataSource, Pipeline]]):
+    def __init__(self, id: str, blocks: List[Union[DataSource, Pipeline, "Concat"]]):
         self.blocks = blocks
         self.id = id
 
@@ -45,11 +44,11 @@ class BaseConcat(DataSource):
         )
 
 
-class StrConcat(BaseConcat):
+class StrConcat(Concat):
     def transform(self, data: List[pd.Series]) -> pd.Series:
         return pd.concat(data, axis=1).agg("-".join, axis=1)
 
 
-class VectorConcat(BaseConcat):
+class VectorConcat(Concat):
     def transform(self, data: List[pd.Series]) -> pd.Series:
         return pd.concat(data, axis=1).agg(np.concatenate, axis=1)
