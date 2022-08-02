@@ -9,6 +9,31 @@ from type import BaseConfig, Hierarchy
 from utils.flatten import flatten
 
 from .base import Block, DataSource, Element
+from type import DataType
+
+from utils.process_block import process_block
+
+
+class Sequence(Block):
+    id: str
+
+    inputTypes: Union[List[DataType], DataType]
+    outputType: DataType
+
+    def __init__(
+        self,
+        pipelines: List["Pipeline"],
+        id: Optional[str] = None,
+    ):
+        self.id = self.__class__.__name__ if id is None else id
+        self.pipelines = pipelines
+
+    def get_hierarchy(self) -> Hierarchy:
+        return Hierarchy(
+            name=self.id,
+            obj=self,
+            children=[child.get_hierarchy() for child in self.pipelines],
+        )
 
 
 class Pipeline(Block):
@@ -116,9 +141,12 @@ class Pipeline(Block):
             and source_hierarchy.children is not None
             and len(source_hierarchy.children) > 0
         ):
+            sequential = Sequence(
+                [source_hierarchy.obj, current_pipeline_hierarchy.obj]
+            )
             return Hierarchy(
-                name="full-pipeline",
-                obj=None,
+                name=sequential.id,
+                obj=sequential,
                 children=[source_hierarchy, current_pipeline_hierarchy],
             )
         else:
@@ -132,18 +160,3 @@ class Pipeline(Block):
             for block in flatten(entire_pipeline)
             if not any([isinstance(block, DataSource), isinstance(block, Pipeline)])
         }
-
-
-def process_block(
-    block: Union[DataSource, Pipeline, "Concat"],
-    store: Store,
-    plugins: List["Plugin"],
-) -> pd.Series:
-    if isinstance(block, DataSource) or isinstance(block, "Concat"):
-        return block.deplate(store, plugins)
-    elif isinstance(block, Pipeline):
-        if not block.is_fitted():
-            block.fit(store, plugins)
-        return block.predict(store, plugins)
-    else:
-        raise ValueError("Expected DataBlock or Pipeline")

@@ -5,17 +5,16 @@ import pandas as pd
 
 from runner.store import Store
 
-from .base import DataSource
-from .pipeline import Pipeline, process_block
-from .base import Element
-from type import Hierarchy
+from .base import DataSource, Element
+from type import BaseConfig, DataType, Hierarchy
+from utils.process_block import process_block
+from .pipeline import Pipeline
 
 
-class Concat:
+class Concat(Element):
+    blocks: List[Union[DataSource, Pipeline]]
 
-    blocks: List[Union[DataSource, Pipeline, "Concat"]]
-
-    def __init__(self, id: str, blocks: List[Union[DataSource, Pipeline, "Concat"]]):
+    def __init__(self, id: str, blocks: List[Union[DataSource, "Pipeline", "Concat"]]):
         self.blocks = blocks
         self.id = id
 
@@ -50,5 +49,8 @@ class StrConcat(Concat):
 
 
 class VectorConcat(Concat):
+    inputTypes = [DataType.List, DataType.List]
+    outputType = DataType.List
+
     def transform(self, data: List[pd.Series]) -> pd.Series:
         return pd.concat(data, axis=1).agg(np.concatenate, axis=1)
