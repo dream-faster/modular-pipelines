@@ -18,7 +18,7 @@ from blocks.transformations import (
 from configs.constants import Const
 from data.transformation import transform_dataset
 from datasets.load import load_dataset
-from library.evaluation import calibration_metrics, classification_metrics
+from library.evaluation import classification_metrics, calibration_metrics
 from sklearn.ensemble import GradientBoostingClassifier, VotingClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
