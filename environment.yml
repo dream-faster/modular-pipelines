@@ -10,7 +10,7 @@ dependencies:
   - ipython
   - notebook
   - ipykernel
-  - pytorch=1.10.2
+  - pytorch
   - tqdm
   - numpy
   - pandas
