@@ -2,7 +2,7 @@ from copy import deepcopy
 
 from blocks.adaptors import ListOfListsToNumpy
 from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
-from blocks.data import DataSource
+from blocks.concat import DataSource
 from blocks.ensemble import Ensemble
 from blocks.models.huggingface import HuggingfaceModel
 from blocks.models.random import RandomModel
@@ -182,6 +182,10 @@ ensemble_all = Ensemble(
 )
 
 ensemble_sklearn_vader = Ensemble("ensemble_sklearn_vader", [sklearn, vader])
+
+ensemble_sklearn_hf_vader = Ensemble(
+    "ensemble_sklearn_hf_vader", [sklearn, vader, huggingface_baseline]
+)
 
 ensemble_sklearn_hf = Ensemble("ensemble_sklearn_hf", [sklearn, huggingface_baseline])
 
