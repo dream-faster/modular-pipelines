@@ -9,6 +9,7 @@ from type import BaseConfig, Hierarchy
 from utils.flatten import flatten
 
 from .base import Block, DataSource, Element
+from .concat import Concat
 from type import DataType
 
 from utils.process_block import process_block
@@ -158,5 +159,11 @@ class Pipeline(Block):
         return {
             block.id: vars(block.config)
             for block in flatten(entire_pipeline)
-            if not any([isinstance(block, DataSource), isinstance(block, Pipeline)])
+            if not any(
+                [
+                    isinstance(block, DataSource),
+                    isinstance(block, Pipeline),
+                    isinstance(block, Concat),
+                ]
+            )
         }
