@@ -4,30 +4,53 @@ from type import (
     TrainDataset,
     TestDataset,
 )
-from typing import List, Callable, Tuple
+from typing import List, Callable, Tuple, Optional, Union
 from .transformation import transform_dataset
 from datasets.load import load_dataset
 
+from .merge import merge_datasets
 
-class DataLoader:
+
+class DataLoaderBase:
+    def transform_(self) -> None:
+        pass
+
+    def load(self, category: DatasetCategories) -> Union[TrainDataset, TestDataset]:
+        pass
+
+
+class DataLoader(DataLoaderBase):
     def __init__(
         self,
-        preprocessing_config: PreprocessConfig,
         path: str,
-        name: str,
+        preprocessing_config: PreprocessConfig,
+        name: Optional[str] = None,
         transformations: List[Callable] = [],
     ):
         obligatory_transformations = [transform_dataset]
 
         self.transformations = obligatory_transformations + transformations
         self.preprocessing_config = preprocessing_config
-        self.name = name
-        self.path = path
+        self.data = load_dataset(path, name)
 
-    def load(self, category: DatasetCategories) -> Tuple[TrainDataset, TestDataset]:
-        data = load_dataset(self.path, self.name)
-
+    def transform_(self) -> None:
         for transformation in self.transformations:
-            data = transformation(data, self.preprocessing_config)
+            self.data = transformation(self.data, self.preprocessing_config)
 
-        return data[category]
+    def load(self, category: DatasetCategories) -> Union[TrainDataset, TestDataset]:
+        return self.data[category]
+
+
+class DataLoaderMerger(DataLoaderBase):
+    def __init__(self, data_loaders=List[DataLoader]):
+        self.data_loaders = data_loaders
+        self.data = []
+        pass
+
+    def load(self, category: DatasetCategories) -> Union[TrainDataset, TestDataset]:
+        return merge_datasets(
+            [
+                data_loader.transform_().load(category)
+                for data_loader in self.data_loaders
+            ]
+        )

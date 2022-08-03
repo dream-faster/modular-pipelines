@@ -115,11 +115,7 @@ sklearn_config = SKLearnConfig(
 
 input_data = DataSource("input")
 
-# hate_speech_data = transform_dataset(
-#     load_dataset("tweet_eval", "hate"), preprocess_config
-# )
-
-dataloader = DataLoader(preprocess_config, "tweet_eval", "hate")
+dataloader = DataLoader("tweet_eval", preprocess_config, "hate")
 
 
 """ Pipelines"""
@@ -166,20 +162,20 @@ multi_hf_run_experiments = [
         project_name="hate-speech-detection-hf",
         run_name="hf-meta-model",
         dataloader=dataloader,
+        dataset_category=DatasetCategories.train,
         pipeline=full_pipeline,
         preprocessing_config=preprocess_config,
         metrics=metrics,
         train=True,
-        dataset_category=DatasetCategories.train,
     ),
     Experiment(
         project_name="hate-speech-detection-hf",
         run_name="hf-meta-model",
         dataloader=dataloader,
+        dataset_category=DatasetCategories.test,
         pipeline=full_pipeline,
         preprocessing_config=preprocess_config,
         metrics=metrics,
         train=False,
-        dataset_category=DatasetCategories.test,
     ),
 ]

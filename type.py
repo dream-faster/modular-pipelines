@@ -105,7 +105,7 @@ class Experiment:
     run_name: str  # Get's appended as a prefix before the pipeline name
     train: bool  # Weather the run should do training
     dataset_category: DatasetCategories
-    dataloader: "DataLoader"
+    dataloader: "DataLoaderBase"
     pipeline: "Pipeline"
     metrics: Evaluators
     preprocessing_config: PreprocessConfig
