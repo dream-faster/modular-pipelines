@@ -275,7 +275,7 @@ cross_dataset_experiments = [
     Experiment(
         project_name="hate-speech-detection-cross-val",
         run_name="hatecheck",
-        dataset=data_hatecheck[1],
+        dataset=data_hatecheck,
         dataset_category=DatasetCategories.test,
         pipeline=sklearn,
         preprocessing_config=preprocess_config,

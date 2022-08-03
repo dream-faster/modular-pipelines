@@ -12,9 +12,6 @@ from .merge import merge_datasets
 
 
 class DataLoaderBase:
-    def transform_(self) -> None:
-        pass
-
     def load(self, category: DatasetCategories) -> Union[TrainDataset, TestDataset]:
         pass
 
@@ -33,11 +30,9 @@ class DataLoader(DataLoaderBase):
         self.preprocessing_config = preprocessing_config
         self.data = load_dataset(path, name)
 
-    def transform_(self) -> None:
+    def load(self, category: DatasetCategories) -> Union[TrainDataset, TestDataset]:
         for transformation in self.transformations:
             self.data = transformation(self.data, self.preprocessing_config)
-
-    def load(self, category: DatasetCategories) -> Union[TrainDataset, TestDataset]:
         return self.data[category]
 
 
@@ -49,8 +44,5 @@ class DataLoaderMerger(DataLoaderBase):
 
     def load(self, category: DatasetCategories) -> Union[TrainDataset, TestDataset]:
         return merge_datasets(
-            [
-                data_loader.transform_().load(category)
-                for data_loader in self.data_loaders
-            ]
+            [data_loader.load(category) for data_loader in self.data_loaders]
         )

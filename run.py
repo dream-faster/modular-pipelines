@@ -18,7 +18,6 @@ def run(
     for experiment in experiments:
         overwrite_preprocessing_configs_(experiment.dataloader, staging_config)
 
-        experiment.dataloader.transform_()
         data = experiment.dataloader.load(experiment.dataset_category)
 
         experiment.save_remote = staging_config.save_remote
