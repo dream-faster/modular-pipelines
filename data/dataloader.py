@@ -34,8 +34,6 @@ class DataLoader:
 class DataLoaderMerger(DataLoader):
     def __init__(self, data_loaders=List[DataLoader]):
         self.data_loaders = data_loaders
-        self.data = []
-        pass
 
     def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
         return merge_datasets(
