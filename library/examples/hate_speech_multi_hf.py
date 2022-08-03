@@ -35,6 +35,7 @@ from type import (
     HFTaskTypes,
 )
 from blocks.models.sklearn import SKLearnModel
+from blocks.adaptors.classification_output import ClassificationOutputAdaptor
 
 from utils.flatten import remove_none
 from data.dataloader import DataLoader
@@ -148,6 +149,7 @@ full_pipeline = Pipeline(
     remove_none(
         [
             ListOfListsToNumpy(replace_nan=True),
+            ClassificationOutputAdaptor(select=0),
             SKLearnModel("sklearn-meta-model", sklearn_config),
         ]
     ),
