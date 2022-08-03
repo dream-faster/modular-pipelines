@@ -16,9 +16,10 @@ def run(
 ) -> None:
 
     for experiment in experiments:
-        overwrite_preprocessing_configs_(experiment.dataloader, staging_config)
 
+        overwrite_preprocessing_configs_(experiment.dataloader, staging_config)
         data = experiment.dataloader.load(experiment.dataset_category)
+
 
         experiment.save_remote = staging_config.save_remote
         experiment.log_remote = staging_config.log_remote

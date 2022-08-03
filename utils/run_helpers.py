@@ -9,6 +9,7 @@ from type import Hierarchy
 
 def overwrite_preprocessing_configs_(
     dataloader: DataLoaderBase, staging_config: StagingConfig
+
 ) -> None:
     """
     Takes global config values and overwrites the preprocessing config according to the logic of the parameters
@@ -37,9 +38,11 @@ def overwrite_preprocessing_configs_(
     # This is for overwriting exisiting keys in the preprocessing_config
     for key_sta, value_sta in vars(staging_config).items():
         if value_sta is not None:
+
             for key_pre in vars(dataloader.preprocessing_config).keys():
                 if key_pre == key_sta:
                     vars(dataloader.preprocessing_config)[key_sta] = value_sta
+
 
 
 def overwrite_model_configs_(config: Experiment, pipeline: Pipeline) -> None:
