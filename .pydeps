@@ -48,3 +48,7 @@ exclude =
     traitlets
     pygments
     dotenv
+    pycaleva
+    matplotlib
+
+

@@ -79,7 +79,8 @@ class HuggingfaceModel(Model):
         paths = {
             LoadOrigin.local: f"{Const.output_pipelines_path}/{self.parent_path}/{self.id}",
             LoadOrigin.remote: f"{self.config.user_name}/{self.id}"
-            if self.config.remote_name_override is None
+            if not hasattr(self.config, "remote_name_override")
+            or self.config.remote_name_override is None
             else self.config.remote_name_override,
             LoadOrigin.pretrained: self.config.pretrained_model,
         }

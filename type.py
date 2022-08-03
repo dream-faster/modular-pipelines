@@ -122,6 +122,7 @@ class StagingConfig:
         bool
     ]  # If set True all models will try uploading (if configured), if set False it overwrites uploading of any models (even if configured)
     log_remote: Optional[bool]  # Switches on and off all remote logging (eg.: wandb)
+    limit_dataset_to: Optional[int]
 
 
 @dataclass

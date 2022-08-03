@@ -7,6 +7,7 @@ from library.examples.hate_speech_multi_hf import multi_hf_run_experiments
 from plugins import WandbConfig, WandbPlugin
 from runner.runner import Runner
 from type import Experiment, StagingConfig, StagingNames
+from utils.run_helpers import overwrite_preprocessing_configs_
 
 
 def run(
@@ -15,6 +16,7 @@ def run(
 ) -> None:
 
     for experiment in experiments:
+        overwrite_preprocessing_configs_(experiment, staging_config)
         experiment.save_remote = staging_config.save_remote
         experiment.log_remote = staging_config.log_remote
 
@@ -47,11 +49,14 @@ def run(
 
 if __name__ == "__main__":
     prod_config = StagingConfig(
-        name=StagingNames.prod, save_remote=True, log_remote=True
+        name=StagingNames.prod, save_remote=True, log_remote=True, limit_dataset_to=None
     )
 
     dev_config = StagingConfig(
-        name=StagingNames.prod, save_remote=False, log_remote=False
+        name=StagingNames.prod,
+        save_remote=False,
+        log_remote=False,
+        limit_dataset_to=100,
     )
 
     run(
