@@ -126,9 +126,7 @@ class Pipeline(Block):
                 datasource=source_hierarchy.obj,
                 models=[current_pipeline_hierarchy.obj],
             )
-            # sequential = Sequence(
-            #     [source_hierarchy.obj, current_pipeline_hierarchy.obj]
-            # )
+
             return Hierarchy(
                 name=parent_pipeline.id,
                 obj=parent_pipeline,
