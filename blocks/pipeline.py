@@ -15,28 +15,6 @@ from type import DataType
 from utils.process_block import process_block
 
 
-class Sequence(Block):
-    id: str
-
-    inputTypes: Union[List[DataType], DataType]
-    outputType: DataType
-
-    def __init__(
-        self,
-        pipelines: List["Pipeline"],
-        id: Optional[str] = None,
-    ):
-        self.id = self.__class__.__name__ if id is None else id
-        self.pipelines = pipelines
-
-    def get_hierarchy(self) -> Hierarchy:
-        return Hierarchy(
-            name=self.id,
-            obj=self,
-            children=[child.get_hierarchy() for child in self.pipelines],
-        )
-
-
 class Pipeline(Block):
 
     id: str
@@ -49,7 +27,7 @@ class Pipeline(Block):
         datasource: Union[DataSource, "Pipeline", "Concat"],
         models: Union[List[Block], Block],
     ):
-        self.id = id
+        self.id = self.__class__.__name__ if id is None else id
         if isinstance(models, List):
             self.models = [deepcopy(model) for model in models]
         else:
@@ -142,12 +120,18 @@ class Pipeline(Block):
             and source_hierarchy.children is not None
             and len(source_hierarchy.children) > 0
         ):
-            sequential = Sequence(
-                [source_hierarchy.obj, current_pipeline_hierarchy.obj]
+
+            parent_pipeline = Pipeline(
+                "concat_sequence",
+                datasource=source_hierarchy.obj,
+                models=[current_pipeline_hierarchy.obj],
             )
+            # sequential = Sequence(
+            #     [source_hierarchy.obj, current_pipeline_hierarchy.obj]
+            # )
             return Hierarchy(
-                name=sequential.id,
-                obj=sequential,
+                name=parent_pipeline.id,
+                obj=parent_pipeline,
                 children=[source_hierarchy, current_pipeline_hierarchy],
             )
         else:

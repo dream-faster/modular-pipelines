@@ -106,3 +106,4 @@ def append_parent_path_and_id_(pipeline: Pipeline) -> None:
                     )
 
     append(entire_pipeline, Const.output_pipelines_path, "")
+    print("")
