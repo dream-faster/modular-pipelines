@@ -148,7 +148,6 @@ full_pipeline = Pipeline(
     ),
     remove_none(
         [
-            ListOfListsToNumpy(replace_nan=True),
             ClassificationOutputAdaptor(select=0),
             SKLearnModel("sklearn-meta-model", sklearn_config),
         ]

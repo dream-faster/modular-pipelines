@@ -1,13 +1,13 @@
 import pandas as pd
 
-from blocks.base import Block
+from .base import Adaptor
 from type import DataType
 from typing import Optional
 
 
-class ClassificationOutputAdaptor(Block):
+class ClassificationOutputAdaptor(Adaptor):
     inputTypes = DataType.PredictionsWithProbs
-    outputType = DataType.List
+    outputType = DataType.Series
 
     def __init__(self, select: int, id: Optional[str] = None):
         assert select < 2, "ClassificationOutputAdaptor only supports direction 0 or 1"
@@ -15,5 +15,5 @@ class ClassificationOutputAdaptor(Block):
         self.id = self.__class__.__name__ if id is None else id
         self.select = select
 
-    def predict(self, dataset: DataType.PredictionsWithProbs) -> pd.Series:
+    def predict(self, dataset: DataType.PredictionsWithProbs) -> DataType.Series:
         return dataset[self.select]
