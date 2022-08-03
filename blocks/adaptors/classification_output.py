@@ -1,8 +1,8 @@
 import pandas as pd
 
 from .base import Adaptor
-from type import DataType, BaseConfig, PredsWithProbs
-from typing import Optional, List
+from type import DataType, PredsWithProbs
+from typing import List
 
 
 class ClassificationOutputAdaptor(Adaptor):
