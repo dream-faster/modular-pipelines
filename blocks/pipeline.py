@@ -63,8 +63,8 @@ class Pipeline(Block):
             plugin.on_load_begin()
 
         """ Core """
-        if isinstance(self.datasource, Pipeline):
-            self.datasource.load()
+        if isinstance(self.datasource, Pipeline) or isinstance(self.datasource, Concat):
+            self.datasource.load(plugins)
 
         for model in self.models:
             model.load()
