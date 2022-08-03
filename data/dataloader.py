@@ -11,12 +11,7 @@ from datasets.load import load_dataset
 from .merge import merge_datasets
 
 
-class DataLoaderBase:
-    def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
-        pass
-
-
-class DataLoader(DataLoaderBase):
+class DataLoader:
     def __init__(
         self,
         path: str,
@@ -36,7 +31,7 @@ class DataLoader(DataLoaderBase):
         return self.data[category]
 
 
-class DataLoaderMerger(DataLoaderBase):
+class DataLoaderMerger(DataLoader):
     def __init__(self, data_loaders=List[DataLoader]):
         self.data_loaders = data_loaders
         self.data = []

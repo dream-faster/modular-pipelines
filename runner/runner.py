@@ -11,7 +11,6 @@ from utils.run_helpers import overwrite_model_configs_, append_parent_path_and_i
 from .evaluation import evaluate
 from .store import Store
 
-from data.dataloader import DataLoader
 
 obligatory_plugins = [PipelineAnalyser(), IntegrityChecker()]
 
