@@ -3,11 +3,11 @@ from blocks.pipeline import Pipeline
 from configs.constants import Const
 from .flatten import flatten
 from blocks.base import DataSource
-from type import Hierarchy
+from data.dataloader import DataLoader
 
 
 def overwrite_preprocessing_configs_(
-    experiment: Experiment, staging_config: StagingConfig
+    dataloader: DataLoader, staging_config: StagingConfig
 ) -> None:
     """
     Takes global config values and overwrites the preprocessing config according to the logic of the parameters
@@ -29,16 +29,17 @@ def overwrite_preprocessing_configs_(
         hasattr(staging_config, "limit_dataset_to")
         and staging_config.limit_dataset_to is not None
     ):
-        experiment.preprocessing_config.test_size = staging_config.limit_dataset_to
-        experiment.preprocessing_config.train_size = staging_config.limit_dataset_to
-        experiment.preprocessing_config.val_size = staging_config.limit_dataset_to
+        dataloader.preprocessing_config.test_size = staging_config.limit_dataset_to
+        dataloader.preprocessing_config.train_size = staging_config.limit_dataset_to
+        dataloader.preprocessing_config.val_size = staging_config.limit_dataset_to
 
     # This is for overwriting exisiting keys in the preprocessing_config
     for key_sta, value_sta in vars(staging_config).items():
         if value_sta is not None:
-            for key_pre in vars(experiment.preprocessing_config).keys():
+
+            for key_pre in vars(dataloader.preprocessing_config).keys():
                 if key_pre == key_sta:
-                    vars(experiment.preprocessing_config)[key_sta] = value_sta
+                    vars(dataloader.preprocessing_config)[key_sta] = value_sta
 
 
 def overwrite_model_configs_(config: Experiment, pipeline: Pipeline) -> None:

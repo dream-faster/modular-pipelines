@@ -26,6 +26,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.preprocessing import MinMaxScaler
 from transformers import TrainingArguments
 from type import (
+    DatasetSplit,
     HuggingfaceConfig,
     LoadOrigin,
     PreprocessConfig,
@@ -36,6 +37,7 @@ from type import (
 from blocks.models.sklearn import SKLearnModel
 
 from utils.flatten import remove_none
+from data.dataloader import DataLoader
 
 """ Models """
 preprocess_config = PreprocessConfig(
@@ -112,9 +114,8 @@ sklearn_config = SKLearnConfig(
 
 input_data = DataSource("input")
 
-hate_speech_data = transform_dataset(
-    load_dataset("tweet_eval", "hate"), preprocess_config
-)
+dataloader = DataLoader("tweet_eval", preprocess_config, "hate")
+
 
 """ Pipelines"""
 
@@ -158,8 +159,9 @@ metrics = classification_metrics  # + calibration_metrics
 multi_hf_run_experiments = [
     Experiment(
         project_name="hate-speech-detection-hf",
-        run_name="multi-hf-meta-train",
-        dataset=hate_speech_data[0],
+        run_name="hf-meta-model",
+        dataloader=dataloader,
+        dataset_category=DatasetSplit.train,
         pipeline=full_pipeline,
         preprocessing_config=preprocess_config,
         metrics=metrics,
@@ -167,8 +169,9 @@ multi_hf_run_experiments = [
     ),
     Experiment(
         project_name="hate-speech-detection-hf",
-        run_name="multi-hf-meta-test",
-        dataset=hate_speech_data[1],
+        run_name="hf-meta-model",
+        dataloader=dataloader,
+        dataset_category=DatasetSplit.test,
         pipeline=full_pipeline,
         preprocessing_config=preprocess_config,
         metrics=metrics,

@@ -15,8 +15,8 @@ from blocks.transformations import (
     SpacyTokenizer,
     TextStatisticTransformation,
 )
-from data.merge import merge_datasets
-from data.transformation import transform_dataset
+from data.dataloader import DataLoader, DataLoaderMerger
+
 from data.transformation_hatecheck import transform_hatecheck_dataset
 from data.transformation_hatespeech_detection import (
     transform_hatespeech_detection_dataset,
@@ -39,6 +39,7 @@ from type import (
     PreprocessConfig,
     Experiment,
     SKLearnConfig,
+    DatasetSplit,
 )
 from utils.flatten import remove_none, flatten
 
@@ -196,14 +197,10 @@ ensemble_hf_vader = Ensemble(
 
 
 ### Datasets
-
-data_tweet_eval_hate_speech = transform_dataset(
-    load_dataset("tweet_eval", "hate"), preprocess_config
-)
-
-data_tweets_hate_speech_detection = transform_hatespeech_detection_dataset(
-    load_dataset("tweets_hate_speech_detection"),
-    config=PreprocessConfig(
+data_tweet_eval_hate_speech = DataLoader("tweet_eval", preprocess_config, "hate")
+data_tweets_hate_speech_detection = DataLoader(
+    "tweets_hate_speech_detection",
+    PreprocessConfig(
         train_size=-1,
         val_size=-1,
         test_size=-1,
@@ -211,13 +208,11 @@ data_tweets_hate_speech_detection = transform_hatespeech_detection_dataset(
         label_col="label",
     ),
 )
-data_hatecheck = transform_hatecheck_dataset(
-    load_dataset("Paul/hatecheck"), preprocess_config
-)
 
-data_hate_speech_offensive = transform_hatespeech_offensive_dataset(
-    load_dataset("hate_speech_offensive"),
-    config=PreprocessConfig(
+data_hatecheck = DataLoader("Paul/hatecheck", preprocess_config)
+data_hate_speech_offensive = DataLoader(
+    "hate_speech_offensive",
+    PreprocessConfig(
         train_size=-1,
         val_size=-1,
         test_size=-1,
@@ -226,14 +221,14 @@ data_hate_speech_offensive = transform_hatespeech_offensive_dataset(
     ),
 )
 
-
-data_merged_train = merge_datasets(
+data_merged_train = DataLoaderMerger(
     [
-        data_tweet_eval_hate_speech[0],
-        data_tweets_hate_speech_detection[0],
-        data_hate_speech_offensive[0],
+        data_tweet_eval_hate_speech,
+        data_tweets_hate_speech_detection,
+        data_hate_speech_offensive,
     ]
 )
+
 
 ### Metrics
 
@@ -246,7 +241,8 @@ tweeteval_hate_speech_experiments = [
     Experiment(
         project_name="hate-speech-detection",
         run_name="tweeteval",
-        dataset=data_tweet_eval_hate_speech[0],
+        dataset=data_tweet_eval_hate_speech,
+        dataset_category=DatasetSplit.train,
         pipeline=sklearn,
         preprocessing_config=preprocess_config,
         metrics=metrics,
@@ -255,7 +251,8 @@ tweeteval_hate_speech_experiments = [
     Experiment(
         project_name="hate-speech-detection",
         run_name="tweeteval",
-        dataset=data_tweet_eval_hate_speech[1],
+        dataset=data_tweet_eval_hate_speech,
+        dataset_category=DatasetSplit.test,
         pipeline=sklearn,
         preprocessing_config=preprocess_config,
         metrics=metrics,
@@ -269,6 +266,7 @@ cross_dataset_experiments = [
         project_name="hate-speech-detection-merged",
         run_name="merged_dataset",
         dataset=data_merged_train,
+        dataset_category=DatasetSplit.train,
         pipeline=sklearn,
         preprocessing_config=preprocess_config,
         metrics=metrics,
@@ -277,7 +275,8 @@ cross_dataset_experiments = [
     Experiment(
         project_name="hate-speech-detection-cross-val",
         run_name="hatecheck",
-        dataset=data_hatecheck[1],
+        dataset=data_hatecheck,
+        dataset_category=DatasetSplit.test,
         pipeline=sklearn,
         preprocessing_config=preprocess_config,
         metrics=metrics,
