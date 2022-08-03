@@ -26,7 +26,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.preprocessing import MinMaxScaler
 from transformers import TrainingArguments
 from type import (
-    DatasetCategories,
+    DatasetSplit,
     HuggingfaceConfig,
     LoadOrigin,
     PreprocessConfig,
@@ -161,7 +161,7 @@ multi_hf_run_experiments = [
         project_name="hate-speech-detection-hf",
         run_name="hf-meta-model",
         dataloader=dataloader,
-        dataset_category=DatasetCategories.train,
+        dataset_category=DatasetSplit.train,
         pipeline=full_pipeline,
         preprocessing_config=preprocess_config,
         metrics=metrics,
@@ -171,7 +171,7 @@ multi_hf_run_experiments = [
         project_name="hate-speech-detection-hf",
         run_name="hf-meta-model",
         dataloader=dataloader,
-        dataset_category=DatasetCategories.test,
+        dataset_category=DatasetSplit.test,
         pipeline=full_pipeline,
         preprocessing_config=preprocess_config,
         metrics=metrics,

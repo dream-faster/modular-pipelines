@@ -93,7 +93,7 @@ class PreprocessConfig:
 """ Experiment """
 
 
-class DatasetCategories(Enum):
+class DatasetSplit(Enum):
     train = "training"
     val = "validation"
     test = "testing"
@@ -104,7 +104,7 @@ class Experiment:
     project_name: str
     run_name: str  # Get's appended as a prefix before the pipeline name
     train: bool  # Weather the run should do training
-    dataset_category: DatasetCategories
+    dataset_category: DatasetSplit
     dataloader: "DataLoaderBase"
     pipeline: "Pipeline"
     metrics: Evaluators
