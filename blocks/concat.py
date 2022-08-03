@@ -8,11 +8,10 @@ from runner.store import Store
 from .base import DataSource, Element
 from type import BaseConfig, DataType, Hierarchy
 from utils.process_block import process_block
-from .pipeline import Pipeline
 
 
 class Concat(Element):
-    blocks: List[Union[DataSource, Pipeline]]
+    blocks: List[Union[DataSource, "Pipeline"]]
 
     def __init__(self, id: str, blocks: List[Union[DataSource, "Pipeline", "Concat"]]):
         self.blocks = blocks
