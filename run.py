@@ -16,7 +16,7 @@ def run(
 ) -> None:
 
     for experiment in experiments:
-        overwrite_preprocessing_configs_(experiment, staging_config)
+        overwrite_preprocessing_configs_(experiment.dataloader, staging_config)
 
         experiment.dataloader.transform_()
         data = experiment.dataloader.load(experiment.dataset_category)

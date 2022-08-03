@@ -17,8 +17,6 @@ from blocks.transformations import (
 )
 from data.dataloader import DataLoader, DataLoaderMerger
 
-# from data.merge import merge_datasets
-# from data.transformation import transform_dataset
 from data.transformation_hatecheck import transform_hatecheck_dataset
 from data.transformation_hatespeech_detection import (
     transform_hatespeech_detection_dataset,
@@ -231,43 +229,6 @@ data_merged_train = DataLoaderMerger(
     ]
 )
 
-# data_tweet_eval_hate_speech = transform_dataset(
-#     load_dataset("tweet_eval", "hate"), preprocess_config
-# )
-
-# data_tweets_hate_speech_detection = transform_hatespeech_detection_dataset(
-#     load_dataset("tweets_hate_speech_detection"),
-#     config=PreprocessConfig(
-#         train_size=-1,
-#         val_size=-1,
-#         test_size=-1,
-#         input_col="tweet",
-#         label_col="label",
-#     ),
-# )
-# data_hatecheck = transform_hatecheck_dataset(
-#     load_dataset("Paul/hatecheck"), preprocess_config
-# )
-
-# data_hate_speech_offensive = transform_hatespeech_offensive_dataset(
-#     load_dataset("hate_speech_offensive"),
-#     config=PreprocessConfig(
-#         train_size=-1,
-#         val_size=-1,
-#         test_size=-1,
-#         input_col="tweet",
-#         label_col="class",
-#     ),
-# )
-
-
-# data_merged_train = merge_datasets(
-#     [
-#         data_tweet_eval_hate_speech[0],
-#         data_tweets_hate_speech_detection[0],
-#         data_hate_speech_offensive[0],
-#     ]
-# )
 
 ### Metrics
 
