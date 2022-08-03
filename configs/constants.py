@@ -14,6 +14,7 @@ class Const:
     output_runs_path = output_path + "runs"
 
     final_eval_name = "final"
+    seed = 42
 
 
 class LogConst:

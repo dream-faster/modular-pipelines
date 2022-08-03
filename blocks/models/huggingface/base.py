@@ -14,6 +14,7 @@ from transformers import (
     PreTrainedTokenizerBase,
     Trainer,
     TrainingArguments,
+    enable_full_determinism,
     pipeline,
 )
 from type import DataType, Evaluators, HuggingfaceConfig, LoadOrigin, PredsWithProbs
@@ -76,6 +77,8 @@ class HuggingfaceModel(Model):
         self.training_args.hub_token = get_env("HF_HUB_TOKEN")
 
     def load(self) -> None:
+        enable_full_determinism(Const.seed)
+
         paths = {
             LoadOrigin.local: f"{Const.output_pipelines_path}/{self.parent_path}/{self.id}",
             LoadOrigin.remote: f"{self.config.user_name}/{self.id}"
