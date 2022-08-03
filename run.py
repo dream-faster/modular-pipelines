@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from configs.constants import Const
 
@@ -17,6 +17,9 @@ def run(
 
     for experiment in experiments:
         overwrite_preprocessing_configs_(experiment, staging_config)
+
+        data = experiment.dataloader.load(experiment.dataset_category)
+
         experiment.save_remote = staging_config.save_remote
         experiment.log_remote = staging_config.log_remote
 
@@ -40,8 +43,8 @@ def run(
         )
         runner = Runner(
             experiment,
-            data={Const.input_col: experiment.dataset[Const.input_col]},
-            labels=experiment.dataset[Const.label_col],
+            data={Const.input_col: data[Const.input_col]},
+            labels=data[Const.label_col],
             plugins=logger_plugins,
         )
         runner.run()

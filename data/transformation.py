@@ -4,7 +4,7 @@ import pandas as pd
 from datasets.arrow_dataset import Dataset
 
 from configs.constants import Const
-from type import PreprocessConfig, TestDataset, TrainDataset
+from type import PreprocessConfig, TestDataset, TrainDataset, DatasetCategories
 
 
 def transform_dataset(
@@ -26,4 +26,4 @@ def transform_dataset(
     df_train = df_train.rename(columns=cols_to_rename)
     df_test = df_test.rename(columns=cols_to_rename)
 
-    return df_train, df_test
+    return {DatasetCategories.train: df_train, DatasetCategories.test: df_test}

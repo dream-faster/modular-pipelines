@@ -16,8 +16,9 @@ from blocks.transformations import (
     TextStatisticTransformation,
 )
 from configs.constants import Const
-from data.transformation import transform_dataset
-from datasets.load import load_dataset
+
+# from data.transformation import transform_dataset
+# from datasets.load import load_dataset
 from library.evaluation import classification_metrics  # , calibration_metrics
 from sklearn.ensemble import GradientBoostingClassifier, VotingClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -26,6 +27,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.preprocessing import MinMaxScaler
 from transformers import TrainingArguments
 from type import (
+    DatasetCategories,
     HuggingfaceConfig,
     LoadOrigin,
     PreprocessConfig,
@@ -36,6 +38,7 @@ from type import (
 from blocks.models.sklearn import SKLearnModel
 
 from utils.flatten import remove_none
+from data.dataloader import DataLoader
 
 """ Models """
 preprocess_config = PreprocessConfig(
@@ -112,9 +115,12 @@ sklearn_config = SKLearnConfig(
 
 input_data = DataSource("input")
 
-hate_speech_data = transform_dataset(
-    load_dataset("tweet_eval", "hate"), preprocess_config
-)
+# hate_speech_data = transform_dataset(
+#     load_dataset("tweet_eval", "hate"), preprocess_config
+# )
+
+dataloader = DataLoader(preprocess_config, "tweet_eval", "hate")
+
 
 """ Pipelines"""
 
@@ -158,20 +164,22 @@ metrics = classification_metrics  # + calibration_metrics
 multi_hf_run_experiments = [
     Experiment(
         project_name="hate-speech-detection-hf",
-        run_name="multi-hf-meta-train",
-        dataset=hate_speech_data[0],
+        run_name="hf-meta-model",
+        dataloader=dataloader,
         pipeline=full_pipeline,
         preprocessing_config=preprocess_config,
         metrics=metrics,
         train=True,
+        dataset_category=DatasetCategories.train,
     ),
     Experiment(
         project_name="hate-speech-detection-hf",
-        run_name="multi-hf-meta-test",
-        dataset=hate_speech_data[1],
+        run_name="hf-meta-model",
+        dataloader=dataloader,
         pipeline=full_pipeline,
         preprocessing_config=preprocess_config,
         metrics=metrics,
         train=False,
+        dataset_category=DatasetCategories.test,
     ),
 ]

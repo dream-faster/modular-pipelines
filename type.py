@@ -1,12 +1,11 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Callable, List, Optional, Tuple, Union
+from typing import Any, Callable, List, Optional, Tuple
 
 import pandas as pd
 from sklearn.base import ClassifierMixin
 from transformers.training_args import TrainingArguments
 
-from configs.constants import Const
 
 TrainDataset = pd.DataFrame
 TestDataset = pd.DataFrame
@@ -94,12 +93,19 @@ class PreprocessConfig:
 """ Experiment """
 
 
+class DatasetCategories(Enum):
+    train = "training"
+    val = "validation"
+    test = "testing"
+
+
 @dataclass
 class Experiment:
     project_name: str
     run_name: str  # Get's appended as a prefix before the pipeline name
     train: bool  # Weather the run should do training
-    dataset: pd.DataFrame
+    dataset_category: DatasetCategories
+    dataloader: "DataLoader"
     pipeline: "Pipeline"
     metrics: Evaluators
     preprocessing_config: PreprocessConfig
