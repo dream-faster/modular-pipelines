@@ -35,6 +35,7 @@ from type import (
     HFTaskTypes,
 )
 from blocks.models.sklearn import SKLearnModel
+from blocks.adaptors.classification_output import ClassificationOutputAdaptor
 
 from utils.flatten import remove_none
 from data.dataloader import DataLoader
@@ -125,6 +126,7 @@ huggingface_baseline_distilbert = Pipeline(
     remove_none(
         [
             HuggingfaceModel("hf-model", huggingface_distil_bert_config),
+            ClassificationOutputAdaptor(select=0),
         ]
     ),
 )
@@ -135,6 +137,7 @@ huggingface_distilroberta = Pipeline(
     remove_none(
         [
             HuggingfaceModel("distilroberta-base", huggingface_distilroberta_config),
+            ClassificationOutputAdaptor(select=0),
         ]
     ),
 )
@@ -147,7 +150,6 @@ full_pipeline = Pipeline(
     ),
     remove_none(
         [
-            ListOfListsToNumpy(replace_nan=True),
             SKLearnModel("sklearn-meta-model", sklearn_config),
         ]
     ),
