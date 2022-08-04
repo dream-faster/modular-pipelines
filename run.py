@@ -2,7 +2,7 @@ from typing import List
 
 from configs.constants import Const
 
-# from library.examples.hate_speech import all_cross_dataset_experiments
+from library.examples.hate_speech import all_cross_dataset_experiments
 from library.examples.hate_speech_multi_hf import multi_hf_run_experiments
 from library.examples.hate_speech_meta_sklearn import multi_sklearn_run_experiments
 from plugins import WandbConfig, WandbPlugin
@@ -64,6 +64,6 @@ if __name__ == "__main__":
     )
 
     run(
-        multi_sklearn_run_experiments,
+        all_cross_dataset_experiments,
         staging_config=dev_config,
     )
