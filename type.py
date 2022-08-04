@@ -94,9 +94,9 @@ class PreprocessConfig:
 
 
 class DatasetSplit(Enum):
-    train = "training"
+    train = "train"
     val = "validation"
-    test = "testing"
+    test = "test"
 
 
 @dataclass
