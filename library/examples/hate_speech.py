@@ -18,6 +18,7 @@ from blocks.transformations import (
 )
 from configs.constants import Const
 from data.dataloader import DataLoader, DataLoaderMerger
+from data.transformation import transform_dataset
 
 from data.transformation_hatecheck import transform_hatecheck_dataset
 from data.transformation_hatespeech_detection import (
@@ -201,7 +202,7 @@ ensemble_hf_vader = Ensemble(
 
 ### Datasets
 data_tweet_eval_hate_speech = DataLoader(
-    "tweet_eval", preprocess_config, [transform_dataset], "hate"
+    "tweet_eval", preprocess_config, transform_dataset, "hate"
 )
 data_tweets_hate_speech_detection = DataLoader(
     "tweets_hate_speech_detection",
@@ -212,7 +213,7 @@ data_tweets_hate_speech_detection = DataLoader(
         input_col="tweet",
         label_col="label",
     ),
-    [transform_hatespeech_detection_dataset],
+    transform_hatespeech_detection_dataset,
 )
 
 data_hate_speech_offensive = DataLoader(
@@ -224,10 +225,10 @@ data_hate_speech_offensive = DataLoader(
         input_col="tweet",
         label_col="class",
     ),
-    [transform_hatespeech_offensive_dataset],
+    transform_hatespeech_offensive_dataset,
 )
 data_hatecheck = DataLoader(
-    "Paul/hatecheck", preprocess_config, [transform_hatecheck_dataset]
+    "Paul/hatecheck", preprocess_config, transform_hatecheck_dataset
 )
 
 data_merged_train = DataLoaderMerger(
