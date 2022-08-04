@@ -12,7 +12,7 @@ def transform_dataset(
 ) -> Tuple[TrainDataset, TestDataset]:
 
     df_train = pd.DataFrame(dataset[DatasetSplit.train.value][: config.train_size])
-    if "validation" in dataset:
+    if DatasetSplit.val.value in dataset:
         df_val = pd.DataFrame(dataset[DatasetSplit.val.value][: config.val_size])
         df_train = pd.concat([df_train, df_val], axis=0).reset_index(drop=True)
 
