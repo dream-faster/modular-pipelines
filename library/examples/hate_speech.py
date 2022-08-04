@@ -1,4 +1,5 @@
 from copy import deepcopy
+from typing import List
 
 from blocks.adaptors import ListOfListsToNumpy
 from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
@@ -15,6 +16,7 @@ from blocks.transformations import (
     SpacyTokenizer,
     TextStatisticTransformation,
 )
+from configs.constants import Const
 from data.dataloader import DataLoader, DataLoaderMerger
 
 from data.transformation_hatecheck import transform_hatecheck_dataset
@@ -91,11 +93,11 @@ sklearn_config = SKLearnConfig(
     classifier=VotingClassifier(
         estimators=[
             ("nb", MultinomialNB()),
-            ("lg", LogisticRegression()),
+            ("lg", LogisticRegression(random_state=Const.seed)),
             (
                 "gb",
                 GradientBoostingClassifier(
-                    n_estimators=100, max_depth=20, random_state=0
+                    n_estimators=100, max_depth=20, random_state=Const.seed
                 ),
             ),
         ],
@@ -121,9 +123,10 @@ input_data = DataSource("input")
 ### Pipelines
 
 
-def create_nlp_sklearn_pipeline(autocorrect: bool, simple: bool = False) -> Pipeline:
+def create_nlp_sklearn_pipeline(autocorrect: bool, simple: bool) -> Pipeline:
+    name_suffix = "_simple" if simple == True else ""
     return Pipeline(
-        "sklearn_autocorrect" if autocorrect else "sklearn",
+        ("sklearn_autocorrect" if autocorrect else "sklearn") + name_suffix,
         input_data,
         remove_none(
             [
@@ -170,10 +173,10 @@ text_statistics_pipeline = Pipeline(
 )
 
 huggingface_baseline = create_nlp_huggingface_pipeline(autocorrect=False)
-sklearn = create_nlp_sklearn_pipeline(autocorrect=False)
-sklearn_autocorrect = create_nlp_sklearn_pipeline(autocorrect=True)
+sklearn = create_nlp_sklearn_pipeline(autocorrect=False, simple=False)
+sklearn_autocorrect = create_nlp_sklearn_pipeline(autocorrect=True, simple=False)
 
-sklearn_simple = create_nlp_sklearn_pipeline(autocorrect=False)
+sklearn_simple = create_nlp_sklearn_pipeline(autocorrect=False, simple=True)
 random = Pipeline("random", input_data, [RandomModel("random")])
 vader = Pipeline("vader", input_data, [VaderModel("vader")])
 
@@ -209,7 +212,6 @@ data_tweets_hate_speech_detection = DataLoader(
     ),
 )
 
-data_hatecheck = DataLoader("Paul/hatecheck", preprocess_config)
 data_hate_speech_offensive = DataLoader(
     "hate_speech_offensive",
     PreprocessConfig(
@@ -220,6 +222,7 @@ data_hate_speech_offensive = DataLoader(
         label_col="class",
     ),
 )
+data_hatecheck = DataLoader("Paul/hatecheck", preprocess_config)
 
 data_merged_train = DataLoaderMerger(
     [
@@ -241,7 +244,7 @@ tweeteval_hate_speech_experiments = [
     Experiment(
         project_name="hate-speech-detection",
         run_name="tweeteval",
-        dataset=data_tweet_eval_hate_speech,
+        dataloader=data_merged_train,
         dataset_category=DatasetSplit.train,
         pipeline=sklearn,
         preprocessing_config=preprocess_config,
@@ -251,7 +254,7 @@ tweeteval_hate_speech_experiments = [
     Experiment(
         project_name="hate-speech-detection",
         run_name="tweeteval",
-        dataset=data_tweet_eval_hate_speech,
+        dataloader=data_tweet_eval_hate_speech,
         dataset_category=DatasetSplit.test,
         pipeline=sklearn,
         preprocessing_config=preprocess_config,
@@ -265,7 +268,7 @@ cross_dataset_experiments = [
     Experiment(
         project_name="hate-speech-detection-merged",
         run_name="merged_dataset",
-        dataset=data_merged_train,
+        dataloader=data_merged_train,
         dataset_category=DatasetSplit.train,
         pipeline=sklearn,
         preprocessing_config=preprocess_config,
@@ -275,7 +278,7 @@ cross_dataset_experiments = [
     Experiment(
         project_name="hate-speech-detection-cross-val",
         run_name="hatecheck",
-        dataset=data_hatecheck,
+        dataloader=data_hatecheck,
         dataset_category=DatasetSplit.test,
         pipeline=sklearn,
         preprocessing_config=preprocess_config,
@@ -287,6 +290,7 @@ cross_dataset_experiments = [
 pipelines_to_evaluate = [
     sklearn,
     sklearn_autocorrect,
+    sklearn_simple,
     random,
     vader,
     huggingface_baseline,
@@ -302,14 +306,21 @@ def set_pipeline(experiment: Experiment, pipeline: Pipeline) -> Experiment:
     return experiment
 
 
-all_cross_dataset_experiments = flatten(
-    [
+def populate_experiments_with_pipelines(
+    experiments: List[Experiment], pipelines: List[Pipeline]
+) -> List[Experiment]:
+    return flatten(
         [
             [
-                set_pipeline(deepcopy(experiment), pipeline)
-                for experiment in cross_dataset_experiments
+                [
+                    set_pipeline(deepcopy(experiment), pipeline)
+                    for experiment in cross_dataset_experiments
+                ]
             ]
+            for pipeline in pipelines_to_evaluate
         ]
-        for pipeline in pipelines_to_evaluate
-    ]
-)
+    )
+
+
+all_cross_dataset_experiments = populate_experiments_with_pipelines(cross_dataset_experiments, pipelines_to_evaluate)
+all_tweeteval_hate_speech_experiments = populate_experiments_with_pipelines(tweeteval_hate_speech_experiments, pipelines_to_evaluate)
