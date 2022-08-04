@@ -153,9 +153,6 @@ class HuggingfaceModel(Model):
     def is_fitted(self) -> bool:
         return self.trained
 
-    def save(self) -> None:
-        pass
-
     def save_remote(self) -> None:
         if all([self.config.save_remote, self.config.save]) is True:
             self.trainer.push_to_hub()
