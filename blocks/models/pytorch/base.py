@@ -28,7 +28,7 @@ class PytorchModel(Model):
         self.evaluators: Optional[Evaluators] = evaluators
 
     def load(self) -> None:
-        torch.manual_seed(0)
+        torch.manual_seed(Const.seed)
         return super().load()
 
     def fit(self, dataset: pd.Series, labels: Optional[pd.Series]) -> None:
