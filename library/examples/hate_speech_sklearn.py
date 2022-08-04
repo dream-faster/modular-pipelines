@@ -11,6 +11,7 @@ from sklearn.ensemble import GradientBoostingClassifier, VotingClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import MultinomialNB
+from configs.constants import Const
 from type import LoadOrigin, SKLearnConfig
 from utils.flatten import remove_none
 
@@ -21,11 +22,11 @@ sklearn_config = SKLearnConfig(
     classifier=VotingClassifier(
         estimators=[
             ("nb", MultinomialNB()),
-            ("lg", LogisticRegression()),
+            ("lg", LogisticRegression(random_state=Const.seed)),
             (
                 "gb",
                 GradientBoostingClassifier(
-                    n_estimators=100, max_depth=7, random_state=0
+                    n_estimators=100, max_depth=7, random_state=Const.seed
                 ),
             ),
         ],

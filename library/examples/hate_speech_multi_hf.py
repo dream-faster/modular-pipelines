@@ -97,11 +97,11 @@ sklearn_config = SKLearnConfig(
     classifier=VotingClassifier(
         estimators=[
             ("nb", MultinomialNB()),
-            ("lg", LogisticRegression()),
+            ("lg", LogisticRegression(random_state=Const.seed)),
             (
                 "gb",
                 GradientBoostingClassifier(
-                    n_estimators=100, max_depth=7, random_state=0
+                    n_estimators=100, max_depth=7, random_state=Const.seed
                 ),
             ),
         ],
