@@ -64,6 +64,6 @@ if __name__ == "__main__":
     )
 
     run(
-        multi_sklearn_run_experiments,
+        multi_hf_run_experiments,
         staging_config=dev_config,
     )
