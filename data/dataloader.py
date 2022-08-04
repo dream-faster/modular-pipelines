@@ -28,7 +28,7 @@ class DataLoader:
     def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
         for transformation in self.transformations:
             self.data = transformation(self.data, self.preprocessing_config)
-        return self.data[category]
+        return self.data[category.value]
 
 
 class DataLoaderMerger(DataLoader):

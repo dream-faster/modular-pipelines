@@ -4,6 +4,7 @@ from configs.constants import Const
 
 # from library.examples.hate_speech import all_cross_dataset_experiments
 from library.examples.hate_speech_multi_hf import multi_hf_run_experiments
+from library.examples.hate_speech_meta_sklearn import multi_sklearn_run_experiments
 from plugins import WandbConfig, WandbPlugin
 from runner.runner import Runner
 from type import Experiment, StagingConfig, StagingNames
@@ -19,7 +20,6 @@ def run(
 
         overwrite_preprocessing_configs_(experiment.dataloader, staging_config)
         data = experiment.dataloader.load(experiment.dataset_category)
-
 
         experiment.save_remote = staging_config.save_remote
         experiment.log_remote = staging_config.log_remote
@@ -57,13 +57,13 @@ if __name__ == "__main__":
     )
 
     dev_config = StagingConfig(
-        name=StagingNames.prod,
+        name=StagingNames.dev,
         save_remote=False,
         log_remote=False,
         limit_dataset_to=100,
     )
 
     run(
-        multi_hf_run_experiments,
+        multi_sklearn_run_experiments,
         staging_config=dev_config,
     )

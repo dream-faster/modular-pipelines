@@ -51,5 +51,5 @@ class VectorConcat(Concat):
     inputTypes = [DataType.List, DataType.List]
     outputType = DataType.List
 
-    def transform(self, data: List[pd.Series]) -> pd.Series:
-        return pd.concat(data, axis=1).agg(np.concatenate, axis=1)
+    def transform(self, data: List[List[int]]) -> pd.Series:
+        return list(zip(*data))
