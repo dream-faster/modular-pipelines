@@ -112,9 +112,7 @@ class HuggingfaceModel(Model):
             else:
                 print(f"    ├ ℹ️ No model found on {load_path}")
 
-        self.training_args.output_dir = (
-            f"{Const.output_pipelines_path}/{self.parent_path}/{self.id}"
-        )
+        self.training_args.output_dir = f"{self.parent_path}/{self.id}"
 
     def fit(self, dataset: List[str], labels: Optional[pd.Series]) -> None:
 
