@@ -8,7 +8,7 @@ from configs.constants import Const
 from type import HuggingfaceConfig, PredsWithProbs
 
 
-def run_inference_pipeline(
+def run_inference(
     model: Callable, test_data: Dataset, config: HuggingfaceConfig
 ) -> List[PredsWithProbs]:
 

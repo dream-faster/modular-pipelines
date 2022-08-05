@@ -18,7 +18,7 @@ from blocks.transformations import (
 from configs.constants import Const
 from data.transformation import transform_dataset
 from datasets.load import load_dataset
-from library.evaluation import classification_metrics  # , calibration_metrics
+from library.evaluation.classification import classification_metrics
 from sklearn.ensemble import GradientBoostingClassifier, VotingClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
@@ -129,7 +129,7 @@ full_pipeline = Pipeline(
     ),
 )
 
-metrics = classification_metrics  # + calibration_metrics
+metrics = classification_metrics
 
 """ Experiments """
 multi_sklearn_run_experiments = [

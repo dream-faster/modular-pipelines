@@ -4,6 +4,7 @@ from configs.constants import Const
 from .flatten import flatten
 from blocks.base import DataSource
 from data.dataloader import DataLoader
+from type import Hierarchy
 
 
 def overwrite_preprocessing_configs_(
@@ -93,6 +94,7 @@ def append_parent_path_and_id_(pipeline: Pipeline) -> None:
     """
 
     entire_pipeline = pipeline.get_hierarchy()
+    entire_pipeline.print_hierarchy()
 
     def append(block, parent_path: str, id_with_prefix: str):
         block.obj.parent_path = parent_path
