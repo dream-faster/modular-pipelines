@@ -4,6 +4,7 @@ from typing import Union
 import joblib
 
 from configs.constants import Const
+from utils.printing import PrintFormats
 
 import textwrap
 
@@ -15,10 +16,10 @@ def safe_loading(parent_path: str, id: str) -> "Model":
 
         print(
             textwrap.fill(
-                f"Loading model {parent_path}/{id}",
-                initial_indent="    ├ ",
-                subsequent_indent="    │ ",
-                width=75,
+                f"Loading model {parent_path}/{PrintFormats.BOLD}{id}{PrintFormats.END}",
+                initial_indent="    ┣━━━ ",
+                subsequent_indent="    ┃        ",
+                width=100,
             )
         )
         with open(path, "rb") as f:
