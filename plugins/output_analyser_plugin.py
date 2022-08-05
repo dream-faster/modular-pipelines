@@ -1,5 +1,5 @@
 from pprint import pprint
-from typing import List
+from typing import Iterable, List
 
 from blocks.base import Block, DataSource, Element
 from blocks.pipeline import Pipeline
@@ -26,9 +26,7 @@ class OutputAnalyserPlugin(Plugin):
 
         selected_outputs = [last_output[i] for i in random_indecies]
 
-        if isinstance(selected_outputs[0], list) or isinstance(
-            selected_outputs[0], tuple
-        ):
+        if isinstance(selected_outputs[0], Iterable):
             for i in selected_outputs:
                 print(prefix + str(i))
         else:

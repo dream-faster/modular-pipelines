@@ -5,12 +5,22 @@ import joblib
 
 from configs.constants import Const
 
+import textwrap
+
 
 def safe_loading(parent_path: str, id: str) -> "Model":
     path = f"{parent_path}/{id}.pkl"
 
     if os.path.exists(path):
-        print(f"    ├ Loading model {parent_path}/{id}")
+
+        print(
+            textwrap.fill(
+                f"Loading model {parent_path}/{id}",
+                initial_indent="    ├ ",
+                subsequent_indent="    │ ",
+                width=75,
+            )
+        )
         with open(path, "rb") as f:
             return joblib.load(f)
     else:
