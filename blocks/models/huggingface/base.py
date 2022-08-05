@@ -136,7 +136,7 @@ class HuggingfaceModel(Model):
         self.trained = True
 
     def predict(self, dataset: pd.Series) -> List[PredsWithProbs]:
-        assert (
+        assert not (
             self.pretrained is True and self.trained is False
         ), "Huggingface model will train during inference (test) only! This introduces data leakage."
 
