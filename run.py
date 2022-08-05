@@ -5,7 +5,7 @@ from configs.constants import Const
 from library.examples.hate_speech import all_cross_dataset_experiments
 from library.examples.hate_speech_multi_hf import multi_hf_run_experiments
 from library.examples.hate_speech_meta_sklearn import multi_sklearn_run_experiments
-from plugins import WandbConfig, WandbPlugin
+from plugins import WandbConfig, WandbPlugin, OutputAnalyserPlugin
 from runner.runner import Runner
 from type import Experiment, StagingConfig, StagingNames
 from utils.run_helpers import overwrite_preprocessing_configs_
@@ -46,7 +46,7 @@ def run(
             experiment,
             data={Const.input_col: data[Const.input_col]},
             labels=data[Const.label_col],
-            plugins=logger_plugins,
+            plugins=logger_plugins + [OutputAnalyserPlugin()],
         )
         runner.run()
 
@@ -64,6 +64,6 @@ if __name__ == "__main__":
     )
 
     run(
-        multi_hf_run_experiments,
+        multi_sklearn_run_experiments,
         staging_config=dev_config,
     )

@@ -53,6 +53,7 @@ class Pipeline(Block):
             plugin.on_load_end()
 
     def fit(self, store: Store, plugins: List["Plugin"]) -> None:
+        print(f"    ┣━━━ Training on {self.id}")
         """Begin"""
         last_output = process_block(self.datasource, store, plugins)
         for plugin in plugins:
@@ -72,6 +73,7 @@ class Pipeline(Block):
         store.set_data(self.id, last_output)
 
     def predict(self, store: Store, plugins: List["Plugin"]) -> pd.Series:
+        print(f"    ┣━━━ Predicting on {self.id}")
         """Begin"""
         last_output = process_block(self.datasource, store, plugins)
         for plugin in plugins:

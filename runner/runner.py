@@ -51,6 +51,7 @@ class Runner:
 
         print("🔮 Predicting with pipeline")
         preds_probs = self.pipeline.predict(self.store, self.plugins)
+        self.store.set_data(Const.final_output, preds_probs)
 
         print("🤔 Evaluating entire pipeline")
         stats = evaluate(
