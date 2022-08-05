@@ -88,7 +88,6 @@ huggingface_distil_bert_config.pretrained_model = "distilbert-base-uncased"
 
 huggingface_distilroberta_config = deepcopy(huggingface_base_config)
 huggingface_distilroberta_config.pretrained_model = "distilroberta-base"
-huggingface_distilroberta_config.preferred_load_origin = LoadOrigin.pretrained
 
 sklearn_config = SKLearnConfig(
     force_fit=False,

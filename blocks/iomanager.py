@@ -7,7 +7,7 @@ from configs.constants import Const
 
 
 def safe_loading(parent_path: str, id: str) -> "Model":
-    path = f"{Const.output_pipelines_path}/{parent_path}/{id}.pkl"
+    path = f"{parent_path}/{id}.pkl"
 
     if os.path.exists(path):
         print(f"    ├ Loading model {parent_path}/{id}")
@@ -20,7 +20,7 @@ def safe_loading(parent_path: str, id: str) -> "Model":
 def safe_saving(
     object: Union["Model", "Pipeline", None], parent_path: str, id: str
 ) -> None:
-    path = f"{Const.output_pipelines_path}/{parent_path}"
+    path = f"{parent_path}"
     if os.path.exists(path) is False:
         os.makedirs(path)
 

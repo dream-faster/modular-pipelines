@@ -75,6 +75,7 @@ class HuggingfaceModel(Model):
 
         self.training_args = self.config.training_args
         self.training_args.hub_token = get_env("HF_HUB_TOKEN")
+        self.pretrained = False
 
     def load(self) -> None:
         enable_full_determinism(Const.seed)
@@ -104,13 +105,14 @@ class HuggingfaceModel(Model):
             model = safe_load_pipeline(load_path, config=self.config)
             if model:
                 self.model = model
+
+                if key == LoadOrigin.pretrained:
+                    self.pretrained = True
                 break
             else:
                 print(f"    ├ ℹ️ No model found on {load_path}")
 
-        self.training_args.output_dir = (
-            f"{Const.output_pipelines_path}/{self.parent_path}/{self.id}"
-        )
+        self.training_args.output_dir = f"{self.parent_path}/{self.id}"
 
     def fit(self, dataset: List[str], labels: Optional[pd.Series]) -> None:
 
@@ -134,6 +136,10 @@ class HuggingfaceModel(Model):
         self.trained = True
 
     def predict(self, dataset: pd.Series) -> List[PredsWithProbs]:
+        assert (
+            self.pretrained and self.trained == False
+        ), "Huggingface model will train during inference (test) only! This introduces data leakage."
+
         return run_inference_pipeline(
             self.model,
             from_pandas(
@@ -144,9 +150,6 @@ class HuggingfaceModel(Model):
 
     def is_fitted(self) -> bool:
         return self.trained
-
-    def save(self) -> None:
-        pass
 
     def save_remote(self) -> None:
         if all([self.config.save_remote, self.config.save]) is True:

@@ -64,6 +64,6 @@ if __name__ == "__main__":
     )
 
     run(
-        all_cross_dataset_experiments,
+        multi_hf_run_experiments,
         staging_config=dev_config,
     )
