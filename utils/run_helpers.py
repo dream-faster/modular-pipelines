@@ -76,16 +76,6 @@ def overwrite_model_configs_(config: Experiment, pipeline: Pipeline) -> None:
                         vars(model.config)[key] = value
 
 
-# def print_hierarchy(pipeline: Hierarchy, indentation: str = "") -> None:
-
-#     for key, value in vars(pipeline).items():
-#         if key == "name":
-#             print(f"{indentation}- {value}")
-#         if key == "children" and value is not None:
-#             for child in value:
-#                 print_hierarchy(child, indentation + "    ")
-
-
 def append_parent_path_and_id_(pipeline: Pipeline) -> None:
     """
     Appends two values to each object in the pipeline:
