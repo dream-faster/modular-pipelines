@@ -28,7 +28,8 @@ from data.transformation_hatespeech_offensive import (
     transform_hatespeech_offensive_dataset,
 )
 from datasets.load import load_dataset
-from library.evaluation import calibration_metrics, classification_metrics
+from library.evaluation.classification import classification_metrics
+from library.evaluation.calibration import calibration_metrics
 from sklearn.ensemble import GradientBoostingClassifier, VotingClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
