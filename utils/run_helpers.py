@@ -4,6 +4,7 @@ from configs.constants import Const
 from .flatten import flatten
 from blocks.base import DataSource
 from data.dataloader import DataLoader
+from type import Hierarchy
 
 
 def overwrite_preprocessing_configs_(
@@ -75,6 +76,16 @@ def overwrite_model_configs_(config: Experiment, pipeline: Pipeline) -> None:
                         vars(model.config)[key] = value
 
 
+# def print_hierarchy(pipeline: Hierarchy, indentation: str = "") -> None:
+
+#     for key, value in vars(pipeline).items():
+#         if key == "name":
+#             print(f"{indentation}- {value}")
+#         if key == "children" and value is not None:
+#             for child in value:
+#                 print_hierarchy(child, indentation + "    ")
+
+
 def append_parent_path_and_id_(pipeline: Pipeline) -> None:
     """
     Appends two values to each object in the pipeline:
@@ -93,6 +104,7 @@ def append_parent_path_and_id_(pipeline: Pipeline) -> None:
     """
 
     entire_pipeline = pipeline.get_hierarchy()
+    entire_pipeline.print_hierarchy()
 
     def append(block, parent_path: str, id_with_prefix: str):
         block.obj.parent_path = parent_path

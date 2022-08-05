@@ -30,7 +30,7 @@ def compute_metrics(eval_pred):
     return {"accuracy": accuracy, "f1": f1}
 
 
-def run_training_pipeline(
+def run_training(
     training_args: TrainingArguments,
     train_data: Dataset,
     val_data: Dataset,

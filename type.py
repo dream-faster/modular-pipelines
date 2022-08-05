@@ -136,3 +136,12 @@ class Hierarchy:
     name: str
     obj: "Element"
     children: Optional[List["Hierarchy"]] = None
+
+    def print_hierarchy(self, child=None, indentation: str = "") -> None:
+        el = self if child is None else child
+        for key, value in vars(el).items():
+            if key == "name":
+                print(f"{indentation}- {value}")
+            if key == "children" and value is not None:
+                for child in value:
+                    self.print_hierarchy(child, indentation + "    ")

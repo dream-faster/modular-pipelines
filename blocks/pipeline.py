@@ -121,17 +121,12 @@ class Pipeline(Block):
             and len(source_hierarchy.children) > 0
         ):
 
-            parent_pipeline = Pipeline(
-                "concat_sequence",
-                datasource=source_hierarchy.obj,
-                models=[current_pipeline_hierarchy.obj],
-            )
+            current_pipeline_hierarchy.children = [
+                source_hierarchy
+            ] + current_pipeline_hierarchy.children
 
-            return Hierarchy(
-                name=parent_pipeline.id,
-                obj=parent_pipeline,
-                children=[source_hierarchy, current_pipeline_hierarchy],
-            )
+            return current_pipeline_hierarchy
+
         else:
             source_hierarchy.children = [current_pipeline_hierarchy]
             return source_hierarchy

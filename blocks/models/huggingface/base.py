@@ -20,8 +20,8 @@ from transformers import (
 from type import DataType, Evaluators, HuggingfaceConfig, LoadOrigin, PredsWithProbs
 from utils.env_interface import get_env
 
-from .infer import run_inference_pipeline
-from .train import run_training_pipeline
+from .infer import run_inference
+from .train import run_training
 
 device = 0 if torch.cuda.is_available() else -1
 
@@ -81,7 +81,7 @@ class HuggingfaceModel(Model):
         enable_full_determinism(Const.seed)
 
         paths = {
-            LoadOrigin.local: f"{Const.output_pipelines_path}/{self.parent_path}/{self.id}",
+            LoadOrigin.local: f"{self.parent_path}/{self.id}",
             LoadOrigin.remote: f"{self.config.user_name}/{self.id}"
             if not hasattr(self.config, "remote_name_override")
             or self.config.remote_name_override is None
@@ -121,7 +121,7 @@ class HuggingfaceModel(Model):
             test_size=self.config.val_size,
         )
 
-        trainer = run_training_pipeline(
+        trainer = run_training(
             self.training_args,
             from_pandas(train_dataset, self.config.num_classes),
             from_pandas(val_dataset, self.config.num_classes),
@@ -140,7 +140,7 @@ class HuggingfaceModel(Model):
             self.pretrained and self.trained == False
         ), "Huggingface model will train during inference (test) only! This introduces data leakage."
 
-        return run_inference_pipeline(
+        return run_inference(
             self.model,
             from_pandas(
                 pd.DataFrame({Const.input_col: dataset}), self.config.num_classes
