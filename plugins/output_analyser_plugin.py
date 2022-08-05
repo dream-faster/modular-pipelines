@@ -22,9 +22,17 @@ class OutputAnalyserPlugin(Plugin):
     def on_predict_end(self, store: Store, last_output: Any) -> Tuple[Store, Any]:
         random_indecies = random.sample(range(len(last_output)), self.num_examples)
 
-        prefix = "    ┃ "
-        for i in random_indecies:
-            print(prefix + str(last_output[i]))
+        prefix = "    ┃  "
+
+        selected_outputs = [last_output[i] for i in random_indecies]
+
+        if isinstance(selected_outputs[0], list) or isinstance(
+            selected_outputs[0], tuple
+        ):
+            for i in selected_outputs:
+                print(prefix + str(i))
+        else:
+            print(prefix + str(selected_outputs))
 
         return store, last_output
 
