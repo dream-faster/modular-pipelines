@@ -11,11 +11,22 @@ from configs.constants import Const
 from collections import Counter
 import numpy as np
 import random
+from utils.printing import PrintFormats
+from typing import Any, Tuple
 
 
 class OutputAnalyserPlugin(Plugin):
     def __init__(self, num_examples: int = 10):
         self.num_examples = num_examples
+
+    def on_predict_end(self, store: Store, last_output: Any) -> Tuple[Store, Any]:
+        random_indecies = random.sample(range(len(last_output)), self.num_examples)
+
+        prefix = "    ┃ "
+        for i in random_indecies:
+            print(prefix + str(last_output[i]))
+
+        return store, last_output
 
     def on_run_end(self, pipeline: Pipeline, store: Store):
         input = store.get_data(Const.input_col)
@@ -36,7 +47,7 @@ class OutputAnalyserPlugin(Plugin):
         spaceing = "    ┃    {:<16} {:<16} {:<16}"
 
         print("    ┃")
-        print("    ┃ Frequencies")
+        print(f"{PrintFormats.BOLD}    ┃ Frequencies{PrintFormats.END}")
         print(spaceing.format("category", "final_output", "original_labels"))
         print(spaceing.format("-" * 16, "-" * 16, "-" * 16))
 
@@ -51,9 +62,11 @@ class OutputAnalyserPlugin(Plugin):
                 )
             )
 
-        spaceing_example = "    ┃    {:<30} {:>16} {:>16} {:>16}"
+        spaceing_example = "    ┃    {:<50} {:>16} {:>16} {:>16}"
         print("    ┃")
-        print(f"    ┃ Sampeling {self.num_examples} Examples")
+        print(
+            f"{PrintFormats.BOLD}    ┃ Sampeling {self.num_examples} Examples{PrintFormats.END}"
+        )
         print(
             spaceing_example.format(
                 "input text", "final_output", "original_labels", "confidence"
@@ -62,15 +75,15 @@ class OutputAnalyserPlugin(Plugin):
         print(spaceing_example.format("-" * 50, "-" * 16, "-" * 16, "-" * 16))
 
         random_indecies = random.sample(range(len(input)), self.num_examples)
-        for i in range(self.num_examples):
-            rand_i = random_indecies[i]
+        for i in random_indecies:
             print(
                 spaceing_example.format(
-                    input[rand_i][:50] + " " * max(0, (50 - len(input[rand_i]))),
-                    predictions[rand_i],
-                    original_labels[rand_i],
-                    f"{round(max(probabilities[rand_i]) * 100, 2)}%",
+                    input[i][:50] + " " * max(0, (50 - len(input[i][:50]))),
+                    predictions[i],
+                    original_labels[i],
+                    f"{round(max(probabilities[i]) * 100, 2)}%",
                 )
             )
+        print("    ┃")
 
         return pipeline, store

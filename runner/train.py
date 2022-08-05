@@ -15,7 +15,7 @@ def train_predict(
     store: Store,
 ):
     if not model.is_fitted() or model.config.force_fit:
-        print(f"    ┣━━━ Training {model.id}, {model.__class__.__name__}")
+        print(f"    ┃  ├─── Block: {model.id}, {model.__class__.__name__}")
         model.fit(dataset, store.get_labels())
 
         if model.config.save:
@@ -25,7 +25,8 @@ def train_predict(
 
 
 def predict(model: Block, dataset: pd.Series, store: Store) -> List:
-    print(f"    ┣━━━ Predicting on {model.id}, {model.__class__.__name__}")
+    print(f"    ┃  ├─── Block: {model.id}, {model.__class__.__name__}")
+
     output = model.predict(dataset)
 
     if (
