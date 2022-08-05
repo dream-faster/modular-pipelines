@@ -18,6 +18,7 @@ from blocks.transformations import (
 )
 from configs.constants import Const
 from data.dataloader import DataLoader, DataLoaderMerger
+from data.transformation import transform_dataset
 
 from data.transformation_hatecheck import transform_hatecheck_dataset
 from data.transformation_hatespeech_detection import (
@@ -200,7 +201,9 @@ ensemble_hf_vader = Ensemble(
 
 
 ### Datasets
-data_tweet_eval_hate_speech = DataLoader("tweet_eval", preprocess_config, "hate")
+data_tweet_eval_hate_speech = DataLoader(
+    "tweet_eval", preprocess_config, transform_dataset, "hate"
+)
 data_tweets_hate_speech_detection = DataLoader(
     "tweets_hate_speech_detection",
     PreprocessConfig(
@@ -210,6 +213,7 @@ data_tweets_hate_speech_detection = DataLoader(
         input_col="tweet",
         label_col="label",
     ),
+    transform_hatespeech_detection_dataset,
 )
 
 data_hate_speech_offensive = DataLoader(
@@ -221,8 +225,11 @@ data_hate_speech_offensive = DataLoader(
         input_col="tweet",
         label_col="class",
     ),
+    transform_hatespeech_offensive_dataset,
 )
-data_hatecheck = DataLoader("Paul/hatecheck", preprocess_config)
+data_hatecheck = DataLoader(
+    "Paul/hatecheck", preprocess_config, transform_hatecheck_dataset
+)
 
 data_merged_train = DataLoaderMerger(
     [
@@ -322,5 +329,9 @@ def populate_experiments_with_pipelines(
     )
 
 
-all_cross_dataset_experiments = populate_experiments_with_pipelines(cross_dataset_experiments, pipelines_to_evaluate)
-all_tweeteval_hate_speech_experiments = populate_experiments_with_pipelines(tweeteval_hate_speech_experiments, pipelines_to_evaluate)
+all_cross_dataset_experiments = populate_experiments_with_pipelines(
+    cross_dataset_experiments, pipelines_to_evaluate
+)
+all_tweeteval_hate_speech_experiments = populate_experiments_with_pipelines(
+    tweeteval_hate_speech_experiments, pipelines_to_evaluate
+)

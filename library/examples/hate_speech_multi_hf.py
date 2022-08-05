@@ -114,7 +114,7 @@ sklearn_config = SKLearnConfig(
 
 input_data = DataSource("input")
 
-dataloader = DataLoader("tweet_eval", preprocess_config, "hate")
+dataloader = DataLoader("tweet_eval", preprocess_config, transform_dataset, "hate")
 
 
 """ Pipelines"""

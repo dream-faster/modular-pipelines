@@ -9,33 +9,37 @@ from .transformation import transform_dataset
 from datasets.load import load_dataset
 
 from .merge import merge_datasets
+from utils.flatten import flatten
 
 
 class DataLoader:
+
+    preprocessing_configs: List[PreprocessConfig]
+
     def __init__(
         self,
         path: str,
         preprocessing_config: PreprocessConfig,
+        transformation: Callable,
         name: Optional[str] = None,
-        transformations: List[Callable] = [],
     ):
-        obligatory_transformations = [transform_dataset]
-
-        self.transformations = obligatory_transformations + transformations
-        self.preprocessing_config = preprocessing_config
+        self.transformation = transformation
+        self.preprocessing_configs = [preprocessing_config]
         self.data = load_dataset(path, name)
 
     def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
-        for transformation in self.transformations:
-            self.data = transformation(self.data, self.preprocessing_config)
+        self.data = self.transformation(self.data, self.preprocessing_configs[0])
         return self.data[category.value]
 
 
 class DataLoaderMerger(DataLoader):
-    def __init__(self, data_loaders=List[DataLoader]):
-        self.data_loaders = data_loaders
+    def __init__(self, dataloaders=List[DataLoader]):
+        self.dataloaders = dataloaders
+        self.preprocessing_configs = flatten(
+            [dataloader.preprocessing_configs for dataloader in dataloaders]
+        )
 
     def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
         return merge_datasets(
-            [data_loader.load(category) for data_loader in self.data_loaders]
+            [data_loader.load(category) for data_loader in self.dataloaders]
         )
