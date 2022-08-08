@@ -59,7 +59,7 @@ preprocess_config = PreprocessConfig(
 ### Models
 
 huggingface_config = HuggingfaceConfig(
-    preferred_load_origin=LoadOrigin.local,
+    preferred_load_origin=None,
     pretrained_model="distilbert-base-uncased",
     task_type=HFTaskTypes.sentiment_analysis,
     user_name="semy",
@@ -91,7 +91,7 @@ huggingface_config = HuggingfaceConfig(
 sklearn_config = SKLearnConfig(
     force_fit=False,
     save=True,
-    preferred_load_origin=LoadOrigin.local,
+    preferred_load_origin=None,
     classifier=VotingClassifier(
         estimators=[
             ("nb", MultinomialNB()),
@@ -110,7 +110,7 @@ sklearn_config = SKLearnConfig(
 )
 
 sklearn_config_simple = SKLearnConfig(
-    preferred_load_origin=LoadOrigin.local,
+    preferred_load_origin=None,
     force_fit=False,
     save=True,
     classifier=MultinomialNB(),
