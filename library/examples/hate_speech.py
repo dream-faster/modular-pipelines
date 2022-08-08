@@ -322,10 +322,10 @@ def populate_experiments_with_pipelines(
             [
                 [
                     set_pipeline(deepcopy(experiment), pipeline)
-                    for experiment in cross_dataset_experiments
+                    for experiment in experiments
                 ]
             ]
-            for pipeline in pipelines_to_evaluate
+            for pipeline in pipelines
         ]
     )
 
