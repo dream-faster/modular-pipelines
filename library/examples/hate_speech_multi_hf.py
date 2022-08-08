@@ -54,7 +54,7 @@ huggingface_training_args = TrainingArguments(
     learning_rate=2e-5,
     per_device_train_batch_size=16,
     per_device_eval_batch_size=16,
-    num_train_epochs=2,
+    num_train_epochs=0.01,
     weight_decay=0.01,
     save_strategy="epoch",
     push_to_hub=True,
@@ -69,7 +69,7 @@ huggingface_training_args = TrainingArguments(
 
 
 huggingface_base_config = HuggingfaceConfig(
-    preferred_load_origin=LoadOrigin.local,
+    preferred_load_origin=None,  # LoadOrigin.local,
     pretrained_model="distilbert-base-uncased",
     user_name="semy",
     task_type=HFTaskTypes.sentiment_analysis,

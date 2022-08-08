@@ -1,4 +1,5 @@
 from pprint import pformat
+import textwrap
 
 
 def pprint_indent(text, indent=" " * 4 + "┃ ") -> None:
@@ -17,3 +18,24 @@ class PrintFormats:
     BOLD = "\033[1m"
     UNDERLINE = "\033[4m"
     END = "\033[0m"
+
+
+def multi_line_print(text: str, level: int = 0) -> None:
+
+    base_indent = " " * 4
+
+    if level == 0:
+        initial_indent = base_indent + "┣━━━ "
+        subsequent_indent = base_indent + "┃ "
+    if level == 1:
+        initial_indent = base_indent + "┃  ├── "
+        subsequent_indent = base_indent + "┃  │   "
+
+    print(
+        textwrap.fill(
+            text,
+            initial_indent=initial_indent,
+            subsequent_indent=subsequent_indent,
+            width=100,
+        )
+    )

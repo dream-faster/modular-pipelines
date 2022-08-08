@@ -1,6 +1,5 @@
 import os
-from threading import local
-from typing import Callable, List, Optional, Tuple, Union
+from typing import List, Optional
 
 import pandas as pd
 import torch
@@ -8,15 +7,7 @@ from blocks.models.base import Model
 from configs.constants import Const
 from datasets import ClassLabel, Dataset, Features, Value
 from sklearn.model_selection import train_test_split
-from transformers import (
-    AutoModelForSequenceClassification,
-    PreTrainedModel,
-    PreTrainedTokenizerBase,
-    Trainer,
-    TrainingArguments,
-    enable_full_determinism,
-    pipeline,
-)
+from transformers import enable_full_determinism
 from type import DataType, Evaluators, HuggingfaceConfig, LoadOrigin, PredsWithProbs
 from utils.env_interface import get_env
 
@@ -24,52 +15,17 @@ from .infer import run_inference
 from .train import run_training
 import textwrap
 from utils.printing import PrintFormats
+from .loading import safe_load, determine_load_order, get_paths
 
 device = 0 if torch.cuda.is_available() else -1
 
 
-def safe_load_pipeline(
-    module: Union[str, PreTrainedModel],
-    config: HuggingfaceConfig,
-    tokenizer: Optional[PreTrainedTokenizerBase] = None,
-) -> Optional[Callable]:
-    try:
-        if tokenizer is not None:
-            loaded_pipeline = pipeline(
-                task=config.task_type.value,
-                model=module,
-                tokenizer=tokenizer,
-                device=device,
-            )
-        else:
-            loaded_pipeline = pipeline(
-                task=config.task_type.value, model=module, device=device
-            )
-
-        print(
-            textwrap.fill(
-                f"Pipeline loaded {config.task_type.value}: {PrintFormats.BOLD}{module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}{PrintFormats.END}",
-                initial_indent="    ┃  ├── ",
-                subsequent_indent="    ┃  │   ",
-                width=100,
-            )
-        )
-    except:
-        print(
-            textwrap.fill(
-                f"Couldn't load {module} pipeline. Skipping.",
-                initial_indent="    ┃  ├── ",
-                subsequent_indent="    ┃  │   ",
-                width=100,
-            )
-        )
-        loaded_pipeline = None
-
-    return loaded_pipeline
+def initalize_environment_(config: HuggingfaceConfig) -> None:
+    os.environ["TOKENIZERS_PARALLELISM"] = "False"
+    config.training_args.hub_token = get_env("HF_HUB_TOKEN")
 
 
 class HuggingfaceModel(Model):
-
     config: HuggingfaceConfig
     inputTypes = [DataType.Series, DataType.List]
     outputType = DataType.PredictionsWithProbs
@@ -82,56 +38,46 @@ class HuggingfaceModel(Model):
     ):
         self.id = id
         self.config = config
-        self.model: Optional[Union[Callable, Trainer]] = None
+        self.model = None
         self.trained = False
+        self.pretrained = False
         self.evaluators = evaluators
 
-        os.environ["TOKENIZERS_PARALLELISM"] = "False"
-
-        self.training_args = self.config.training_args
-        self.training_args.hub_token = get_env("HF_HUB_TOKEN")
-        self.pretrained = False
+        initalize_environment_(self.config)
 
     def load(self) -> None:
         enable_full_determinism(Const.seed)
 
-        paths = {
-            LoadOrigin.local: f"{self.parent_path}/{self.id}",
-            LoadOrigin.remote: f"{self.config.user_name}/{self.id}"
-            if not hasattr(self.config, "remote_name_override")
-            or self.config.remote_name_override is None
-            else self.config.remote_name_override,
-            LoadOrigin.pretrained: self.config.pretrained_model,
-        }
+        paths = get_paths(self.config, self.parent_path, self.id)
+        load_order = determine_load_order(self.config, paths)
 
-        if (
-            hasattr(self.config, "preferred_load_origin")
-            and self.config.preferred_load_origin is not None
-        ):
-            load_order = [
-                (
-                    self.config.preferred_load_origin,
-                    paths[self.config.preferred_load_origin],
-                )
-            ]
-        else:
-            load_order = paths.items()
-
-        for key, load_path in load_order:
+        for load_origin, load_path in load_order:
             print(
-                f"    ┣━━┯ ℹ️ Loading from {PrintFormats.BOLD}{key}{PrintFormats.END}"
+                f"    ┣━━┯ ℹ️ Loading from {PrintFormats.BOLD}{load_origin}{PrintFormats.END}"
             )
-            model = safe_load_pipeline(load_path, config=self.config)
+            model, tokenizer = safe_load(
+                self.run_context.train, load_path, config=self.config
+            )
+
             if model:
                 self.model = model
 
-                if key == LoadOrigin.pretrained:
+                if tokenizer:
+                    self.tokenizer = tokenizer
+
+                if load_origin == LoadOrigin.pretrained:
                     self.pretrained = True
                 break
 
-        self.training_args.output_dir = f"{self.parent_path}/{self.id}"
+        self.config.training_args.output_dir = (
+            f"{Const.output_pipelines_path}/{self.parent_path}/{self.id}"
+        )
 
     def fit(self, dataset: List[str], labels: Optional[pd.Series]) -> None:
+        assert (
+            self.model is not None,
+            "Either a trained model or a pretrained model must be loaded.",
+        )
 
         train_dataset, val_dataset = train_test_split(
             pd.DataFrame({Const.input_col: dataset, Const.label_col: labels}),
@@ -139,15 +85,17 @@ class HuggingfaceModel(Model):
         )
 
         trainer = run_training(
-            self.training_args,
+            self.model,
+            self.tokenizer,
+            self.config.training_args,
             from_pandas(train_dataset, self.config.num_classes),
             from_pandas(val_dataset, self.config.num_classes),
-            self.config,
-            self.parent_path,
-            self.id,
             self.trainer_callbacks if hasattr(self, "trainer_callbacks") else None,
         )
-        self.model = safe_load_pipeline(trainer.model, self.config, trainer.tokenizer)
+
+        self.model = safe_load(
+            self.run_context.train, trainer.model, self.config, trainer.tokenizer
+        )
 
         self.trainer = trainer
         self.trained = True
@@ -155,7 +103,7 @@ class HuggingfaceModel(Model):
     def predict(self, dataset: pd.Series) -> List[PredsWithProbs]:
         assert not (
             self.pretrained is True and self.trained is False
-        ), "Huggingface model will train during inference (test) only! This introduces data leakage."
+        ), "Huggingface model will train during inference as a default if model is not trained! This introduces data leakage."
 
         return run_inference(
             self.model,

@@ -9,6 +9,7 @@ from transformers import (
     PreTrainedModel,
     Trainer,
     TrainingArguments,
+    PreTrainedTokenizerBase,
 )
 
 from configs.constants import Const
@@ -31,20 +32,13 @@ def compute_metrics(eval_pred):
 
 
 def run_training(
+    model: PreTrainedModel,
+    tokenizer: PreTrainedTokenizerBase,
     training_args: TrainingArguments,
     train_data: Dataset,
     val_data: Dataset,
-    config: HuggingfaceConfig,
-    parent_path: str,
-    id: str,
     trainer_callbacks: Optional[List[Callable]],
 ) -> Trainer:
-
-    model = AutoModelForSequenceClassification.from_pretrained(
-        config.pretrained_model, num_labels=config.num_classes
-    )
-    tokenizer = AutoTokenizer.from_pretrained(config.pretrained_model)
-
     def preprocess_function(examples):
         return tokenizer(examples[Const.input_col], truncation=True)
 
