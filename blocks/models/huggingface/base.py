@@ -75,9 +75,8 @@ class HuggingfaceModel(Model):
 
     def fit(self, dataset: List[str], labels: Optional[pd.Series]) -> None:
         assert (
-            self.model is not None,
-            "Either a trained model or a pretrained model must be loaded.",
-        )
+            self.model is not None
+        ), "Either a trained model or a pretrained model must be loaded."
 
         train_dataset, val_dataset = train_test_split(
             pd.DataFrame({Const.input_col: dataset, Const.label_col: labels}),
