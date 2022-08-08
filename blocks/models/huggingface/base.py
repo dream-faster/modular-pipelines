@@ -25,10 +25,30 @@ from .train import run_training
 import textwrap
 from utils.printing import PrintFormats
 
+from transformers import (
+    AutoModelForSequenceClassification,
+    AutoTokenizer,
+    DataCollatorWithPadding,
+    PreTrainedModel,
+    Trainer,
+    TrainingArguments,
+)
+
 device = 0 if torch.cuda.is_available() else -1
 
 
-def safe_load_pipeline(
+def training_pipeline(
+    module: str, config: HuggingfaceConfig
+) -> Tuple[AutoModelForSequenceClassification, PreTrainedTokenizerBase]:
+    model = AutoModelForSequenceClassification.from_pretrained(
+        module, num_labels=config.num_classes
+    )
+    tokenizer = AutoTokenizer.from_pretrained(module)
+
+    return model, tokenizer
+
+
+def safe_load_inference_pipeline(
     module: Union[str, PreTrainedModel],
     config: HuggingfaceConfig,
     tokenizer: Optional[PreTrainedTokenizerBase] = None,
@@ -68,6 +88,56 @@ def safe_load_pipeline(
     return loaded_pipeline
 
 
+def safe_load(
+    train: bool,
+    module: Union[str, PreTrainedModel],
+    config: HuggingfaceConfig,
+    tokenizer: Optional[PreTrainedTokenizerBase] = None,
+) -> Tuple[Union[Callable, PreTrainedModel], Optional[PreTrainedTokenizerBase]]:
+
+    if train and isinstance(module, str):
+        model, tokenizer = training_pipeline(module, config)
+        return model, tokenizer
+    else:
+        model = safe_load_inference_pipeline(module, config, tokenizer)
+        return model, None
+
+
+def initalize_environment_(config: HuggingfaceConfig) -> None:
+    os.environ["TOKENIZERS_PARALLELISM"] = "False"
+    config.training_args.hub_token = get_env("HF_HUB_TOKEN")
+
+
+def get_paths(config: HuggingfaceConfig, parent_path: str, id: str) -> dict:
+    return {
+        LoadOrigin.local: f"{Const.output_pipelines_path}/{parent_path}/{id}",
+        LoadOrigin.remote: f"{config.user_name}/{id}"
+        if not hasattr(config, "remote_name_override")
+        or config.remote_name_override is None
+        else config.remote_name_override,
+        LoadOrigin.pretrained: config.pretrained_model,
+    }
+
+
+def determine_load_order(
+    config: HuggingfaceConfig, paths: dict
+) -> List[Tuple[LoadOrigin, str]]:
+    if (
+        hasattr(config, "preferred_load_origin")
+        and config.preferred_load_origin is not None
+    ):
+        load_order = [
+            (
+                config.preferred_load_origin,
+                paths[config.preferred_load_origin],
+            )
+        ]
+    else:
+        load_order = paths.items()
+
+    return load_order
+
+
 class HuggingfaceModel(Model):
 
     config: HuggingfaceConfig
@@ -82,72 +152,60 @@ class HuggingfaceModel(Model):
     ):
         self.id = id
         self.config = config
-        self.model: Optional[Union[Callable, Trainer]] = None
+        self.model = None
         self.trained = False
+        self.pretrained = False
         self.evaluators = evaluators
 
-        os.environ["TOKENIZERS_PARALLELISM"] = "False"
-
-        self.training_args = self.config.training_args
-        self.training_args.hub_token = get_env("HF_HUB_TOKEN")
-        self.pretrained = False
+        initalize_environment_(self.config)
 
     def load(self) -> None:
+        paths = get_paths(self.config, self.parent_path, self.id)
+
         enable_full_determinism(Const.seed)
 
-        paths = {
-            LoadOrigin.local: f"{self.parent_path}/{self.id}",
-            LoadOrigin.remote: f"{self.config.user_name}/{self.id}"
-            if not hasattr(self.config, "remote_name_override")
-            or self.config.remote_name_override is None
-            else self.config.remote_name_override,
-            LoadOrigin.pretrained: self.config.pretrained_model,
-        }
+        load_order = determine_load_order(self.config, paths)
 
-        if (
-            hasattr(self.config, "preferred_load_origin")
-            and self.config.preferred_load_origin is not None
-        ):
-            load_order = [
-                (
-                    self.config.preferred_load_origin,
-                    paths[self.config.preferred_load_origin],
-                )
-            ]
-        else:
-            load_order = paths.items()
-
-        for key, load_path in load_order:
+        for load_origin, load_path in load_order:
             print(
-                f"    ┣━━┯ ℹ️ Loading from {PrintFormats.BOLD}{key}{PrintFormats.END}"
+                f"    ┣━━┯ ℹ️ Loading from {PrintFormats.BOLD}{load_origin}{PrintFormats.END}"
             )
-            model = safe_load_pipeline(load_path, config=self.config)
+            model, tokenizer = safe_load(
+                self.run_context.train, load_path, config=self.config
+            )
+
             if model:
                 self.model = model
 
-                if key == LoadOrigin.pretrained:
+                if tokenizer:
+                    self.tokenizer = tokenizer
+
+                if load_origin == LoadOrigin.pretrained:
                     self.pretrained = True
                 break
 
-        self.training_args.output_dir = f"{self.parent_path}/{self.id}"
+        self.config.training_args.output_dir = (
+            f"{Const.output_pipelines_path}/{self.parent_path}/{self.id}"
+        )
 
     def fit(self, dataset: List[str], labels: Optional[pd.Series]) -> None:
-
         train_dataset, val_dataset = train_test_split(
             pd.DataFrame({Const.input_col: dataset, Const.label_col: labels}),
             test_size=self.config.val_size,
         )
 
         trainer = run_training(
-            self.training_args,
+            self.model,
+            self.tokenizer,
+            self.config.training_args,
             from_pandas(train_dataset, self.config.num_classes),
             from_pandas(val_dataset, self.config.num_classes),
-            self.config,
-            self.parent_path,
-            self.id,
             self.trainer_callbacks if hasattr(self, "trainer_callbacks") else None,
         )
-        self.model = safe_load_pipeline(trainer.model, self.config, trainer.tokenizer)
+
+        self.model = safe_load(
+            self.run_context.train, trainer.model, self.config, trainer.tokenizer
+        )
 
         self.trainer = trainer
         self.trained = True
