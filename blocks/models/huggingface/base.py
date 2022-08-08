@@ -50,9 +50,7 @@ def multi_line_print(text: str) -> None:
 
 def safe_load_training_pipeline(
     module: str, config: HuggingfaceConfig
-) -> Tuple[
-    Optional[AutoModelForSequenceClassification], Optional[PreTrainedTokenizerBase]
-]:
+) -> Tuple[Optional[PreTrainedModel], Optional[PreTrainedTokenizerBase]]:
     try:
         model = AutoModelForSequenceClassification.from_pretrained(
             module, num_labels=config.num_classes
@@ -113,7 +111,7 @@ def safe_load(
     if train and isinstance(module, str):
         return safe_load_training_pipeline(module, config)
     else:
-        return safe_load_inference_pipeline(module, config, tokenizer)
+        return safe_load_inference_pipeline(module, config, tokenizer), None
 
 
 def initalize_environment_(config: HuggingfaceConfig) -> None:
