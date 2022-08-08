@@ -37,13 +37,36 @@ from transformers import (
 device = 0 if torch.cuda.is_available() else -1
 
 
-def training_pipeline(
-    module: str, config: HuggingfaceConfig
-) -> Tuple[AutoModelForSequenceClassification, PreTrainedTokenizerBase]:
-    model = AutoModelForSequenceClassification.from_pretrained(
-        module, num_labels=config.num_classes
+def multi_line_print(text: str) -> None:
+    print(
+        textwrap.fill(
+            text,
+            initial_indent="    ┃  ├── ",
+            subsequent_indent="    ┃  │   ",
+            width=100,
+        )
     )
-    tokenizer = AutoTokenizer.from_pretrained(module)
+
+
+def safe_load_training_pipeline(
+    module: str, config: HuggingfaceConfig
+) -> Tuple[
+    Optional[AutoModelForSequenceClassification], Optional[PreTrainedTokenizerBase]
+]:
+    try:
+        model = AutoModelForSequenceClassification.from_pretrained(
+            module, num_labels=config.num_classes
+        )
+        tokenizer = AutoTokenizer.from_pretrained(module)
+
+        multi_line_print(
+            f"Training: Model loaded {config.task_type.value}: {PrintFormats.BOLD}{module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}{PrintFormats.END}"
+        )
+    except:
+        multi_line_print(
+            f"Training: Couldn't load {module} model or tokenizer. Skipping."
+        )
+        model, tokenizer = None, None
 
     return model, tokenizer
 
@@ -66,23 +89,13 @@ def safe_load_inference_pipeline(
                 task=config.task_type.value, model=module, device=device
             )
 
-        print(
-            textwrap.fill(
-                f"Pipeline loaded {config.task_type.value}: {PrintFormats.BOLD}{module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}{PrintFormats.END}",
-                initial_indent="    ┃  ├── ",
-                subsequent_indent="    ┃  │   ",
-                width=100,
-            )
+        multi_line_print(
+            f"Inference: Pipeline loaded {config.task_type.value}: {PrintFormats.BOLD}{module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}{PrintFormats.END}"
         )
+
     except:
-        print(
-            textwrap.fill(
-                f"Couldn't load {module} pipeline. Skipping.",
-                initial_indent="    ┃  ├── ",
-                subsequent_indent="    ┃  │   ",
-                width=100,
-            )
-        )
+        multi_line_print(f"Inference: Couldn't load {module} pipeline. Skipping.")
+
         loaded_pipeline = None
 
     return loaded_pipeline
@@ -93,14 +106,14 @@ def safe_load(
     module: Union[str, PreTrainedModel],
     config: HuggingfaceConfig,
     tokenizer: Optional[PreTrainedTokenizerBase] = None,
-) -> Tuple[Union[Callable, PreTrainedModel], Optional[PreTrainedTokenizerBase]]:
+) -> Tuple[
+    Optional[Union[Callable, PreTrainedModel]], Optional[PreTrainedTokenizerBase]
+]:
 
     if train and isinstance(module, str):
-        model, tokenizer = training_pipeline(module, config)
-        return model, tokenizer
+        return safe_load_training_pipeline(module, config)
     else:
-        model = safe_load_inference_pipeline(module, config, tokenizer)
-        return model, None
+        return safe_load_inference_pipeline(module, config, tokenizer)
 
 
 def initalize_environment_(config: HuggingfaceConfig) -> None:
@@ -139,7 +152,6 @@ def determine_load_order(
 
 
 class HuggingfaceModel(Model):
-
     config: HuggingfaceConfig
     inputTypes = [DataType.Series, DataType.List]
     outputType = DataType.PredictionsWithProbs
@@ -160,10 +172,9 @@ class HuggingfaceModel(Model):
         initalize_environment_(self.config)
 
     def load(self) -> None:
-        paths = get_paths(self.config, self.parent_path, self.id)
-
         enable_full_determinism(Const.seed)
 
+        paths = get_paths(self.config, self.parent_path, self.id)
         load_order = determine_load_order(self.config, paths)
 
         for load_origin, load_path in load_order:
@@ -213,7 +224,7 @@ class HuggingfaceModel(Model):
     def predict(self, dataset: pd.Series) -> List[PredsWithProbs]:
         assert not (
             self.pretrained is True and self.trained is False
-        ), "Huggingface model will train during inference (test) only! This introduces data leakage."
+        ), "Huggingface model will train during inference as a default if model is not trained! This introduces data leakage."
 
         return run_inference(
             self.model,

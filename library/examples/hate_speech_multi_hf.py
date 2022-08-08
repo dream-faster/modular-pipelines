@@ -69,7 +69,7 @@ huggingface_training_args = TrainingArguments(
 
 
 huggingface_base_config = HuggingfaceConfig(
-    preferred_load_origin=LoadOrigin.local,
+    preferred_load_origin=None,  # LoadOrigin.local,
     pretrained_model="distilbert-base-uncased",
     user_name="semy",
     task_type=HFTaskTypes.sentiment_analysis,
