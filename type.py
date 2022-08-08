@@ -132,6 +132,13 @@ class StagingConfig:
 
 
 @dataclass
+class RunContext:
+    project_name: str
+    run_name: str
+    train: str
+
+
+@dataclass
 class Hierarchy:
     name: str
     obj: "Element"
