@@ -5,6 +5,7 @@ from .flatten import flatten
 from blocks.base import DataSource
 from data.dataloader import DataLoader
 from type import Hierarchy
+from copy import deepcopy
 
 
 def overwrite_preprocessing_configs_(
@@ -116,4 +117,4 @@ def add_experiment_config_to_blocks_(
     pipeline: Pipeline, experiment: Experiment
 ) -> None:
     for model in flatten(pipeline.children()):
-        model.experiment = experiment
+        model.experiment = deepcopy(experiment)
