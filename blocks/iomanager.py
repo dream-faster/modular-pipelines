@@ -35,6 +35,13 @@ def safe_saving(
     if os.path.exists(path) is False:
         os.makedirs(path)
 
-    print(f"| Saving model {parent_path}/{id}")
+    print(
+        textwrap.fill(
+            f"Saving model {parent_path}/{PrintFormats.BOLD}{id}{PrintFormats.END}",
+            initial_indent="    ┣━━━ ",
+            subsequent_indent="    ┃        ",
+            width=100,
+        )
+    )
     with open(path + f"/{id}.pkl", "wb") as f:
         joblib.dump(object, f, compress=9)

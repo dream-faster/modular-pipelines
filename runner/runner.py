@@ -7,7 +7,11 @@ from configs import Const
 from plugins import IntegrityChecker, PipelineAnalyser
 from plugins.base import Plugin
 from type import Experiment
-from utils.run_helpers import overwrite_model_configs_, append_parent_path_and_id_
+from utils.run_helpers import (
+    overwrite_model_configs_,
+    append_parent_path_and_id_,
+    add_experiment_config_to_blocks_,
+)
 from .evaluation import evaluate
 from .store import Store
 
@@ -27,6 +31,7 @@ class Runner:
         self.experiment = experiment
         self.pipeline = deepcopy(experiment.pipeline)
 
+        add_experiment_config_to_blocks_(self.pipeline, experiment)
         overwrite_model_configs_(experiment, self.pipeline)
         append_parent_path_and_id_(self.pipeline)
 

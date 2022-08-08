@@ -1,10 +1,12 @@
-from type import Experiment, StagingConfig
+from dataclasses import dataclass
+from type import Experiment, StagingConfig, RunContext
 from blocks.pipeline import Pipeline
 from configs.constants import Const
 from .flatten import flatten
 from blocks.base import DataSource
 from data.dataloader import DataLoader
 from type import Hierarchy
+from copy import copy
 
 
 def overwrite_preprocessing_configs_(
@@ -109,4 +111,15 @@ def append_parent_path_and_id_(pipeline: Pipeline) -> None:
                         id_with_prefix=f"{id_with_prefix}-{i}",
                     )
 
-    append(entire_pipeline, Const.output_pipelines_path, "")
+    append(entire_pipeline, pipeline.run_context.project_name, "")
+
+
+def add_experiment_config_to_blocks_(
+    pipeline: Pipeline, experiment: Experiment
+) -> None:
+    for model in flatten(pipeline.children()):
+        model.run_context = RunContext(
+            project_name=copy(experiment.project_name),
+            run_name=copy(experiment.run_name),
+            train=copy(experiment.train),
+        )
