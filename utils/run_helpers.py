@@ -109,7 +109,7 @@ def append_parent_path_and_id_(pipeline: Pipeline) -> None:
                         id_with_prefix=f"{id_with_prefix}-{i}",
                     )
 
-    append(entire_pipeline, Const.output_pipelines_path, "")
+    append(entire_pipeline, pipeline.experiment.project_name, "")
 
 
 def add_experiment_config_to_blocks_(

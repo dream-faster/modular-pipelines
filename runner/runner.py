@@ -31,9 +31,9 @@ class Runner:
         self.experiment = experiment
         self.pipeline = deepcopy(experiment.pipeline)
 
+        add_experiment_config_to_blocks_(self.pipeline, experiment)
         overwrite_model_configs_(experiment, self.pipeline)
         append_parent_path_and_id_(self.pipeline)
-        add_experiment_config_to_blocks_(self.pipeline, experiment)
 
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
         self.store = Store(data, labels, self.run_path)
