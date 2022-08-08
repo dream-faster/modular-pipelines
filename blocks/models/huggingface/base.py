@@ -22,6 +22,8 @@ from utils.env_interface import get_env
 
 from .infer import run_inference
 from .train import run_training
+import textwrap
+from utils.printing import PrintFormats
 
 device = 0 if torch.cuda.is_available() else -1
 
@@ -43,11 +45,24 @@ def safe_load_pipeline(
             loaded_pipeline = pipeline(
                 task=config.task_type.value, model=module, device=device
             )
+
         print(
-            f"    ┣━━━ Pipeline loaded {config.task_type.value}: {module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}"
+            textwrap.fill(
+                f"Pipeline loaded {config.task_type.value}: {PrintFormats.BOLD}{module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}{PrintFormats.END}",
+                initial_indent="    ┃  ├── ",
+                subsequent_indent="    ┃  │   ",
+                width=100,
+            )
         )
     except:
-        print(f"    ├ Couldn't load {module} pipeline. Skipping.")
+        print(
+            textwrap.fill(
+                f"Couldn't load {module} pipeline. Skipping.",
+                initial_indent="    ┃  ├── ",
+                subsequent_indent="    ┃  │   ",
+                width=100,
+            )
+        )
         loaded_pipeline = None
 
     return loaded_pipeline
@@ -103,7 +118,7 @@ class HuggingfaceModel(Model):
             load_order = [(origin, path) for origin, path in paths.items()]
 
         for key, load_path in load_order:
-            print(f"    ├ ℹ️ Loading from {key}")
+            print(f"    ┣━━┯ ℹ️ Loading from {PrintFormats.BOLD}{key}{PrintFormats.END}")
             model = safe_load_pipeline(load_path, config=self.config)
             if model:
                 self.model = model
@@ -111,8 +126,6 @@ class HuggingfaceModel(Model):
                 if key == LoadOrigin.pretrained:
                     self.pretrained = True
                 break
-            else:
-                print(f"    ├ ℹ️ No model found on {load_path}")
 
         self.training_args.output_dir = f"{self.parent_path}/{self.id}"
 

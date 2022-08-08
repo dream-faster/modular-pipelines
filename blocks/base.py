@@ -6,6 +6,7 @@ import pandas as pd
 from blocks.iomanager import safe_loading, safe_saving
 from runner.store import Store
 from type import BaseConfig, DataType, Hierarchy
+from configs.constants import Const
 
 
 class Element(ABC):
@@ -42,7 +43,9 @@ class Block(Element):
             print("outputType must be set")
 
     def load(self) -> None:
-        model = safe_loading(self.parent_path, self.id)
+        model = safe_loading(
+            f"{Const.output_pipelines_path}/{self.parent_path}", self.id
+        )
         if model is not None:
             self.model = model
 
@@ -60,7 +63,9 @@ class Block(Element):
         raise NotImplementedError()
 
     def save(self) -> None:
-        safe_saving(self.model, self.parent_path, self.id)
+        safe_saving(
+            self.model, f"{Const.output_pipelines_path}/{self.parent_path}", self.id
+        )
 
     def save_remote(self) -> None:
         pass
