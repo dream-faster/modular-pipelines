@@ -4,12 +4,10 @@ import pandas as pd
 from datasets.arrow_dataset import Dataset
 
 from configs.constants import Const
-from type import PreprocessConfig, TestDataset, TrainDataset
+from type import PreprocessConfig, TestDataset, TrainDataset, DatasetSplit
 
 
-def transform_hatecheck_dataset(
-    dataset: Dataset, config: PreprocessConfig
-) -> Tuple[TrainDataset, TestDataset]:
+def transform_hatecheck_dataset(dataset: Dataset, config: PreprocessConfig) -> dict:
 
     df_train = pd.DataFrame()
     df_test = pd.DataFrame(dataset["test"][: config.test_size])
@@ -26,4 +24,4 @@ def transform_hatecheck_dataset(
         lambda x: 1 if x == "hateful" else 0
     )
 
-    return df_train, df_test
+    return {DatasetSplit.train.value: df_train, DatasetSplit.test.value: df_test}

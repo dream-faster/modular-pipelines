@@ -252,7 +252,7 @@ tweeteval_hate_speech_experiments = [
     Experiment(
         project_name="hate-speech-detection",
         run_name="tweeteval",
-        dataloader=data_merged_train,
+        dataloader=data_tweet_eval_hate_speech,
         dataset_category=DatasetSplit.train,
         pipeline=sklearn,
         preprocessing_config=preprocess_config,
@@ -322,10 +322,10 @@ def populate_experiments_with_pipelines(
             [
                 [
                     set_pipeline(deepcopy(experiment), pipeline)
-                    for experiment in cross_dataset_experiments
+                    for experiment in experiments
                 ]
             ]
-            for pipeline in pipelines_to_evaluate
+            for pipeline in pipelines
         ]
     )
 
