@@ -42,7 +42,12 @@ class Block(Element):
             print("outputType must be set")
 
     def load(self) -> None:
-        model = safe_loading(self.parent_path, self.id)
+        if hasattr(self, "experiment") and self.experiment.project_name is not None:
+            model = safe_loading(
+                f"{self.experiment.project_name}/{self.parent_path}", self.id
+            )
+        else:
+            model = safe_loading(self.parent_path, self.id)
         if model is not None:
             self.model = model
 
@@ -60,7 +65,14 @@ class Block(Element):
         raise NotImplementedError()
 
     def save(self) -> None:
-        safe_saving(self.model, self.parent_path, self.id)
+        if hasattr(self, "experiment") and self.experiment.project_name is not None:
+            safe_saving(
+                self.model,
+                f"{self.experiment.project_name}/{self.parent_path}",
+                self.id,
+            )
+        else:
+            safe_saving(self.model, self.parent_path, self.id)
 
     def save_remote(self) -> None:
         pass

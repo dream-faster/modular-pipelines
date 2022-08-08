@@ -7,7 +7,11 @@ from configs import Const
 from plugins import IntegrityChecker, PipelineAnalyser
 from plugins.base import Plugin
 from type import Experiment
-from utils.run_helpers import overwrite_model_configs_, append_parent_path_and_id_
+from utils.run_helpers import (
+    overwrite_model_configs_,
+    append_parent_path_and_id_,
+    add_experiment_config_to_blocks_,
+)
 from .evaluation import evaluate
 from .store import Store
 
@@ -29,6 +33,7 @@ class Runner:
 
         overwrite_model_configs_(experiment, self.pipeline)
         append_parent_path_and_id_(self.pipeline)
+        add_experiment_config_to_blocks_(self.pipeline, experiment)
 
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
         self.store = Store(data, labels, self.run_path)

@@ -110,3 +110,10 @@ def append_parent_path_and_id_(pipeline: Pipeline) -> None:
                     )
 
     append(entire_pipeline, Const.output_pipelines_path, "")
+
+
+def add_experiment_config_to_blocks_(
+    pipeline: Pipeline, experiment: Experiment
+) -> None:
+    for model in flatten(pipeline.children()):
+        model.experiment = experiment
