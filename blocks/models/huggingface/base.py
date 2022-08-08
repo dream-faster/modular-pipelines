@@ -115,10 +115,12 @@ class HuggingfaceModel(Model):
                 )
             ]
         else:
-            load_order = [(origin, path) for origin, path in paths.items()]
+            load_order = paths.items()
 
         for key, load_path in load_order:
-            print(f"    ┣━━┯ ℹ️ Loading from {PrintFormats.BOLD}{key}{PrintFormats.END}")
+            print(
+                f"    ┣━━┯ ℹ️ Loading from {PrintFormats.BOLD}{key}{PrintFormats.END}"
+            )
             model = safe_load_pipeline(load_path, config=self.config)
             if model:
                 self.model = model
