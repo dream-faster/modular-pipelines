@@ -252,7 +252,7 @@ tweeteval_hate_speech_experiments = [
     Experiment(
         project_name="hate-speech-detection",
         run_name="tweeteval",
-        dataloader=data_merged_train,
+        dataloader=data_tweet_eval_hate_speech,
         dataset_category=DatasetSplit.train,
         pipeline=sklearn,
         preprocessing_config=preprocess_config,

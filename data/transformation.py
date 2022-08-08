@@ -9,7 +9,7 @@ from type import PreprocessConfig, TestDataset, TrainDataset, DatasetSplit
 
 def transform_dataset(
     dataset: Dataset, config: PreprocessConfig
-) -> Tuple[TrainDataset, TestDataset]:
+) -> dict:
 
     df_train = pd.DataFrame(dataset[DatasetSplit.train.value][: config.train_size])
     if DatasetSplit.val.value in dataset:

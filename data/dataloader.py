@@ -15,6 +15,7 @@ from utils.flatten import flatten
 class DataLoader:
 
     preprocessing_configs: List[PreprocessConfig]
+    is_transformed: bool
 
     def __init__(
         self,
@@ -26,9 +27,12 @@ class DataLoader:
         self.transformation = transformation
         self.preprocessing_configs = [preprocessing_config]
         self.data = load_dataset(path, name)
+        self.is_transformed = False
 
     def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
-        self.data = self.transformation(self.data, self.preprocessing_configs[0])
+        if self.is_transformed == False:
+            self.data = self.transformation(self.data, self.preprocessing_configs[0])
+            self.is_transformed = True
         return self.data[category.value]
 
 
