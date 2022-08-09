@@ -15,7 +15,7 @@ device = 0 if torch.cuda.is_available() else -1
 
 
 def safe_load(
-    module: Union[str, PreTrainedModel],
+    module: str,
     config: HuggingfaceConfig,
 ) -> Tuple[Optional[PreTrainedModel], Optional[PreTrainedTokenizer]]:
     try:
@@ -44,16 +44,14 @@ def determine_load_order(
         hasattr(config, "preferred_load_origin")
         and config.preferred_load_origin is not None
     ):
-        load_order = [
+        return [
             (
                 config.preferred_load_origin,
                 paths[config.preferred_load_origin],
             )
         ]
     else:
-        load_order = paths.items()
-
-    return load_order
+        return paths.items()
 
 
 def get_paths(config: HuggingfaceConfig, parent_path: str, id: str) -> dict:

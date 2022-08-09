@@ -3,7 +3,7 @@ from typing import Callable, List, Optional, Union
 
 import pandas as pd
 
-from blocks.iomanager import safe_loading, safe_saving
+from blocks.io import pickle_loading, pickle_saving
 from runner.store import Store
 from type import BaseConfig, DataType, Hierarchy, RunContext
 from configs.constants import Const
@@ -45,7 +45,7 @@ class Block(Element):
             print("outputType must be set")
 
     def load(self) -> None:
-        model = safe_loading(
+        model = pickle_loading(
             f"{Const.output_pipelines_path}/{self.parent_path}", self.id
         )
         if model is not None:
@@ -65,7 +65,7 @@ class Block(Element):
         raise NotImplementedError()
 
     def save(self) -> None:
-        safe_saving(
+        pickle_saving(
             self.model, f"{Const.output_pipelines_path}/{self.parent_path}", self.id
         )
 

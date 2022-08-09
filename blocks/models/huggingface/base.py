@@ -118,6 +118,16 @@ class HuggingfaceModel(Model):
     def is_fitted(self) -> bool:
         return self.trainer is not None
 
+    def save(self) -> None:
+        if self.model is None or self.tokenizer is None:
+            print("Model is not available to save")
+        self.model.save_pretrained(
+            f"{Const.output_pipelines_path}/{self.parent_path}/{self.id}"
+        )
+        self.tokenizer.save_pretrained(
+            f"{Const.output_pipelines_path}/{self.parent_path}/{self.id}"
+        )
+
     def save_remote(self) -> None:
         if all([self.config.save_remote, self.config.save]) is True:
             self.trainer.push_to_hub()
