@@ -119,7 +119,7 @@ def add_experiment_config_to_blocks_(
 ) -> None:
     for model in flatten(pipeline.children()):
         model.run_context = RunContext(
-            project_name=copy(experiment.project_name),
-            run_name=copy(experiment.run_name),
-            train=copy(experiment.train),
+            project_name=experiment.project_name,
+            run_name=experiment.run_name,
+            train=experiment.train,
         )

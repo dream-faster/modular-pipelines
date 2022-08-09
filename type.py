@@ -135,7 +135,7 @@ class StagingConfig:
 class RunContext:
     project_name: str
     run_name: str
-    train: str
+    train: bool
 
 
 @dataclass

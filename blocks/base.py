@@ -5,7 +5,7 @@ import pandas as pd
 
 from blocks.iomanager import safe_loading, safe_saving
 from runner.store import Store
-from type import BaseConfig, DataType, Hierarchy
+from type import BaseConfig, DataType, Hierarchy, RunContext
 from configs.constants import Const
 
 
@@ -21,6 +21,7 @@ class Element(ABC):
 
 class Block(Element):
     config: BaseConfig
+    run_context: RunContext
 
     def __init__(
         self, id: Optional[str] = None, config: Optional[BaseConfig] = None

@@ -116,7 +116,7 @@ def determine_load_order(
 def get_paths(config: HuggingfaceConfig, parent_path: str, id: str) -> dict:
     return {
         LoadOrigin.local: f"{Const.output_pipelines_path}/{parent_path}/{id}",
-        LoadOrigin.remote: f"{config.user_name}/{id}"
+        LoadOrigin.remote: f"{config.user_name}/{parent_path}-{id}"
         if not hasattr(config, "remote_name_override")
         or config.remote_name_override is None
         else config.remote_name_override,
