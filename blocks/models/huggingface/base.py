@@ -92,9 +92,11 @@ class HuggingfaceModel(Model):
             self.trainer_callbacks if hasattr(self, "trainer_callbacks") else None,
         )
 
-        self.model = safe_load(
+        model, tokenizer = safe_load(
             self.run_context.train, trainer.model, self.config, trainer.tokenizer
         )
+        self.model = model
+        self.tokenizer = tokenizer
 
         self.trainer = trainer
         self.trained = True
