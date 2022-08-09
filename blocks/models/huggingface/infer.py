@@ -1,18 +1,30 @@
 from typing import Callable, List, Tuple
 
 import numpy as np
-import pandas as pd
-from datasets import Dataset
-
+from datasets.arrow_dataset import Dataset
+from transformers.tokenization_utils import PreTrainedTokenizer
+from transformers.modeling_utils import PreTrainedModel
+from transformers.pipelines import pipeline
 from configs.constants import Const
 from type import HuggingfaceConfig, PredsWithProbs
 
 
 def run_inference(
-    model: Callable, test_data: Dataset, config: HuggingfaceConfig
+    model: PreTrainedModel,
+    test_data: Dataset,
+    config: HuggingfaceConfig,
+    tokenizer: PreTrainedTokenizer,
+    device,
 ) -> List[PredsWithProbs]:
 
-    scores = model(test_data[Const.input_col], top_k=config.num_classes)
+    inference_pipeline = pipeline(
+        task=config.task_type.value,
+        model=model,
+        tokenizer=tokenizer,
+        device=device,
+    )
+
+    scores = inference_pipeline(test_data[Const.input_col], top_k=config.num_classes)
     probs = [convert_scores_dict_to_probs(score) for score in scores]
     predicitions = [np.argmax(prob) for prob in probs]
 

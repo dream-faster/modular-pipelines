@@ -1,31 +1,28 @@
 from typing import Callable, List, Optional
 
 import numpy as np
-from datasets import Dataset, load_metric
-from transformers import (
-    AutoModelForSequenceClassification,
-    AutoTokenizer,
-    DataCollatorWithPadding,
-    PreTrainedModel,
-    Trainer,
-    TrainingArguments,
-    PreTrainedTokenizerBase,
-)
+from datasets.arrow_dataset import Dataset
+from datasets import load_metric
+from transformers.trainer import Trainer
+from transformers.training_args import TrainingArguments
+from transformers.tokenization_utils import PreTrainedTokenizer
+from transformers.modeling_utils import PreTrainedModel
+from transformers.data.data_collator import DataCollatorWithPadding
 
 from configs.constants import Const
 from type import HuggingfaceConfig
 
 
 def compute_metrics(eval_pred):
-    load_accuracy = load_metric("accuracy")
-    load_f1 = load_metric("f1")
+    accuracy_metric = load_metric("accuracy")
+    f1_metric = load_metric("f1")
 
     logits, labels = eval_pred
     predictions = np.argmax(logits, axis=-1)
-    accuracy = load_accuracy.compute(predictions=predictions, references=labels)[
+    accuracy = accuracy_metric.compute(predictions=predictions, references=labels)[
         "accuracy"
     ]
-    f1 = load_f1.compute(predictions=predictions, references=labels, average="micro")[
+    f1 = f1_metric.compute(predictions=predictions, references=labels, average="micro")[
         "f1"
     ]
     return {"accuracy": accuracy, "f1": f1}
@@ -33,7 +30,7 @@ def compute_metrics(eval_pred):
 
 def run_training(
     model: PreTrainedModel,
-    tokenizer: PreTrainedTokenizerBase,
+    tokenizer: PreTrainedTokenizer,
     training_args: TrainingArguments,
     train_data: Dataset,
     val_data: Dataset,

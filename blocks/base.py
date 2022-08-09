@@ -22,6 +22,7 @@ class Element(ABC):
 class Block(Element):
     config: BaseConfig
     run_context: RunContext
+    parent_path: str
 
     def __init__(
         self, id: Optional[str] = None, config: Optional[BaseConfig] = None
