@@ -334,5 +334,5 @@ all_cross_dataset_experiments = populate_experiments_with_pipelines(
     cross_dataset_experiments, pipelines_to_evaluate
 )
 all_tweeteval_hate_speech_experiments = populate_experiments_with_pipelines(
-    tweeteval_hate_speech_experiments, [huggingface_baseline]
+    tweeteval_hate_speech_experiments, pipelines_to_evaluate
 )
