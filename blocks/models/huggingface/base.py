@@ -101,13 +101,18 @@ class HuggingfaceModel(Model):
         assert not (
             self.pretrained is True and self.is_fitted() is False
         ), "Huggingface model will train during inference as a default if model is not trained! This introduces data leakage."
+        assert (
+            self.model is not None and self.tokenizer is not None
+        ), "Model must be loaded."
 
         return run_inference(
-            self.model,
-            from_pandas(
+            model=self.model,
+            test_data=from_pandas(
                 pd.DataFrame({Const.input_col: dataset}), self.config.num_classes
             ),
-            self.config,
+            tokenizer=self.tokenizer,
+            config=self.config,
+            device=device,
         )
 
     def is_fitted(self) -> bool:
