@@ -21,3 +21,9 @@ class Augmenter(Block):
 
     def get_hierarchy(self) -> Hierarchy:
         return Hierarchy(name=self.id, obj=self)
+
+    def load(self) -> None:
+        pass
+
+    def save(self) -> None:
+        pass

@@ -67,6 +67,6 @@ if __name__ == "__main__":
     )
 
     run(
-        all_tweeteval_hate_speech_experiments,
+        all_cross_dataset_experiments,
         staging_config=dev_config,
     )

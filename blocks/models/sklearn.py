@@ -6,15 +6,18 @@ from sklearn.multiclass import OneVsRestClassifier
 
 from blocks.models.base import Model
 from type import DataType, Evaluators, PredsWithProbs, SKLearnConfig
+from ..io import PickleIO
 
 
-class SKLearnModel(Model):
+class SKLearnModel(Model, PickleIO):
 
     config: SKLearnConfig
     model: Optional[BaseEstimator] = None
 
     inputTypes = [DataType.Series, DataType.List, DataType.NpArray]
     outputType = DataType.PredictionsWithProbs
+
+    trained = False
 
     def __init__(
         self, id: str, config: SKLearnConfig, evaluators: Optional[Evaluators] = None
@@ -26,6 +29,7 @@ class SKLearnModel(Model):
     def fit(self, dataset: pd.Series, labels: Optional[pd.Series]) -> None:
         self.model = clone(self.config.classifier)
         self.model.fit(dataset, labels)
+        self.trained = True
 
     def predict(self, dataset: pd.Series) -> List[PredsWithProbs]:
         predictions = self.model.predict(dataset)
@@ -34,7 +38,7 @@ class SKLearnModel(Model):
         return list(zip(predictions, probabilities))
 
     def is_fitted(self) -> bool:
-        return self.model is not None
+        return self.trained
 
 
 def create_classifier(

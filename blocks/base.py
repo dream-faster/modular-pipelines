@@ -44,13 +44,6 @@ class Block(Element):
         if self.outputType is None:
             print("outputType must be set")
 
-    def load(self) -> None:
-        model = pickle_loading(
-            f"{Const.output_pipelines_path}/{self.parent_path}", self.id
-        )
-        if model is not None:
-            self.model = model
-
     def fit(
         self,
         dataset: pd.Series,
@@ -65,9 +58,10 @@ class Block(Element):
         raise NotImplementedError()
 
     def save(self) -> None:
-        pickle_saving(
-            self.model, f"{Const.output_pipelines_path}/{self.parent_path}", self.id
-        )
+        raise NotImplementedError()
+
+    def load(self) -> None:
+        raise NotImplementedError()
 
     def save_remote(self) -> None:
         pass
