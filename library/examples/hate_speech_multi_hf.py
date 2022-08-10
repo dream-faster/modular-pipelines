@@ -64,7 +64,6 @@ huggingface_training_args = TrainingArguments(
     evaluation_strategy="epoch",
     logging_steps=1,
     # eval_steps = 10
-    # push_to_hub=True, # This gets overwritten by ``save_remote`` in ``HuggingfaceConfig``
 )
 
 
@@ -78,7 +77,7 @@ huggingface_base_config = HuggingfaceConfig(
     save=True,
     num_classes=2,
     val_size=0.1,
-    force_fit=False,
+    frozen=False,
     training_args=huggingface_training_args,
 )
 
@@ -90,7 +89,7 @@ huggingface_distilroberta_config = deepcopy(huggingface_base_config)
 huggingface_distilroberta_config.pretrained_model = "distilroberta-base"
 
 sklearn_config = SKLearnConfig(
-    force_fit=False,
+    frozen=False,
     save=True,
     preferred_load_origin=LoadOrigin.local,
     classifier=VotingClassifier(

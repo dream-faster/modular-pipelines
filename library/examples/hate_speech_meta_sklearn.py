@@ -51,7 +51,7 @@ preprocess_config = PreprocessConfig(
 
 
 sklearn_config = SKLearnConfig(
-    force_fit=False,
+    frozen=False,
     save=True,
     preferred_load_origin=LoadOrigin.local,
     classifier=VotingClassifier(

@@ -30,7 +30,7 @@ class Block(Element):
         self.id = self.__class__.__name__ if id is None else id
         self.config = (
             BaseConfig(
-                force_fit=False,
+                frozen=False,
                 save=True,
                 save_remote=False,
                 preferred_load_origin=None,

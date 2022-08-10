@@ -14,7 +14,7 @@ def train_predict(
     dataset: pd.Series,
     store: Store,
 ):
-    if not model.is_fitted() or model.config.force_fit:
+    if not model.is_fitted() and model.config.frozen == False:
         print(f"    ┃  ├─── Block: {model.id}, {model.__class__.__name__}")
         model.fit(dataset, store.get_labels())
 
