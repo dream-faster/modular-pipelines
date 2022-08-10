@@ -49,7 +49,7 @@ def run(
             experiment,
             data={Const.input_col: data[Const.input_col]},
             labels=data[Const.label_col],
-            plugins=logger_plugins,
+            plugins=logger_plugins,  # + [OutputAnalyserPlugin()],
         )
         runner.run()
 
