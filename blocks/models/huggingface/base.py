@@ -25,6 +25,7 @@ device = 0 if torch.cuda.is_available() else -1
 def initalize_environment_(config: HuggingfaceConfig) -> None:
     os.environ["TOKENIZERS_PARALLELISM"] = "False"
     config.training_args.hub_token = get_env("HF_HUB_TOKEN")
+    config.training_args.push_to_hub = config.save_remote
 
 
 class HuggingfaceModel(Model):
