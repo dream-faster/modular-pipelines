@@ -3,17 +3,19 @@ from typing import List, Optional
 
 import pandas as pd
 import torch
+from transformers import PreTrainedTokenizer
 from blocks.models.base import Model
 from configs.constants import Const
-from datasets import ClassLabel, Dataset, Features, Value
+from datasets import ClassLabel, Features, Value
+from datasets.arrow_dataset import Dataset
 from sklearn.model_selection import train_test_split
-from transformers import enable_full_determinism
+from transformers.modeling_utils import PreTrainedModel
+from transformers.trainer_utils import enable_full_determinism
 from type import DataType, Evaluators, HuggingfaceConfig, LoadOrigin, PredsWithProbs
 from utils.env_interface import get_env
 
 from .infer import run_inference
 from .train import run_training
-import textwrap
 from utils.printing import PrintFormats
 from .loading import safe_load, determine_load_order, get_paths
 
@@ -23,9 +25,13 @@ device = 0 if torch.cuda.is_available() else -1
 def initalize_environment_(config: HuggingfaceConfig) -> None:
     os.environ["TOKENIZERS_PARALLELISM"] = "False"
     config.training_args.hub_token = get_env("HF_HUB_TOKEN")
+    config.training_args.push_to_hub = config.save_remote
 
 
 class HuggingfaceModel(Model):
+
+    model: Optional[PreTrainedModel]
+    tokenizer: Optional[PreTrainedTokenizer]
     config: HuggingfaceConfig
     inputTypes = [DataType.Series, DataType.List]
     outputType = DataType.PredictionsWithProbs
@@ -39,7 +45,7 @@ class HuggingfaceModel(Model):
         self.id = id
         self.config = config
         self.model = None
-        self.trained = False
+        self.trainer = None
         self.pretrained = False
         self.evaluators = evaluators
 
@@ -55,15 +61,11 @@ class HuggingfaceModel(Model):
             print(
                 f"    ┣━━┯ ℹ️ Loading from {PrintFormats.BOLD}{load_origin}{PrintFormats.END}"
             )
-            model, tokenizer = safe_load(
-                self.run_context.train, load_path, config=self.config
-            )
+            model, tokenizer = safe_load(load_path, config=self.config)
 
             if model:
                 self.model = model
-
-                if tokenizer:
-                    self.tokenizer = tokenizer
+                self.tokenizer = tokenizer
 
                 if load_origin == LoadOrigin.pretrained:
                     self.pretrained = True
@@ -75,7 +77,7 @@ class HuggingfaceModel(Model):
 
     def fit(self, dataset: List[str], labels: Optional[pd.Series]) -> None:
         assert (
-            self.model is not None
+            self.model is not None and self.tokenizer is not None
         ), "Either a trained model or a pretrained model must be loaded."
 
         train_dataset, val_dataset = train_test_split(
@@ -92,30 +94,40 @@ class HuggingfaceModel(Model):
             self.trainer_callbacks if hasattr(self, "trainer_callbacks") else None,
         )
 
-        model, tokenizer = safe_load(
-            self.run_context.train, trainer.model, self.config, trainer.tokenizer
-        )
-        self.model = model
-        self.tokenizer = tokenizer
-
+        self.model = trainer.model
+        self.tokenizer = trainer.tokenizer
         self.trainer = trainer
-        self.trained = True
 
     def predict(self, dataset: pd.Series) -> List[PredsWithProbs]:
         assert not (
-            self.pretrained is True and self.trained is False
+            self.pretrained is True and self.is_fitted() is False
         ), "Huggingface model will train during inference as a default if model is not trained! This introduces data leakage."
+        assert (
+            self.model is not None and self.tokenizer is not None
+        ), "Model must be loaded."
 
         return run_inference(
-            self.model,
-            from_pandas(
+            model=self.model,
+            test_data=from_pandas(
                 pd.DataFrame({Const.input_col: dataset}), self.config.num_classes
             ),
-            self.config,
+            tokenizer=self.tokenizer,
+            config=self.config,
+            device=device,
         )
 
     def is_fitted(self) -> bool:
-        return self.trained
+        return self.trainer is not None
+
+    def save(self) -> None:
+        if self.model is None or self.tokenizer is None:
+            print("Model is not available to save")
+        self.model.save_pretrained(
+            f"{Const.output_pipelines_path}/{self.parent_path}/{self.id}"
+        )
+        self.tokenizer.save_pretrained(
+            f"{Const.output_pipelines_path}/{self.parent_path}/{self.id}"
+        )
 
     def save_remote(self) -> None:
         if all([self.config.save_remote, self.config.save]) is True:

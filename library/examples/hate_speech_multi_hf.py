@@ -57,7 +57,6 @@ huggingface_training_args = TrainingArguments(
     num_train_epochs=0.01,
     weight_decay=0.01,
     save_strategy="epoch",
-    push_to_hub=True,
     log_level="critical",
     report_to="none",
     optim="adamw_torch",
@@ -65,6 +64,7 @@ huggingface_training_args = TrainingArguments(
     evaluation_strategy="epoch",
     logging_steps=1,
     # eval_steps = 10
+    # push_to_hub=True, # This gets overwritten by ``save_remote`` in ``HuggingfaceConfig``
 )
 
 

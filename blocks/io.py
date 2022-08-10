@@ -9,26 +9,25 @@ from utils.printing import PrintFormats
 import textwrap
 
 
-def safe_loading(parent_path: str, id: str) -> "Model":
+def pickle_loading(parent_path: str, id: str) -> "Model":
     path = f"{parent_path}/{id}.pkl"
 
-    if os.path.exists(path):
-
-        print(
-            textwrap.fill(
-                f"Loading model {parent_path}/{PrintFormats.BOLD}{id}{PrintFormats.END}",
-                initial_indent="    ┣━━━ ",
-                subsequent_indent="    ┃        ",
-                width=100,
-            )
-        )
-        with open(path, "rb") as f:
-            return joblib.load(f)
-    else:
+    if not os.path.exists(path):
         return None
 
+    print(
+        textwrap.fill(
+            f"Loading model {parent_path}/{PrintFormats.BOLD}{id}{PrintFormats.END}",
+            initial_indent="    ┣━━━ ",
+            subsequent_indent="    ┃        ",
+            width=100,
+        )
+    )
+    with open(path, "rb") as f:
+        return joblib.load(f)
 
-def safe_saving(
+
+def pickle_saving(
     object: Union["Model", "Pipeline", None], parent_path: str, id: str
 ) -> None:
     path = f"{parent_path}"
