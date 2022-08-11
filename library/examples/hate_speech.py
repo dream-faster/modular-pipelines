@@ -67,7 +67,7 @@ huggingface_config = HuggingfaceConfig(
     save=True,
     num_classes=2,
     val_size=0.1,
-    force_fit=False,
+    frozen=False,
     remote_name_override=None,
     training_args=TrainingArguments(
         output_dir="",
@@ -77,7 +77,6 @@ huggingface_config = HuggingfaceConfig(
         num_train_epochs=2,
         weight_decay=0.01,
         save_strategy="epoch",
-        push_to_hub=False,
         log_level="critical",
         report_to="none",
         optim="adamw_torch",
@@ -89,7 +88,7 @@ huggingface_config = HuggingfaceConfig(
 )
 
 sklearn_config = SKLearnConfig(
-    force_fit=False,
+    frozen=False,
     save=True,
     preferred_load_origin=None,
     classifier=VotingClassifier(
@@ -111,7 +110,7 @@ sklearn_config = SKLearnConfig(
 
 sklearn_config_simple = SKLearnConfig(
     preferred_load_origin=None,
-    force_fit=False,
+    frozen=False,
     save=True,
     classifier=MultinomialNB(),
     one_vs_rest=False,
@@ -274,7 +273,7 @@ tweeteval_hate_speech_experiments = [
 
 cross_dataset_experiments = [
     Experiment(
-        project_name="hate-speech-detection-merged",
+        project_name="hate-speech-detection-cross-val",
         run_name="merged_dataset",
         dataloader=data_merged_train,
         dataset_category=DatasetSplit.train,

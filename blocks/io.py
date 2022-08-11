@@ -9,6 +9,20 @@ from utils.printing import PrintFormats
 import textwrap
 
 
+class PickleIO:
+    def save(self) -> None:
+        pickle_saving(
+            self.model, f"{Const.output_pipelines_path}/{self.parent_path}", self.id
+        )
+
+    def load(self) -> None:
+        model = pickle_loading(
+            f"{Const.output_pipelines_path}/{self.parent_path}", self.id
+        )
+        if model is not None:
+            self.model = model
+
+
 def pickle_loading(parent_path: str, id: str) -> "Model":
     path = f"{parent_path}/{id}.pkl"
 

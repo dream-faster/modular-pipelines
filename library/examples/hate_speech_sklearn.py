@@ -16,7 +16,7 @@ from type import LoadOrigin, SKLearnConfig
 from utils.flatten import remove_none
 
 sklearn_config = SKLearnConfig(
-    force_fit=False,
+    frozen=False,
     save=True,
     preferred_load_origin=LoadOrigin.local,
     classifier=VotingClassifier(

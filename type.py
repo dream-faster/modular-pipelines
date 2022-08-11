@@ -45,7 +45,7 @@ class HFTaskTypes(Enum):
 
 @dataclass
 class BaseConfig:
-    force_fit: bool
+    frozen: bool
     save: bool
     save_remote: bool
     preferred_load_origin: Optional[LoadOrigin]

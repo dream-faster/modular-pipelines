@@ -49,7 +49,7 @@ def run(
             experiment,
             data={Const.input_col: data[Const.input_col]},
             labels=data[Const.label_col],
-            plugins=logger_plugins + [OutputAnalyserPlugin()],
+            plugins=logger_plugins,  # + [OutputAnalyserPlugin()],
         )
         runner.run()
 
@@ -67,6 +67,6 @@ if __name__ == "__main__":
     )
 
     run(
-        all_tweeteval_hate_speech_experiments,
+        all_cross_dataset_experiments,
         staging_config=dev_config,
     )

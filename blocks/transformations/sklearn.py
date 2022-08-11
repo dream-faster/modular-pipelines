@@ -7,13 +7,15 @@ from sklearn.base import BaseEstimator
 from type import DataType
 
 from .base import Transformation
+from ..io import PickleIO
 
 
-class SKLearnTransformation(Transformation):
+class SKLearnTransformation(PickleIO, Transformation):
 
     model: BaseEstimator
     inputTypes = [DataType.NpArray, DataType.Series, DataType.List]
     outputType = DataType.NpArray
+    trained = False
 
     def __init__(self, sklearn_transformation: BaseEstimator):
         super().__init__()
@@ -26,15 +28,10 @@ class SKLearnTransformation(Transformation):
         labels: Optional[Union[List, np.ndarray]],
     ) -> None:
         self.model.fit(dataset)
+        self.trained = True
 
     def predict(self, dataset: Union[List, np.ndarray]) -> np.ndarray:
         return self.model.transform(dataset)
 
     def is_fitted(self) -> bool:
-        if self.model is None:
-            return False
-        # source: https://stackoverflow.com/a/63839394
-        attrs = [
-            v for v in vars(self.model) if v.endswith("_") and not v.startswith("__")
-        ]
-        return len(attrs) != 0
+        return self.trained
