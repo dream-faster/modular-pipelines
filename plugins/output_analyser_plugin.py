@@ -82,9 +82,14 @@ class OutputAnalyserPlugin(Plugin):
 
         random_indecies = random.sample(range(len(input)), self.num_examples)
         for i in random_indecies:
+            sliced_input = (
+                input[i][:50]
+                if input[i] is str
+                else f"Not a string type: {type(input[i])}."
+            )
             print(
                 spaceing_example.format(
-                    input[i][:50] + " " * max(0, (50 - len(input[i][:50]))),
+                    sliced_input + " " * max(0, (50 - len(sliced_input))),
                     predictions[i],
                     original_labels[i],
                     f"{round(max(probabilities[i]) * 100, 2)}%",
