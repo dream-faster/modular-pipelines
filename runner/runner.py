@@ -16,7 +16,8 @@ from .evaluation import evaluate
 from .store import Store
 
 
-obligatory_plugins = [PipelineAnalyser(), IntegrityChecker()]
+obligatory_plugins_begin = []
+obligatory_plugins_end = [PipelineAnalyser(), IntegrityChecker()]
 
 
 class Runner:
@@ -37,7 +38,7 @@ class Runner:
 
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
         self.store = Store(data, labels, self.run_path)
-        self.plugins = obligatory_plugins + plugins
+        self.plugins = obligatory_plugins_begin + plugins + obligatory_plugins_end
 
     def run(self):
         for plugin in self.plugins:
