@@ -23,6 +23,12 @@ class AllZerosModel(Model):
     def is_fitted(self) -> bool:
         return True
 
+    def save(self) -> None:
+        pass
+
+    def load(self) -> None:
+        pass
+
 
 class AllOnesModel(Model):
 
@@ -39,6 +45,12 @@ class AllOnesModel(Model):
 
     def is_fitted(self) -> bool:
         return True
+
+    def save(self) -> None:
+        pass
+
+    def load(self) -> None:
+        pass
 
 
 class RandomModel(Model):
@@ -59,3 +71,9 @@ class RandomModel(Model):
 
     def is_fitted(self) -> bool:
         return True
+
+    def save(self) -> None:
+        pass
+
+    def load(self) -> None:
+        pass
