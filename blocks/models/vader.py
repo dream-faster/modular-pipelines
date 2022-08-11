@@ -35,6 +35,9 @@ class VaderModel(Model):
     def is_fitted(self) -> bool:
         return True
 
+    def save(self) -> None:
+        pass
+
 
 def polarity_scores_to_probabilities(scores: dict) -> np.ndarray:
     score = scores["compound"] * 0.5 + 0.5
