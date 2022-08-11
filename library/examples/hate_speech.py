@@ -273,7 +273,7 @@ tweeteval_hate_speech_experiments = [
 
 cross_dataset_experiments = [
     Experiment(
-        project_name="hate-speech-detection-merged",
+        project_name="hate-speech-detection-cross-val",
         run_name="merged_dataset",
         dataloader=data_merged_train,
         dataset_category=DatasetSplit.train,
