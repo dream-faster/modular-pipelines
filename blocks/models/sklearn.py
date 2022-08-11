@@ -9,7 +9,7 @@ from type import DataType, Evaluators, PredsWithProbs, SKLearnConfig
 from ..io import PickleIO
 
 
-class SKLearnModel(Model, PickleIO):
+class SKLearnModel(PickleIO, Model):
 
     config: SKLearnConfig
     model: Optional[BaseEstimator] = None

@@ -10,7 +10,7 @@ from .base import Transformation
 from ..io import PickleIO
 
 
-class SKLearnTransformation(Transformation, PickleIO):
+class SKLearnTransformation(PickleIO, Transformation):
 
     model: BaseEstimator
     inputTypes = [DataType.NpArray, DataType.Series, DataType.List]
