@@ -17,9 +17,9 @@ class Concat(Element):
         self.blocks = blocks
         self.id = id
 
-    def deplate(self, store: Store, plugins: List["Plugin"]) -> pd.DataFrame:
+    def deplate(self, store: Store, plugins: List["Plugin"], train: bool) -> pd.Series:
         collected = self.transform(
-            [process_block(block, store, plugins) for block in self.blocks]
+            [process_block(block, store, plugins, train) for block in self.blocks]
         )
 
         return collected
