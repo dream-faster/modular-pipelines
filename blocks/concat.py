@@ -53,3 +53,11 @@ class VectorConcat(Concat):
 
     def transform(self, data: List[List[int]]) -> pd.Series:
         return list(zip(*data))
+
+
+class ClassificationOutputConcat(Concat):
+    inputTypes = [DataType.List, DataType.List]
+    outputType = DataType.List
+
+    def transform(self, sources: List[List]) -> pd.Series:
+        return list(zip(*[data[1] for data in sources]))

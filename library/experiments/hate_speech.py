@@ -2,7 +2,7 @@ from copy import deepcopy
 from typing import List
 
 from blocks.adaptors import ListOfListsToNumpy
-from blocks.concat import DataSource
+from blocks.concat import ClassificationOutputConcat, DataSource
 from blocks.ensemble import Ensemble
 from blocks.models.random import RandomModel
 from blocks.models.sklearn import SKLearnModel
@@ -85,6 +85,14 @@ vader = Pipeline("vader", input_data, [VaderModel("vader")])
 ensemble_all = Ensemble(
     "ensemble_all-all",
     [sklearn, huggingface_baseline, text_statistics_pipeline, vader],
+)
+
+meta_model_all = Pipeline(
+    "meta_model_all",
+    ClassificationOutputConcat(
+        "all_models", [sklearn, huggingface_baseline, text_statistics_pipeline, vader]
+    ),
+    [SKLearnModel("meta_model", sklearn_config)],
 )
 
 ensemble_sklearn_vader = Ensemble("ensemble_sklearn_vader", [sklearn, vader])
@@ -174,6 +182,7 @@ pipelines_to_evaluate = [
     ensemble_hf_vader,
     ensemble_sklearn_hf,
     ensemble_sklearn_vader,
+    meta_model_all,
 ]
 
 
