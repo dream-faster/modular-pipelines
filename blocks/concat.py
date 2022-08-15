@@ -48,7 +48,7 @@ class StrConcat(Concat):
 
 
 class VectorConcat(Concat):
-    inputTypes = [DataType.List, DataType.List]
+    inputTypes = DataType.List
     outputType = DataType.List
 
     def transform(self, data: List[List[int]]) -> pd.Series:
@@ -56,7 +56,7 @@ class VectorConcat(Concat):
 
 
 class ClassificationOutputConcat(Concat):
-    inputTypes = [DataType.List, DataType.List]
+    inputTypes = DataType.PredictionsWithProbs
     outputType = DataType.List
 
     def transform(self, sources: List[List]) -> pd.Series:
