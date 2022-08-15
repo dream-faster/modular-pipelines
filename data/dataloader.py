@@ -4,8 +4,7 @@ from type import (
     TrainDataset,
     TestDataset,
 )
-from typing import List, Callable, Tuple, Optional, Union
-from .transformation import transform_dataset
+from typing import List, Callable, Optional, Union
 from datasets.load import load_dataset
 
 from .merge import merge_datasets
@@ -37,10 +36,10 @@ class DataLoader:
 
 
 class DataLoaderMerger(DataLoader):
-    def __init__(self, dataloaders=List[DataLoader]):
+    def __init__(self, dataloaders: List[DataLoader]):
         self.dataloaders = dataloaders
         self.preprocessing_configs = flatten(
-            [dataloader.preprocessing_configs for dataloader in dataloaders]
+            [dataloader.preprocessing_configs for dataloader in self.dataloaders]
         )
 
     def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:

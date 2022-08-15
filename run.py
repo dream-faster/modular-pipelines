@@ -37,7 +37,9 @@ def run(
                     ),
                     dict(
                         run_config=experiment.get_configs(),
-                        preprocess_config=experiment.preprocessing_config.get_configs(),
+                        preprocess_config=experiment.dataloader.preprocessing_configs[
+                            0
+                        ].get_configs(),
                         pipeline_configs=experiment.pipeline.get_configs(),
                     ),
                 )

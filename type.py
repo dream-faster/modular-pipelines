@@ -108,7 +108,6 @@ class Experiment:
     dataloader: "DataLoader"
     pipeline: "Pipeline"
     metrics: Evaluators
-    preprocessing_config: PreprocessConfig
     force_fit: Optional[bool] = None  # If set to True will make all models train
 
     def get_configs(self):
