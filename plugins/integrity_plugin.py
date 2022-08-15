@@ -3,7 +3,6 @@ from typing import List
 from blocks.base import Block
 from blocks.pipeline import Pipeline
 from type import DataType, Hierarchy
-from utils.flatten import flatten
 
 from .base import Plugin
 

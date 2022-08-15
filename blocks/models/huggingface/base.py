@@ -49,8 +49,6 @@ class HuggingfaceModel(Model):
         self.pretrained = False
         self.evaluators = evaluators
 
-        initalize_environment_(self.config)
-
     def load(self) -> None:
         enable_full_determinism(Const.seed)
 
@@ -74,6 +72,7 @@ class HuggingfaceModel(Model):
         self.config.training_args.output_dir = (
             f"{Const.output_pipelines_path}/{self.parent_path}/{self.id}"
         )
+        initalize_environment_(self.config)
 
     def fit(self, dataset: List[str], labels: Optional[pd.Series]) -> None:
         assert (
