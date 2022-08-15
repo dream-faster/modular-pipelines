@@ -18,6 +18,8 @@ from blocks.models.sklearn import SKLearnModel
 from blocks.adaptors.classification_output import ClassificationOutputAdaptor
 
 from ..dataset.tweet_eval import get_tweet_eval_dataloader
+from ..models.sklearn_voting import sklearn_config
+
 
 """ Models """
 

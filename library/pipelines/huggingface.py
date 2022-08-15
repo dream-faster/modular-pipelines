@@ -1,11 +1,17 @@
-def create_nlp_huggingface_pipeline(autocorrect: bool) -> Pipeline:
+from blocks.pipeline import Pipeline
+from blocks.base import DataSource
+from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
+from blocks.models.huggingface import HuggingfaceModel
+from utils.flatten import remove_none
+from type import HuggingfaceConfig
+
+def create_nlp_huggingface_pipeline(input: DataSource, config: HuggingfaceConfig, autocorrect: bool) -> Pipeline:
     return Pipeline(
         "hf_autocorrect" if autocorrect else "hf",
-        input_data,
+        input,
         remove_none(
             [
                 SpellAutocorrectAugmenter(fast=True) if autocorrect else None,
-                HuggingfaceModel("hf-model", huggingface_config),
-            ]
-        ),
+                HuggingfaceModel("hf-model", config),
+            ])
     )

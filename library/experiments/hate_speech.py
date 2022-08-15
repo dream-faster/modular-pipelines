@@ -2,16 +2,13 @@ from copy import deepcopy
 from typing import List
 
 from blocks.adaptors import ListOfListsToNumpy
-from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
 from blocks.concat import DataSource
 from blocks.ensemble import Ensemble
-from blocks.models.huggingface import HuggingfaceModel
 from blocks.models.random import RandomModel
 from blocks.models.sklearn import SKLearnModel
 from blocks.models.vader import VaderModel
 from blocks.pipeline import Pipeline
 from blocks.transformations import (
-    Lemmatizer,
     SKLearnTransformation,
     SpacyTokenizer,
     TextStatisticTransformation,
@@ -19,13 +16,12 @@ from blocks.transformations import (
 from data.dataloader import DataLoaderMerger
 from library.evaluation.classification import classification_metrics
 from library.evaluation.calibration import calibration_metrics
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import MinMaxScaler
 from type import (
     Experiment,
     DatasetSplit,
 )
-from utils.flatten import remove_none, flatten
+from utils.flatten import flatten
 from ..dataset.hatecheck import get_hatecheck_dataloader
 from ..dataset.hatespeech_offensive import get_hate_speech_offensive_dataloader
 from ..dataset.tweets_hate_speech_detection import (
@@ -35,8 +31,10 @@ from ..dataset.tweet_eval import get_tweet_eval_dataloader
 
 from ..models.sklearn_voting import sklearn_config
 from ..models.sklearn_simple import sklearn_config_simple
+from ..models.huggingface import huggingface_config
 from ..pipelines.huggingface import create_nlp_huggingface_pipeline
 from ..pipelines.sklearn_nlp import create_nlp_sklearn_pipeline
+
 
 ### Models
 
@@ -59,7 +57,9 @@ text_statistics_pipeline = Pipeline(
     ],
 )
 
-huggingface_baseline = create_nlp_huggingface_pipeline(autocorrect=False)
+huggingface_baseline = create_nlp_huggingface_pipeline(
+    input=input_data, config=huggingface_config, autocorrect=False
+)
 sklearn = create_nlp_sklearn_pipeline(
     title="sklearn",
     input_data=input_data,
