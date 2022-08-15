@@ -178,6 +178,7 @@ pipelines_to_evaluate = [
     random,
     vader,
     huggingface_baseline,
+    text_statistics_pipeline,
     ensemble_all,
     ensemble_hf_vader,
     ensemble_sklearn_hf,
