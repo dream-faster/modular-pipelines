@@ -57,7 +57,7 @@ class VectorConcat(Concat):
 
 class ClassificationOutputConcat(Concat):
     inputTypes = DataType.PredictionsWithProbs
-    outputType = DataType.List
+    outputType = DataType.NpArray
 
-    def transform(self, sources: List[List]) -> List:
-        return list(zip(*[data[1] for data in sources]))
+    def transform(self, sources: List[List]) -> np.ndarray:
+        return np.hstack([[item[1] for item in data] for data in sources])
