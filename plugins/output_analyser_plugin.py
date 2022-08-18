@@ -12,12 +12,16 @@ from collections import Counter
 import numpy as np
 import random
 from utils.printing import PrintFormats
-from typing import Any, Tuple
+from typing import Any, Tuple, Callable
 
 
 class OutputAnalyserPlugin(Plugin):
     def __init__(self, num_examples: int = 10):
         self.num_examples = num_examples
+        self.analysis_functions: List[Callable] = [
+            self.print_output_statistics,
+            self.print_example_outputs,
+        ]
 
     def on_predict_end(self, store: Store, last_output: Any) -> Tuple[Store, Any]:
         random_indecies = random.sample(range(len(last_output)), self.num_examples)
@@ -47,12 +51,22 @@ class OutputAnalyserPlugin(Plugin):
         predictions = [output[0] for output in final_output]
         probabilities = [output[1] for output in final_output]
 
+        for analysis_function in self.analysis_functions:
+            print("    ┃")
+            analysis_function(
+                input, original_labels, final_output, predictions, probabilities
+            )
+            print("    ┃")
+
+        return pipeline, store
+
+    def print_output_statistics(
+        self, input, original_labels, final_output, predictions, probabilities
+    ) -> None:
         final_output_freq = Counter(predictions)
         original_labels_freq = Counter(original_labels)
 
         spaceing = "    ┃    {:<16} {:<16} {:<16}"
-
-        print("    ┃")
         print(f"{PrintFormats.BOLD}    ┃ Frequencies{PrintFormats.END}")
         print(spaceing.format("category", "final_output", "original_labels"))
         print(spaceing.format("-" * 16, "-" * 16, "-" * 16))
@@ -68,8 +82,17 @@ class OutputAnalyserPlugin(Plugin):
                 )
             )
 
+    def print_example_outputs(
+        self,
+        input,
+        original_labels,
+        final_output,
+        predictions,
+        probabilities,
+        num_examples: int,
+    ) -> None:
         spaceing_example = "    ┃    {:<50} {:>16} {:>16} {:>16}"
-        print("    ┃")
+
         print(
             f"{PrintFormats.BOLD}    ┃ Sampeling {self.num_examples} Examples{PrintFormats.END}"
         )
@@ -95,6 +118,3 @@ class OutputAnalyserPlugin(Plugin):
                     f"{round(max(probabilities[i]) * 100, 2)}%",
                 )
             )
-        print("    ┃")
-
-        return pipeline, store
