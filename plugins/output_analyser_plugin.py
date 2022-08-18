@@ -143,16 +143,22 @@ class OutputAnalyserPlugin(Plugin):
     ) -> None:
         print(f"{PrintFormats.BOLD}    ┃ Correlation Matrix {PrintFormats.END}")
 
-        converted_store = {
-            k: data_to_preds_probs(v)[0] if type(v) in [list, tuple] else v
-            for k, v in store.data.items()
-        }
+        outputs = []
+        for block_name, output in store.data.items():
+            if isinstance(output, (pd.Series, np.ndarray)):
+                output = output.tolist()
 
-        filtered_store = {
-            k: pd.Series(v)
-            for k, v in converted_store.items()
-            if type(v[0]) in [int, float]
-        }
+            if isinstance(output, Iterable):
+                if (
+                    isinstance(output[0], Iterable)
+                    and isinstance(output[0], str) is False
+                ):
+                    predictions, probabilities = data_to_preds_probs(output)
+                    output = predictions
+
+            outputs.append((block_name, output))
+
+        filtered_store = {k: v for k, v in outputs if not isinstance(v[0], str)}
 
         multi_line_print(
             pd.DataFrame.from_dict(filtered_store).corr().to_string(),
@@ -163,6 +169,7 @@ class OutputAnalyserPlugin(Plugin):
 def data_to_preds_probs(
     final_output: List[Union[List, Tuple]]
 ) -> Tuple[Union[int, float]]:
+
     predictions = [output[0] for output in final_output]
     probabilities = [output[1] for output in final_output]
 
