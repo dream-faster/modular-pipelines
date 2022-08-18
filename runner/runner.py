@@ -44,6 +44,7 @@ class Runner:
     def run(self):
         print_box(
             f"Running Experiment in {PrintFormats.BOLD}{'TRAINING' if self.experiment.train else 'INFERENCE'}{PrintFormats.END} mode"
+            + f"\n{PrintFormats.CYAN}{self.experiment.project_name} ~ {self.experiment.run_name} {PrintFormats.END}"
         )
 
         for plugin in self.plugins:

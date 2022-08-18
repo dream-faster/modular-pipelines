@@ -1,5 +1,6 @@
 from pprint import pformat
 import textwrap
+import re
 
 
 def pprint_indent(text, indent=" " * 4 + "┃ ") -> None:
@@ -29,6 +30,11 @@ class DocumentWrapper(textwrap.TextWrapper):
             for line in textwrap.TextWrapper.wrap(self, para)
         ]
         return lines
+
+
+def remove_ansi_escape(s: str) -> str:
+    ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+    return ansi_escape.sub("", s)
 
 
 def multi_line_print(text: str, level: int = 0) -> None:
@@ -63,19 +69,26 @@ def print_box(
         bottom_left = "┗"
         bottom_right = "┛"
         horizontal = "━"
-
-    whitespace_around_text = int(max(0, (width - len(text)) / 2))
+        t_down = "┳"
 
     print(top_left + horizontal * width + top_right)
     for _ in range(height):
         print(vertical + " " * width + vertical)
-    print(
-        vertical
-        + " " * whitespace_around_text
-        + text
-        + " " * whitespace_around_text
-        + vertical
-    )
+
+    for sub_string in text.split("\n"):
+        text_length = len(remove_ansi_escape(sub_string))
+        whitespace_around_text = int(max(0, (width - text_length) / 2))
+
+        print(
+            vertical
+            + " " * whitespace_around_text
+            + sub_string
+            + " " * max(0, (width - whitespace_around_text - text_length))
+            + vertical
+        )
+
     for _ in range(height):
         print(vertical + " " * width + vertical)
-    print(bottom_left + horizontal * width + bottom_right)
+    print(
+        bottom_left + horizontal * 3 + t_down + horizontal * (width - 4) + bottom_right
+    )
