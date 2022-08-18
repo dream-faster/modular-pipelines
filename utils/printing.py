@@ -20,6 +20,17 @@ class PrintFormats:
     END = "\033[0m"
 
 
+class DocumentWrapper(textwrap.TextWrapper):
+    def wrap(self, text):
+        split_text = text.split("\n")
+        lines = [
+            line
+            for para in split_text
+            for line in textwrap.TextWrapper.wrap(self, para)
+        ]
+        return lines
+
+
 def multi_line_print(text: str, level: int = 0) -> None:
 
     base_indent = " " * 4
@@ -30,12 +41,13 @@ def multi_line_print(text: str, level: int = 0) -> None:
     if level == 1:
         initial_indent = base_indent + "┃  ├── "
         subsequent_indent = base_indent + "┃  │   "
+    if level == 2:
+        initial_indent = base_indent + "┃    "
+        subsequent_indent = base_indent + "┃    "
 
-    print(
-        textwrap.fill(
-            text,
-            initial_indent=initial_indent,
-            subsequent_indent=subsequent_indent,
-            width=100,
-        )
+    d = DocumentWrapper(
+        width=100,
+        initial_indent=initial_indent,
+        subsequent_indent=subsequent_indent,
     )
+    print(d.fill(text))

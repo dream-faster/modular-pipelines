@@ -50,7 +50,7 @@ def run(
             experiment,
             data={Const.input_col: data[Const.input_col]},
             labels=data[Const.label_col],
-            plugins=logger_plugins,  # + [OutputAnalyserPlugin()],
+            plugins=logger_plugins + [OutputAnalyserPlugin()],
         )
         runner.run()
 
@@ -64,7 +64,7 @@ if __name__ == "__main__":
         name=StagingNames.dev,
         save_remote=False,
         log_remote=False,
-        limit_dataset_to=100,
+        limit_dataset_to=1000,
     )
 
     run(

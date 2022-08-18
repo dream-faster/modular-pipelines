@@ -172,18 +172,18 @@ cross_dataset_experiments = [
 ]
 
 pipelines_to_evaluate = [
-    sklearn,
-    sklearn_autocorrect,
-    sklearn_simple,
+    # sklearn,
+    # sklearn_autocorrect,
+    # sklearn_simple,
     random,
-    vader,
-    huggingface_baseline,
-    text_statistics_pipeline,
-    ensemble_all,
-    ensemble_hf_vader,
-    ensemble_sklearn_hf,
-    ensemble_sklearn_vader,
-    meta_model_all,
+    # vader,
+    # huggingface_baseline,
+    # text_statistics_pipeline,
+    # ensemble_all,
+    # ensemble_hf_vader,
+    # ensemble_sklearn_hf,
+    # ensemble_sklearn_vader,
+    # meta_model_all,
 ]
 
 
