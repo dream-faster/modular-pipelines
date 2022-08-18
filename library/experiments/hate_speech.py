@@ -64,7 +64,22 @@ huggingface_baseline = create_nlp_huggingface_pipeline(
 
 huggingface_hatebert = create_nlp_huggingface_pipeline(
     input=input_data,
-    config=clone_and_set(huggingface_config, "pretrained_model", "GroNLP/hateBERT"),
+    config=clone_and_set(
+        huggingface_config,
+        {"id": "huggingface_hatebert", "pretrained_model": "GroNLP/hateBERT"},
+    ),
+    autocorrect=False,
+)
+
+huggingface_bertweet = create_nlp_huggingface_pipeline(
+    input=input_data,
+    config=clone_and_set(
+        huggingface_config,
+        {
+            "id": "huggingface_bertweet",
+            "pretrained_model": "pysentimiento/bertweet-hate-speech",
+        },
+    ),
     autocorrect=False,
 )
 
@@ -186,7 +201,8 @@ pipelines_to_evaluate = [
     random,
     vader,
     huggingface_baseline,
-    huggingface_hatebert
+    huggingface_hatebert,
+    huggingface_bertweet,
     text_statistics_pipeline,
     ensemble_all,
     ensemble_hf_vader,

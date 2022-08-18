@@ -3,7 +3,8 @@ from copy import deepcopy
 
 T = TypeVar("T")
 
-def clone_and_set(obj: T, attribute_name: str, value: Any) -> T:
+def clone_and_set(obj: T, dicticionary: dict) -> T:
     new_obj = deepcopy(obj)
-    setattr(new_obj, attribute_name, value)
+    for key, value in dicticionary:
+        setattr(new_obj, key, value)
     return new_obj
