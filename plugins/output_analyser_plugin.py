@@ -155,7 +155,7 @@ class OutputAnalyserPlugin(Plugin):
         }
 
         multi_line_print(
-            plot_corr(pd.DataFrame.from_dict(filtered_store)),
+            pd.DataFrame.from_dict(filtered_store).corr().to_string(),
             level=2,
         )
 
@@ -167,16 +167,3 @@ def data_to_preds_probs(
     probabilities = [output[1] for output in final_output]
 
     return predictions, probabilities
-
-
-def plot_corr(df, size=10):
-    """Function plots a graphical correlation matrix for each pair of columns in the dataframe.
-
-    Input:
-        df: pandas DataFrame
-        size: vertical and horizontal size of the plot
-    """
-
-    corr = df.corr()
-
-    return corr.to_string()

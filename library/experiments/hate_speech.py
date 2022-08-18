@@ -175,14 +175,14 @@ pipelines_to_evaluate = [
     # sklearn,
     # sklearn_autocorrect,
     # sklearn_simple,
-    random,
+    # random,
     # vader,
     # huggingface_baseline,
     # text_statistics_pipeline,
     # ensemble_all,
     # ensemble_hf_vader,
     # ensemble_sklearn_hf,
-    # ensemble_sklearn_vader,
+    ensemble_sklearn_vader,
     # meta_model_all,
 ]
 
