@@ -17,9 +17,9 @@ class Concat(Element):
         self.blocks = blocks
         self.id = id
 
-    def deplate(self, store: Store, plugins: List["Plugin"]) -> pd.DataFrame:
+    def deplate(self, store: Store, plugins: List["Plugin"], train: bool) -> pd.Series:
         collected = self.transform(
-            [process_block(block, store, plugins) for block in self.blocks]
+            [process_block(block, store, plugins, train) for block in self.blocks]
         )
 
         return collected
@@ -48,8 +48,16 @@ class StrConcat(Concat):
 
 
 class VectorConcat(Concat):
-    inputTypes = [DataType.List, DataType.List]
+    inputTypes = DataType.List
     outputType = DataType.List
 
-    def transform(self, data: List[List[int]]) -> pd.Series:
+    def transform(self, data: List[List[int]]) -> List:
         return list(zip(*data))
+
+
+class ClassificationOutputConcat(Concat):
+    inputTypes = DataType.PredictionsWithProbs
+    outputType = DataType.NpArray
+
+    def transform(self, sources: List[List]) -> np.ndarray:
+        return np.hstack([[item[1] for item in data] for data in sources])

@@ -1,11 +1,10 @@
-from typing import Tuple
-
 import pandas as pd
 from datasets.arrow_dataset import Dataset
 from sklearn.model_selection import train_test_split
 
 from configs.constants import Const
-from type import PreprocessConfig, TestDataset, TrainDataset, DatasetSplit
+from type import PreprocessConfig, DatasetSplit
+from data.dataloader import DataLoader
 
 
 def transform_hatespeech_detection_dataset(
@@ -27,3 +26,17 @@ def transform_hatespeech_detection_dataset(
     df_test = df_test.rename(columns=cols_to_rename)
 
     return {DatasetSplit.train.value: df_train, DatasetSplit.test.value: df_test}
+
+
+def get_tweets_hate_speech_detection_dataloader() -> DataLoader:
+    return DataLoader(
+        "tweets_hate_speech_detection",
+        PreprocessConfig(
+            train_size=-1,
+            val_size=-1,
+            test_size=-1,
+            input_col="tweet",
+            label_col="label",
+        ),
+        transform_hatespeech_detection_dataset,
+    )

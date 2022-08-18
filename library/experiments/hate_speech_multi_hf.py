@@ -1,53 +1,27 @@
 from copy import deepcopy
 
 
-from blocks.adaptors import ListOfListsToNumpy
-from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
 from blocks.concat import DataSource, VectorConcat
 
-from blocks.ensemble import Ensemble
 from blocks.models.huggingface import HuggingfaceModel
 from blocks.pipeline import Pipeline
 
-from blocks.transformations import (
-    Lemmatizer,
-    SKLearnTransformation,
-    SpacyTokenizer,
-    TextStatisticTransformation,
-)
-from configs.constants import Const
-from data.transformation import transform_dataset
-from datasets.load import load_dataset
 from library.evaluation.classification import classification_metrics
-from sklearn.ensemble import GradientBoostingClassifier, VotingClassifier
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.preprocessing import MinMaxScaler
-from transformers import TrainingArguments
+from transformers.training_args import TrainingArguments
 from type import (
     DatasetSplit,
     HuggingfaceConfig,
-    LoadOrigin,
-    PreprocessConfig,
     Experiment,
-    SKLearnConfig,
     HFTaskTypes,
 )
 from blocks.models.sklearn import SKLearnModel
 from blocks.adaptors.classification_output import ClassificationOutputAdaptor
 
-from utils.flatten import remove_none
-from data.dataloader import DataLoader
+from ..dataset.tweet_eval import get_tweet_eval_dataloader
+from ..models.sklearn_voting import sklearn_config
+
 
 """ Models """
-preprocess_config = PreprocessConfig(
-    train_size=-1,
-    val_size=-1,
-    test_size=-1,
-    input_col="text",
-    label_col="label",
-)
 
 huggingface_training_args = TrainingArguments(
     output_dir="",
@@ -88,32 +62,12 @@ huggingface_distil_bert_config.pretrained_model = "distilbert-base-uncased"
 huggingface_distilroberta_config = deepcopy(huggingface_base_config)
 huggingface_distilroberta_config.pretrained_model = "distilroberta-base"
 
-sklearn_config = SKLearnConfig(
-    frozen=False,
-    save=True,
-    preferred_load_origin=LoadOrigin.local,
-    classifier=VotingClassifier(
-        estimators=[
-            ("nb", MultinomialNB()),
-            ("lg", LogisticRegression(random_state=Const.seed)),
-            (
-                "gb",
-                GradientBoostingClassifier(
-                    n_estimators=100, max_depth=7, random_state=Const.seed
-                ),
-            ),
-        ],
-        voting="soft",
-    ),
-    one_vs_rest=False,
-    save_remote=False,
-)
 
 """ Data """
 
 input_data = DataSource("input")
 
-dataloader = DataLoader("tweet_eval", preprocess_config, transform_dataset, "hate")
+dataloader = get_tweet_eval_dataloader("hate")
 
 
 """ Pipelines"""
@@ -121,23 +75,19 @@ dataloader = DataLoader("tweet_eval", preprocess_config, transform_dataset, "hat
 huggingface_baseline_distilbert = Pipeline(
     "nlp_hf_distilbert",
     input_data,
-    remove_none(
-        [
-            HuggingfaceModel("hf-model", huggingface_distil_bert_config),
-            ClassificationOutputAdaptor(select=0),
-        ]
-    ),
+    [
+        HuggingfaceModel("hf-model", huggingface_distil_bert_config),
+        ClassificationOutputAdaptor(select=0),
+    ],
 )
 
 huggingface_distilroberta = Pipeline(
     "nlp_hf_distilroberta-base",
     input_data,
-    remove_none(
-        [
-            HuggingfaceModel("distilroberta-base", huggingface_distilroberta_config),
-            ClassificationOutputAdaptor(select=0),
-        ]
-    ),
+    [
+        HuggingfaceModel("distilroberta-base", huggingface_distilroberta_config),
+        ClassificationOutputAdaptor(select=0),
+    ],
 )
 
 
@@ -146,11 +96,9 @@ full_pipeline = Pipeline(
     VectorConcat(
         "concat-source", [huggingface_distilroberta, huggingface_baseline_distilbert]
     ),
-    remove_none(
-        [
-            SKLearnModel("sklearn-meta-model", sklearn_config),
-        ]
-    ),
+    [
+        SKLearnModel("sklearn-meta-model", sklearn_config),
+    ],
 )
 
 metrics = classification_metrics
@@ -163,7 +111,6 @@ multi_hf_run_experiments = [
         dataloader=dataloader,
         dataset_category=DatasetSplit.train,
         pipeline=full_pipeline,
-        preprocessing_config=preprocess_config,
         metrics=metrics,
         train=True,
     ),
@@ -173,7 +120,6 @@ multi_hf_run_experiments = [
         dataloader=dataloader,
         dataset_category=DatasetSplit.test,
         pipeline=full_pipeline,
-        preprocessing_config=preprocess_config,
         metrics=metrics,
         train=False,
     ),

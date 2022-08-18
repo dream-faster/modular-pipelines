@@ -1,11 +1,10 @@
-from typing import Tuple
-
 import pandas as pd
 from datasets.arrow_dataset import Dataset
 from sklearn.model_selection import train_test_split
 
 from configs.constants import Const
-from type import PreprocessConfig, TestDataset, TrainDataset, DatasetSplit
+from type import PreprocessConfig, DatasetSplit
+from data.dataloader import DataLoader
 
 
 def transform_hatespeech_offensive_dataset(
@@ -29,3 +28,17 @@ def transform_hatespeech_offensive_dataset(
     df_test[Const.label_col] = df_test[Const.label_col].apply(lambda x: 1 if x else 0)
 
     return {DatasetSplit.train.value: df_train, DatasetSplit.test.value: df_test}
+
+
+def get_hate_speech_offensive_dataloader() -> DataLoader:
+    return DataLoader(
+        "hate_speech_offensive",
+        PreprocessConfig(
+            train_size=-1,
+            val_size=-1,
+            test_size=-1,
+            input_col="tweet",
+            label_col="class",
+        ),
+        transform_hatespeech_offensive_dataset,
+    )

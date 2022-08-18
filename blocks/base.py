@@ -77,7 +77,7 @@ class DataSource(Element):
     def __init__(self, id: str):
         self.id = id
 
-    def deplate(self, store: Store, plugins: List["Plugin"]) -> pd.Series:
+    def deplate(self, store: Store, plugins: List["Plugin"], train: bool) -> pd.Series:
         return store.get_data(self.id)
 
     def load(self) -> None:

@@ -2,12 +2,11 @@ from typing import List
 
 from configs.constants import Const
 
-from library.examples.hate_speech import (
+from library.experiments.hate_speech import (
     all_cross_dataset_experiments,
     all_tweeteval_hate_speech_experiments,
 )
-from library.examples.hate_speech_multi_hf import multi_hf_run_experiments
-from library.examples.hate_speech_meta_sklearn import multi_sklearn_run_experiments
+from library.experiments.hate_speech_multi_hf import multi_hf_run_experiments
 from plugins import WandbConfig, WandbPlugin, OutputAnalyserPlugin
 from runner.runner import Runner
 from type import Experiment, StagingConfig, StagingNames
@@ -37,7 +36,9 @@ def run(
                     ),
                     dict(
                         run_config=experiment.get_configs(),
-                        preprocess_config=experiment.preprocessing_config.get_configs(),
+                        preprocess_config=experiment.dataloader.preprocessing_configs[
+                            0
+                        ].get_configs(),
                         pipeline_configs=experiment.pipeline.get_configs(),
                     ),
                 )
