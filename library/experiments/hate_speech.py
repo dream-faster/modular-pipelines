@@ -22,6 +22,7 @@ from type import (
     DatasetSplit,
 )
 from utils.flatten import flatten
+from ...utils.setter import clone_and_set
 from ..dataset.hatecheck import get_hatecheck_dataloader
 from ..dataset.hatespeech_offensive import get_hate_speech_offensive_dataloader
 from ..dataset.tweets_hate_speech_detection import (
@@ -60,6 +61,13 @@ text_statistics_pipeline = Pipeline(
 huggingface_baseline = create_nlp_huggingface_pipeline(
     input=input_data, config=huggingface_config, autocorrect=False
 )
+
+huggingface_hatebert = create_nlp_huggingface_pipeline(
+    input=input_data,
+    config=clone_and_set(huggingface_config, "pretrained_model", "GroNLP/hateBERT"),
+    autocorrect=False,
+)
+
 sklearn = create_nlp_sklearn_pipeline(
     title="sklearn",
     input_data=input_data,
@@ -178,6 +186,7 @@ pipelines_to_evaluate = [
     random,
     vader,
     huggingface_baseline,
+    huggingface_hatebert
     text_statistics_pipeline,
     ensemble_all,
     ensemble_hf_vader,
