@@ -51,3 +51,31 @@ def multi_line_print(text: str, level: int = 0) -> None:
         subsequent_indent=subsequent_indent,
     )
     print(d.fill(text))
+
+
+def print_box(
+    text: str, width: int = 100, height: int = 1, thickness_level: int = 0
+) -> None:
+    if thickness_level == 0:
+        top_left = "┏"
+        top_right = "┓"
+        vertical = "┃"
+        bottom_left = "┗"
+        bottom_right = "┛"
+        horizontal = "━"
+
+    whitespace_around_text = int(max(0, (width - len(text)) / 2))
+
+    print(top_left + horizontal * width + top_right)
+    for _ in range(height):
+        print(vertical + " " * width + vertical)
+    print(
+        vertical
+        + " " * whitespace_around_text
+        + text
+        + " " * whitespace_around_text
+        + vertical
+    )
+    for _ in range(height):
+        print(vertical + " " * width + vertical)
+    print(bottom_left + horizontal * width + bottom_right)

@@ -14,6 +14,7 @@ from utils.run_helpers import (
 )
 from .evaluation import evaluate
 from .store import Store
+from utils.printing import PrintFormats, print_box
 
 
 obligatory_plugins_begin = []
@@ -41,6 +42,10 @@ class Runner:
         self.plugins = obligatory_plugins_begin + plugins + obligatory_plugins_end
 
     def run(self):
+        print_box(
+            f"Running Experiment in {PrintFormats.BOLD}{'TRAINING' if self.experiment.train else 'INFERENCE'}{PrintFormats.END} mode"
+        )
+
         for plugin in self.plugins:
             plugin.print_me("on_run_begin")
             self.pipeline = plugin.on_run_begin(self.pipeline)
