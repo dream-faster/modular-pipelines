@@ -65,7 +65,8 @@ class HuggingfaceConfig(BaseConfig):
 @dataclass
 class SKLearnConfig(BaseConfig):
     classifier: ClassifierMixin
-    one_vs_rest: bool
+    one_vs_rest: bool  # this is expensive, uses https://scikit-learn.org/stable/modules/generated/sklearn.multiclass.OneVsRestClassifier.html
+    calibrate: bool  # this is expensive, uses https://scikit-learn.org/stable/modules/generated/sklearn.calibration.CalibratedClassifierCV.html
 
 
 @dataclass
