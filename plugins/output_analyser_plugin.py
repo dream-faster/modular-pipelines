@@ -51,7 +51,7 @@ class OutputAnalyserPlugin(Plugin):
         if type(original_labels) == np.ndarray:
             original_labels = original_labels.tolist()
 
-        predictions, probabilities = data_to_preds_probs(final_output)
+        predictions, probabilities = store.data_to_preds_probs(final_output)
 
         for analysis_function in self.analysis_functions:
             print("    ┃")
@@ -143,34 +143,9 @@ class OutputAnalyserPlugin(Plugin):
     ) -> None:
         print(f"{PrintFormats.BOLD}    ┃ Correlation Matrix {PrintFormats.END}")
 
-        outputs = []
-        for block_name, output in store.data.items():
-            if isinstance(output, (pd.Series, np.ndarray)):
-                output = output.tolist()
-
-            if isinstance(output, Iterable):
-                if (
-                    isinstance(output[0], Iterable)
-                    and isinstance(output[0], str) is False
-                ):
-                    predictions, probabilities = data_to_preds_probs(output)
-                    output = predictions
-
-            outputs.append((block_name, output))
-
-        filtered_store = {k: v for k, v in outputs if not isinstance(v[0], str)}
+        all_prediction_dict = store.get_all_predictions()
 
         multi_line_print(
-            pd.DataFrame.from_dict(filtered_store).corr().to_string(),
+            pd.DataFrame.from_dict(all_prediction_dict).corr().to_string(),
             level=2,
         )
-
-
-def data_to_preds_probs(
-    final_output: List[Union[List, Tuple]]
-) -> Tuple[Union[int, float]]:
-
-    predictions = [output[0] for output in final_output]
-    probabilities = [output[1] for output in final_output]
-
-    return predictions, probabilities
