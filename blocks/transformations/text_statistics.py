@@ -68,11 +68,7 @@ def get_num_emoji(words_fused: str) -> int:
 
 def get_num_uppercase(words: List[str]) -> int:
     return len(
-        [
-            word
-            for word in words
-            if all([char for char in word if char.isupper()]) is True
-        ]
+        [word for word in words if all([char.isupper() for char in word]) is True]
     )
 
 
