@@ -24,4 +24,5 @@ sklearn_config = SKLearnConfig(
     ),
     one_vs_rest=False,
     save_remote=False,
+    calibrate=False
 )

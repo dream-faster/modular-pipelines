@@ -3,6 +3,7 @@ from typing import List, Optional
 import pandas as pd
 from sklearn.base import BaseEstimator, ClassifierMixin, clone
 from sklearn.multiclass import OneVsRestClassifier
+from sklearn.calibration import CalibratedClassifierCV
 
 from blocks.models.base import Model
 from type import DataType, Evaluators, PredsWithProbs, SKLearnConfig
@@ -27,7 +28,17 @@ class SKLearnModel(PickleIO, Model):
         self.evaluators = evaluators
 
     def fit(self, dataset: pd.Series, labels: Optional[pd.Series]) -> None:
-        self.model = clone(self.config.classifier)
+        classifier = clone(self.config.classifier)
+
+        if self.config.one_vs_rest:
+            classifier = OneVsRestClassifier(
+                ("clf", classifier),
+                n_jobs=4,
+            )
+        if self.config.calibrate:
+            classifier = CalibratedClassifierCV(classifier, method="isotonic", n_jobs=4)
+
+        self.model = classifier
         self.model.fit(dataset, labels)
         self.trained = True
 
@@ -39,15 +50,3 @@ class SKLearnModel(PickleIO, Model):
 
     def is_fitted(self) -> bool:
         return self.trained
-
-
-def create_classifier(
-    classifier: ClassifierMixin, one_vs_rest: bool
-) -> ClassifierMixin:
-    if one_vs_rest:
-        return classifier
-    else:
-        return OneVsRestClassifier(
-            ("clf", classifier),
-            n_jobs=4,
-        )

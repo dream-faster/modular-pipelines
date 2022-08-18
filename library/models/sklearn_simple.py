@@ -8,4 +8,5 @@ sklearn_config_simple = SKLearnConfig(
     classifier=MultinomialNB(),
     one_vs_rest=False,
     save_remote=False,
+    calibrate=False,
 )
