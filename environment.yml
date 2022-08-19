@@ -40,5 +40,6 @@ dependencies:
       - autocorrect
       - spello
       - pycaleva
+      - perspective
 
 prefix: /usr/local/anaconda3/envs/nlp
