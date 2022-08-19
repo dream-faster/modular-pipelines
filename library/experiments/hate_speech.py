@@ -22,6 +22,7 @@ from type import (
     DatasetSplit,
 )
 from utils.flatten import flatten
+from ...utils.setter import clone_and_set
 from ..dataset.hatecheck import get_hatecheck_dataloader
 from ..dataset.hatespeech_offensive import get_hate_speech_offensive_dataloader
 from ..dataset.tweets_hate_speech_detection import (
@@ -60,6 +61,28 @@ text_statistics_pipeline = Pipeline(
 huggingface_baseline = create_nlp_huggingface_pipeline(
     input=input_data, config=huggingface_config, autocorrect=False
 )
+
+huggingface_hatebert = create_nlp_huggingface_pipeline(
+    input=input_data,
+    config=clone_and_set(
+        huggingface_config,
+        {"id": "huggingface_hatebert", "pretrained_model": "GroNLP/hateBERT"},
+    ),
+    autocorrect=False,
+)
+
+huggingface_bertweet = create_nlp_huggingface_pipeline(
+    input=input_data,
+    config=clone_and_set(
+        huggingface_config,
+        {
+            "id": "huggingface_bertweet",
+            "pretrained_model": "pysentimiento/bertweet-hate-speech",
+        },
+    ),
+    autocorrect=False,
+)
+
 sklearn = create_nlp_sklearn_pipeline(
     title="sklearn",
     input_data=input_data,
@@ -172,18 +195,20 @@ cross_dataset_experiments = [
 ]
 
 pipelines_to_evaluate = [
-    # sklearn,
-    # sklearn_autocorrect,
-    # sklearn_simple,
-    # random,
-    # vader,
-    # huggingface_baseline,
-    # text_statistics_pipeline,
-    # ensemble_all,
-    # ensemble_hf_vader,
-    # ensemble_sklearn_hf,
+    sklearn,
+    sklearn_autocorrect,
+    sklearn_simple,
+    random,
+    vader,
+    huggingface_baseline,
+    huggingface_hatebert,
+    huggingface_bertweet,
+    text_statistics_pipeline,
+    ensemble_all,
+    ensemble_hf_vader,
+    ensemble_sklearn_hf,
     ensemble_sklearn_vader,
-    # meta_model_all,
+    meta_model_all,
 ]
 
 
