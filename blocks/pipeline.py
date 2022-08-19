@@ -6,7 +6,7 @@ import pandas as pd
 from runner.store import Store
 from runner.train import predict, train_predict
 from type import BaseConfig, Hierarchy
-from utils.flatten import flatten
+from utils.list import flatten
 
 from .base import Block, DataSource, Element
 from .concat import Concat

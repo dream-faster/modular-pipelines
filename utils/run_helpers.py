@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from type import Experiment, StagingConfig, RunContext
 from blocks.pipeline import Pipeline
 from configs.constants import Const
-from .flatten import flatten
+from .list import flatten
 from blocks.base import DataSource
 from data.dataloader import DataLoader
 from type import Hierarchy

@@ -13,7 +13,7 @@ from configs.constants import Const
 from runner.store import Store
 from type import BaseConfig
 from utils.env_interface import get_env
-from utils.flatten import flatten
+from utils.list import flatten
 
 from .base import Plugin
 

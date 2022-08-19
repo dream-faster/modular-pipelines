@@ -37,5 +37,5 @@ def get_tweet_eval_dataloader(name: str) -> DataLoader:
             label_col="label",
         ),
         transform_dataset,
-        name,
+        name=name,
     )
