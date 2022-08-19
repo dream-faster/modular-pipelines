@@ -53,8 +53,8 @@ class PerspectiveModel(PickleIO, Model):
             )
         except Exception as e:
             print(
-                f"Couldn't get a score for: \n'{PrintFormats.BOLD}{text}{PrintFormats.END}' Randomly choosing category."
+                f"Couldn't get a score for: \n'{PrintFormats.BOLD}{text}{PrintFormats.END}' \nRandomly choosing category."
             )
             print(e)
 
-            return random.sample([(0, [1.0, 0.0]), (1, [0.0, 1.0])], k=1)
+            return random.sample([(0, [1.0, 0.0]), (1, [0.0, 1.0])], k=1)[0]
