@@ -61,7 +61,7 @@ class Store:
     @staticmethod
     def data_to_preds_probs(
         final_output: List[Union[List, Tuple]]
-    ) -> Tuple[Union[int, float]]:
+    ) -> Tuple[List[int], List[float]]:
 
         predictions = [output[0] for output in final_output]
         probabilities = [output[1] for output in final_output]

@@ -3,7 +3,7 @@ from typing import Tuple, Union
 from ..models.sklearn_voting import sklearn_config
 from blocks.pipeline import Pipeline
 from blocks.base import DataSource
-from utils.flatten import remove_none
+from utils.list import remove_none
 from blocks.transformations import (
     Lemmatizer,
     NoLemmatizer,
@@ -14,6 +14,7 @@ from blocks.augmenters.spelling_autocorrect import SpellAutocorrectAugmenter
 from sklearn.feature_extraction.text import TfidfVectorizer
 from blocks.models.sklearn import SKLearnModel
 from blocks.ensemble import Ensemble
+from imblearn.over_sampling import RandomOverSampler
 
 
 def create_nlp_sklearn_pipeline(

@@ -3,8 +3,9 @@ from typing import List
 from configs.constants import Const
 
 from library.experiments.hate_speech import (
-    all_cross_dataset_experiments,
-    all_tweeteval_hate_speech_experiments,
+    all_tweeteval_experiments,
+    all_tweeteval_cross_experiments,
+    all_merged_cross_experiments,
 )
 from library.experiments.hate_speech_multi_hf import multi_hf_run_experiments
 from library.experiments.hate_speech_perspective import perspective_experiments
@@ -58,7 +59,10 @@ def run(
 
 if __name__ == "__main__":
     prod_config = StagingConfig(
-        name=StagingNames.prod, save_remote=True, log_remote=True, limit_dataset_to=None
+        name=StagingNames.prod,
+        save_remote=False,
+        log_remote=True,
+        limit_dataset_to=None,
     )
 
     dev_config = StagingConfig(
@@ -69,6 +73,8 @@ if __name__ == "__main__":
     )
 
     run(
-        perspective_experiments,
-        staging_config=dev_config,
+        all_tweeteval_experiments
+        + all_tweeteval_cross_experiments
+        + all_merged_cross_experiments,
+        staging_config=prod_config,
     )

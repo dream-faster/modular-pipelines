@@ -1,12 +1,11 @@
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Callable, List, Optional, Tuple
-from typing_extensions import Self
 
 import pandas as pd
 from sklearn.base import ClassifierMixin
 from transformers.training_args import TrainingArguments
-from copy import deepcopy
+from utils.setter import Settable
 
 TrainDataset = pd.DataFrame
 TestDataset = pd.DataFrame
@@ -45,16 +44,11 @@ class HFTaskTypes(Enum):
 
 
 @dataclass
-class BaseConfig:
+class BaseConfig(Settable):
     frozen: bool
     save: bool
     save_remote: bool
     preferred_load_origin: Optional[LoadOrigin]
-
-    def set_attr(self, key: str, value) -> Self:
-        new_obj = deepcopy(self)
-        setattr(new_obj, key, value)
-        return new_obj
 
 
 @dataclass

@@ -6,7 +6,7 @@ from type import PreprocessConfig, DatasetSplit
 from data.dataloader import DataLoader
 
 
-def transform_dataset(dataset: Dataset, config: PreprocessConfig) -> dict:
+def transform_dynahate_dataset(dataset: Dataset, config: PreprocessConfig) -> dict:
 
     df_train = pd.DataFrame(dataset[DatasetSplit.train.value][: config.train_size])
     if DatasetSplit.val.value in dataset:
@@ -26,9 +26,9 @@ def transform_dataset(dataset: Dataset, config: PreprocessConfig) -> dict:
     return {DatasetSplit.train.value: df_train, DatasetSplit.test.value: df_test}
 
 
-def get_tweet_eval_dataloader(name: str) -> DataLoader:
+def get_dynahate_dataloader() -> DataLoader:
     return DataLoader(
-        "tweet_eval",
+        "aps/dynahate",
         PreprocessConfig(
             train_size=-1,
             val_size=-1,
@@ -36,6 +36,5 @@ def get_tweet_eval_dataloader(name: str) -> DataLoader:
             input_col="text",
             label_col="label",
         ),
-        transform_dataset,
-        name=name,
+        transform_dynahate_dataset,
     )
