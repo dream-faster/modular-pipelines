@@ -59,8 +59,8 @@ def run(
 if __name__ == "__main__":
     prod_config = StagingConfig(
         name=StagingNames.prod,
-        save_remote=True,
-        log_remote=False,
+        save_remote=False,
+        log_remote=True,
         limit_dataset_to=None,
     )
 
