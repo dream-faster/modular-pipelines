@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import List, Optional
 
 import pandas as pd
@@ -9,6 +10,12 @@ from ...io import PickleIO
 
 from perspective import PerspectiveAPI
 from utils.env_interface import get_env
+import time
+
+
+@dataclass
+class PerspectiveConst:
+    toxicity_score = "TOXICITY"
 
 
 class PerspectiveModel(PickleIO, Model):
@@ -25,29 +32,19 @@ class PerspectiveModel(PickleIO, Model):
 
         self.model = PerspectiveAPI(get_env("PERSPECTIVE_TOKEN"))
 
-    def fit(self, dataset: pd.Series, labels: Optional[pd.Series]) -> None:
-        pass
-
     def predict(self, dataset: pd.Series) -> List[PredsWithProbs]:
-
-        # results = [
-        #     (
-        #         0 if result["TOXICITY"] < 0.5 else 1,
-        #         [1 - result["TOXICITY"], result["TOXICITY"]],
-        #     )
-        #     for text in dataset
-        #     for result in [self.model.score(text)]
-        # ]
-
-        results = [
-            (
-                0 if result["TOXICITY"] < 0.5 else 1,
-                [1 - result["TOXICITY"], result["TOXICITY"]],
-            )
-            for result in [self.model.score(text) for text in dataset]
-        ]
+        results = [self.get_rate_limited_result(text) for text in dataset]
 
         return results
 
     def is_fitted(self) -> bool:
         return self.trained
+
+    def get_rate_limited_result(self, text: str) -> PredsWithProbs:
+        score = self.model.score(text)[PerspectiveConst.toxicity_score]
+        time.sleep(1.01)
+
+        return (
+            0 if score < 0.5 else 1,
+            [1 - score, score],
+        )

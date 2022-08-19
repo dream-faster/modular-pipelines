@@ -65,7 +65,7 @@ if __name__ == "__main__":
         name=StagingNames.dev,
         save_remote=False,
         log_remote=False,
-        limit_dataset_to=1000,
+        limit_dataset_to=70,
     )
 
     run(
