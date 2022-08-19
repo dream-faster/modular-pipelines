@@ -8,6 +8,7 @@ from library.experiments.hate_speech import (
     all_merged_cross_experiments,
 )
 from library.experiments.hate_speech_multi_hf import multi_hf_run_experiments
+from library.experiments.hate_speech_perspective import perspective_experiments
 from plugins import WandbConfig, WandbPlugin, OutputAnalyserPlugin
 from runner.runner import Runner
 from type import Experiment, StagingConfig, StagingNames
@@ -68,7 +69,7 @@ if __name__ == "__main__":
         name=StagingNames.dev,
         save_remote=False,
         log_remote=False,
-        limit_dataset_to=1000,
+        limit_dataset_to=60,
     )
 
     run(
