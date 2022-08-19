@@ -7,8 +7,8 @@ from type import (
 from typing import List, Callable, Optional, Union
 from datasets.load import load_dataset
 
-from .merge import merge_datasets
 from utils.flatten import flatten
+import pandas as pd
 
 
 class DataLoader:
@@ -43,6 +43,5 @@ class DataLoaderMerger(DataLoader):
         )
 
     def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
-        return merge_datasets(
-            [data_loader.load(category) for data_loader in self.dataloaders]
-        )
+        datasets = [data_loader.load(category) for data_loader in self.dataloaders]
+        return pd.concat(datasets, axis=0).reset_index(drop=True)
