@@ -40,7 +40,7 @@ class AllOnesModel(Model):
 
     def predict(self, dataset: pd.Series) -> List[PredsWithProbs]:
         predictions = [1 for _ in dataset]
-        probabilities = [[0.0, 2.0] for _ in dataset]
+        probabilities = [[0.0, 1.0] for _ in dataset]
         return list(zip(predictions, probabilities))
 
     def is_fitted(self) -> bool:

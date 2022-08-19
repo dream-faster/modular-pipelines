@@ -4,7 +4,7 @@ from typing import List
 from blocks.adaptors import ListOfListsToNumpy
 from blocks.concat import ClassificationOutputConcat, DataSource
 from blocks.ensemble import Ensemble
-from blocks.models.random import RandomModel
+from blocks.models.random import AllOnesModel, RandomModel, AllZerosModel
 from blocks.models.sklearn import SKLearnModel
 from blocks.models.vader import VaderModel
 from blocks.pipeline import Pipeline
@@ -22,7 +22,6 @@ from type import (
     DatasetSplit,
 )
 from utils.flatten import flatten
-from ...utils.setter import clone_and_set
 from ..dataset.hatecheck import get_hatecheck_dataloader
 from ..dataset.hatespeech_offensive import get_hate_speech_offensive_dataloader
 from ..dataset.tweets_hate_speech_detection import (
@@ -31,7 +30,7 @@ from ..dataset.tweets_hate_speech_detection import (
 from ..dataset.tweet_eval import get_tweet_eval_dataloader
 
 from ..models.sklearn_voting import sklearn_config
-from ..models.sklearn_simple import sklearn_config_simple
+from ..models.sklearn_simple import sklearn_config_simple_nb, sklearn_config_simple_lr
 from ..models.huggingface import huggingface_config
 from ..pipelines.huggingface import create_nlp_huggingface_pipeline
 from ..pipelines.sklearn_nlp import create_nlp_sklearn_pipeline
@@ -64,21 +63,16 @@ huggingface_baseline = create_nlp_huggingface_pipeline(
 
 huggingface_hatebert = create_nlp_huggingface_pipeline(
     input=input_data,
-    config=clone_and_set(
-        huggingface_config,
-        {"id": "huggingface_hatebert", "pretrained_model": "GroNLP/hateBERT"},
+    config=huggingface_config.set_attr("id", "huggingface_hatebert").set_attr(
+        "pretrained_model", "GroNLP/hateBERT"
     ),
     autocorrect=False,
 )
 
 huggingface_bertweet = create_nlp_huggingface_pipeline(
     input=input_data,
-    config=clone_and_set(
-        huggingface_config,
-        {
-            "id": "huggingface_bertweet",
-            "pretrained_model": "pysentimiento/bertweet-hate-speech",
-        },
+    config=huggingface_config.set_attr("id", "huggingface_bertweet").set_attr(
+        "pretrained_model", "pysentimiento/bertweet-hate-speech"
     ),
     autocorrect=False,
 )
@@ -89,6 +83,16 @@ sklearn = create_nlp_sklearn_pipeline(
     sklearn_config=sklearn_config,
     autocorrect=False,
 )
+
+sklearn_calibrated = create_nlp_sklearn_pipeline(
+    title="sklearn_calibrated",
+    input_data=input_data,
+    sklearn_config=sklearn_config.set_attr("id", "sklearn_calibrated").set_attr(
+        "calibrate", True
+    ),
+    autocorrect=False,
+)
+
 sklearn_autocorrect = create_nlp_sklearn_pipeline(
     title="sklearn_autocorrect",
     input_data=input_data,
@@ -96,13 +100,17 @@ sklearn_autocorrect = create_nlp_sklearn_pipeline(
     autocorrect=True,
 )
 
-sklearn_simple = create_nlp_sklearn_pipeline(
-    title="sklearn_simple",
+sklearn_simple_nb = create_nlp_sklearn_pipeline(
+    title="sklearn_simple_nb",
     input_data=input_data,
-    sklearn_config=sklearn_config_simple,
+    sklearn_config=sklearn_config_simple_nb,
     autocorrect=False,
 )
+
 random = Pipeline("random", input_data, [RandomModel("random")])
+all_0s = Pipeline("all_0s", input_data, [AllZerosModel("all_0s")])
+all_1s = Pipeline("all_1s", input_data, [AllOnesModel("all_1s")])
+
 vader = Pipeline("vader", input_data, [VaderModel("vader")])
 
 ensemble_all = Ensemble(
@@ -115,7 +123,7 @@ meta_model_all = Pipeline(
     ClassificationOutputConcat(
         "all_models", [sklearn, huggingface_baseline, text_statistics_pipeline, vader]
     ),
-    [SKLearnModel("meta_model", sklearn_config)],
+    [SKLearnModel("meta_model", sklearn_config_simple_lr.set_attr("calibrate", True))],
 )
 
 ensemble_sklearn_vader = Ensemble("ensemble_sklearn_vader", [sklearn, vader])
@@ -196,9 +204,12 @@ cross_dataset_experiments = [
 
 pipelines_to_evaluate = [
     sklearn,
+    sklearn_calibrated,
     sklearn_autocorrect,
-    sklearn_simple,
+    sklearn_simple_nb,
     random,
+    all_0s,
+    all_1s,
     vader,
     huggingface_baseline,
     huggingface_hatebert,
