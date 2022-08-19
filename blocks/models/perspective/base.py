@@ -11,6 +11,8 @@ from ...io import PickleIO
 from perspective import PerspectiveAPI
 from utils.env_interface import get_env
 import time
+from utils.printing import PrintFormats
+import random
 
 
 @dataclass
@@ -41,10 +43,18 @@ class PerspectiveModel(PickleIO, Model):
         return self.trained
 
     def get_rate_limited_result(self, text: str) -> PredsWithProbs:
-        score = self.model.score(text)[PerspectiveConst.toxicity_score]
-        time.sleep(1.01)
+        try:
+            score = self.model.score(text)[PerspectiveConst.toxicity_score]
+            time.sleep(1.01)
 
-        return (
-            0 if score < 0.5 else 1,
-            [1 - score, score],
-        )
+            return (
+                0 if score < 0.5 else 1,
+                [1 - score, score],
+            )
+        except Exception as e:
+            print(
+                f"Couldn't get a score for: \n'{PrintFormats.BOLD}{text}{PrintFormats.END}' Randomly choosing category."
+            )
+            print(e)
+
+            return random.sample([(0, [1.0, 0.0]), (1, [0.0, 1.0])], k=1)
