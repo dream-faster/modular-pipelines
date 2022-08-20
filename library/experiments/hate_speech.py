@@ -162,7 +162,6 @@ data_merged_train = DataLoaderMerger(
 metrics = classification_metrics + calibration_metrics
 
 
-
 ### Single train/test split
 
 single_dataset_experiments_tweeteval = [
@@ -190,9 +189,7 @@ single_dataset_experiments_tweeteval_balanced = [
     Experiment(
         project_name="hate-speech-detection-tweeteval-balanced",
         run_name="tweeteval",
-        dataloader=dataloader_tweeteval.set_attr(
-            "sampler", RandomOverSampler()
-        ),
+        dataloader=dataloader_tweeteval.set_attr("sampler", RandomOverSampler()),
         dataset_category=DatasetSplit.train,
         pipeline=sklearn,
         metrics=metrics,
@@ -201,9 +198,7 @@ single_dataset_experiments_tweeteval_balanced = [
     Experiment(
         project_name="hate-speech-detection-tweeteval-balanced",
         run_name="tweeteval",
-        dataloader=dataloader_tweeteval.set_attr(
-            "sampler", RandomOverSampler()
-        ),
+        dataloader=dataloader_tweeteval.set_attr("sampler", RandomOverSampler()),
         dataset_category=DatasetSplit.test,
         pipeline=sklearn,
         metrics=metrics,
@@ -389,9 +384,6 @@ def populate_experiments_with_pipelines(
 all_tweeteval_experiments = populate_experiments_with_pipelines(
     single_dataset_experiments_tweeteval, pipelines_to_evaluate
 ) + populate_experiments_with_pipelines(
-    single_dataset_experiments_tweeteval_balanced, pipelines_to_evaluate
-)
-all_tweeteval_experiments = populate_experiments_with_pipelines(
     single_dataset_experiments_tweeteval_balanced, pipelines_to_evaluate
 )
 
