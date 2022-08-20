@@ -24,7 +24,9 @@ def run_inference(
         device=device,
     )
 
-    scores = inference_pipeline(test_data[Const.input_col], top_k=config.num_classes)
+    scores = inference_pipeline(
+        test_data[Const.input_col], top_k=config.num_classes, truncation=True
+    )
     probs = [convert_scores_dict_to_probs(score) for score in scores]
     predicitions = [np.argmax(prob) for prob in probs]
 
