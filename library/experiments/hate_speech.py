@@ -60,10 +60,14 @@ text_statistics_pipeline = Pipeline(
 )
 
 huggingface_baseline = create_nlp_huggingface_pipeline(
-    input=input_data, config=huggingface_config, autocorrect=False
+    title="hf-distillbert",
+    input=input_data,
+    config=huggingface_config,
+    autocorrect=False,
 )
 
 huggingface_hatebert = create_nlp_huggingface_pipeline(
+    title="hf-hatebert",
     input=input_data,
     config=huggingface_config.set_attr("id", "huggingface_hatebert").set_attr(
         "pretrained_model", "GroNLP/hateBERT"
@@ -72,6 +76,7 @@ huggingface_hatebert = create_nlp_huggingface_pipeline(
 )
 
 huggingface_bertweet = create_nlp_huggingface_pipeline(
+    title="hf-bertweet",
     input=input_data,
     config=huggingface_config.set_attr("id", "huggingface_bertweet").set_attr(
         "pretrained_model", "pysentimiento/bertweet-hate-speech"
