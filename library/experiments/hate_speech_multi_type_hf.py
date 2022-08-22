@@ -67,6 +67,7 @@ huggingface_distilbert_uncased_emotion_config = (
     )
     .set_attr("num_classes", 6)
     .set_attr("task_type", HFTaskTypes.text_classification)
+    .set_attr("frozen", True)
 )
 
 

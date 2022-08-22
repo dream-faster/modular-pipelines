@@ -57,7 +57,7 @@ def run(
             print(
                 f"Run {experiment.project_name} - {experiment.run_name} - {experiment.pipeline.id} failed, due to"
             )
-            print(traceback.format_exception(type(e), e, e.__traceback__))
+            print("".join(traceback.format_exception(type(e), e, e.__traceback__)))
             failed.append(experiment)
 
     if len(failed) > 0:
