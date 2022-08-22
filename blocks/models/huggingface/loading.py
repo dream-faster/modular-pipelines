@@ -2,7 +2,7 @@ from typing import Callable, List, Optional, Tuple, Union
 
 from type import HuggingfaceConfig, LoadOrigin
 
-from utils.printing import PrintFormats, multi_line_print
+from utils.printing import PrintFormats, multi_line_formatter
 
 from transformers.modeling_utils import PreTrainedModel
 from transformers.tokenization_utils import PreTrainedTokenizer
@@ -24,15 +24,20 @@ def safe_load(
         )
         tokenizer = AutoTokenizer.from_pretrained(module)
 
-        multi_line_print(
-            f"Training: Model loaded {config.task_type.value}: {PrintFormats.BOLD}{module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}{PrintFormats.END}",
-            level=1,
+        print(
+            multi_line_formatter(
+                f"Training: Model loaded {config.task_type.value}: {PrintFormats.BOLD}{module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}{PrintFormats.END}",
+                level=1,
+            )
         )
         return model, tokenizer
 
     except:
-        multi_line_print(
-            f"Training: Couldn't load {module} model or tokenizer. Skipping.", level=1
+        print(
+            multi_line_formatter(
+                f"Training: Couldn't load {module} model or tokenizer. Skipping.",
+                level=1,
+            )
         )
         return None, None
 

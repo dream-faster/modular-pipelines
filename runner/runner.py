@@ -14,7 +14,7 @@ from utils.run_helpers import (
 )
 from .evaluation import evaluate
 from .store import Store
-from utils.printing import PrintFormats, print_box
+from utils.printing import LogLevels, LogModes, PrintFormats, logger
 
 
 obligatory_plugins_begin = []
@@ -42,9 +42,10 @@ class Runner:
         self.plugins = obligatory_plugins_begin + plugins + obligatory_plugins_end
 
     def run(self):
-        print_box(
+        logger.log(
             f"Running Experiment in {PrintFormats.BOLD}{'TRAINING' if self.experiment.train else 'INFERENCE'}{PrintFormats.END} mode"
             + f"\n{PrintFormats.CYAN}{self.experiment.project_name} ~ {self.experiment.run_name} {PrintFormats.END}"
+            mode = logger.LogModes.BOX
         )
 
         for plugin in self.plugins:

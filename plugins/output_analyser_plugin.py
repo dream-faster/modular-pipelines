@@ -11,7 +11,7 @@ from configs.constants import Const
 from collections import Counter
 import numpy as np
 import random
-from utils.printing import PrintFormats, multi_line_print
+from utils.printing import PrintFormats, multi_line_formatter
 from typing import Any, Tuple, Callable, Union
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -145,7 +145,9 @@ class OutputAnalyserPlugin(Plugin):
 
         all_prediction_dict = store.get_all_predictions()
 
-        multi_line_print(
-            pd.DataFrame.from_dict(all_prediction_dict).corr().to_string(),
-            level=2,
+        print(
+            multi_line_formatter(
+                pd.DataFrame.from_dict(all_prediction_dict).corr().to_string(),
+                level=2,
+            )
         )
