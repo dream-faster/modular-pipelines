@@ -7,6 +7,7 @@ from runner.runner import Runner
 from type import Experiment, StagingConfig, StagingNames
 from utils.run_helpers import overwrite_preprocessing_configs_
 from utils.json import dump_str
+import traceback
 
 
 def run(
@@ -55,8 +56,8 @@ def run(
         except Exception as e:
             print(
                 f"Run {experiment.project_name} - {experiment.run_name} - {experiment.pipeline.id} failed, due to"
-                + f"\n{e}"
             )
+            print(traceback.format_exception(type(e), e, e.__traceback__))
             failed.append(experiment)
 
     if len(failed) > 0:

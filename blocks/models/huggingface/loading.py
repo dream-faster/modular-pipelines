@@ -25,8 +25,8 @@ def safe_load(
         tokenizer = AutoTokenizer.from_pretrained(module)
 
         logger.log(
-            f"Training: Model loaded {config.task_type.value}: {logger.formats.BOLD}{module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}{logger.formats.END}",
-            level=logger.levels.ONE,
+            f"Model loaded {config.task_type.value}: {logger.formats.BOLD}{module.__class__.__name__ if isinstance(module, PreTrainedModel) else module}{logger.formats.END}",
+            level=logger.levels.TWO,
             mode=logger.modes.MULTILINE,
         )
 
@@ -34,8 +34,8 @@ def safe_load(
 
     except:
         logger.log(
-            f"Training: Couldn't load {module} model or tokenizer. Skipping.",
-            level=logger.levels.ONE,
+            f"Couldn't load {module} model or tokenizer. Skipping.",
+            level=logger.levels.TWO,
             mode=logger.modes.MULTILINE,
         )
         return None, None
