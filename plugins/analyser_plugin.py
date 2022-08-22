@@ -5,11 +5,12 @@ from blocks.base import Block, DataSource, Element
 from blocks.pipeline import Pipeline
 
 from .base import Plugin
+from utils.printing import logger
 
 
 class PipelineAnalyser(Plugin):
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
-        print("    ┃  └── 🗼 Hierarchy of Models:")
+        logger.log("🗼 Hierarchy of Models:", level=logger.levels.TWO)
         full_pipeline = pipeline.children()
 
         def print_all(blocks: List[Element], indent="    ┃       "):

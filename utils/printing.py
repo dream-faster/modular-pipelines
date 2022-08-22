@@ -29,9 +29,9 @@ class LogModes(Enum):
 
 class LogLevels(Enum):
     zero = 0
-    one = 1
-    two = 2
-    three = 3
+    ONE = 1
+    TWO = 2
+    THREE = 3
 
 
 class DocumentWrapper(textwrap.TextWrapper):
@@ -74,11 +74,11 @@ class LogWrapper:
         elif mode == LogModes.BOX:
             format_string = box_formatter(text, thickness_level=level)
 
-        if level == LogLevels.one:
+        if level == LogLevels.ONE:
             format_string = f"{self.base_indent}┣━━━ {format_string}"
-        elif level == LogLevels.two:
+        elif level == LogLevels.TWO:
             format_string = f"{self.base_indent}┃  ├── {format_string}"
-        elif level == LogLevels.three:
+        elif level == LogLevels.THREE:
             format_string = f"{self.base_indent}┃{self.base_indent}{format_string}"
 
         print(format_string)

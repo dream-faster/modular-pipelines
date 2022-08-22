@@ -52,21 +52,21 @@ class Runner:
             plugin.print_me("on_run_begin")
             self.pipeline = plugin.on_run_begin(self.pipeline)
 
-        print("💈 Loading existing models")
+        logger.log("💈 Loading existing models")
         self.pipeline.load(self.plugins)
 
         if self.experiment.train:
-            print("🏋️ Training pipeline")
+            logger.log("🏋️ Training pipeline")
             self.pipeline.fit(self.store, self.plugins)
 
-            print("📡 Uploading models")
+            logger.log("📡 Uploading models")
             self.pipeline.save_remote()
 
-        print("🔮 Predicting with pipeline")
+        logger.log("🔮 Predicting with pipeline")
         preds_probs = self.pipeline.predict(self.store, self.plugins)
         self.store.set_data(Const.final_output, preds_probs)
 
-        print("🤔 Evaluating entire pipeline")
+        logger.log("🤔 Evaluating entire pipeline")
         stats = evaluate(
             preds_probs, self.store, self.experiment.metrics, self.run_path
         )

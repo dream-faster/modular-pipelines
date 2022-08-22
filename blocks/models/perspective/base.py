@@ -11,7 +11,7 @@ from ...io import PickleIO
 from perspective import PerspectiveAPI
 from utils.env_interface import get_env
 import time
-from utils.printing import PrintFormats
+from utils.printing import PrintFormats, logger
 import random
 
 
@@ -52,9 +52,10 @@ class PerspectiveModel(PickleIO, Model):
                 [1 - score, score],
             )
         except Exception as e:
-            print(
-                f"Couldn't get a score for: \n'{PrintFormats.BOLD}{text}{PrintFormats.END}' \nRandomly choosing category."
+            logger.log(
+                f"Couldn't get a score for: \n'{PrintFormats.BOLD}{text}{PrintFormats.END}' \nRandomly choosing category.",
+                level=logger.levels.THREE,
             )
-            print(e)
+            logger.log(e)
 
             return random.sample([(0, [1.0, 0.0]), (1, [0.0, 1.0])], k=1)[0]

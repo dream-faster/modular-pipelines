@@ -16,7 +16,7 @@ from utils.env_interface import get_env
 
 from .infer import run_inference
 from .train import run_training
-from utils.printing import PrintFormats
+from utils.printing import logger
 from .loading import safe_load, determine_load_order, get_paths
 import time
 
@@ -57,8 +57,9 @@ class HuggingfaceModel(Model):
         load_order = determine_load_order(self.config, paths)
 
         for load_origin, load_path in load_order:
-            print(
-                f"    ┣━━┯ ℹ️ Loading from {PrintFormats.BOLD}{load_origin}{PrintFormats.END}"
+            logger.log(
+                f"ℹ️ Loading from {logger.formats.BOLD}{load_origin}{logger.formats.END}",
+                level=logger.levels.ONE,
             )
             model, tokenizer = safe_load(load_path, config=self.config)
 
@@ -72,8 +73,8 @@ class HuggingfaceModel(Model):
 
         if model is None and self.config.pretrained_model is not None:
             sleep_period = 2.0
-            print(
-                f"    ┣━━┯ ℹ️ No Model found at first try, sleeping for {sleep_period} and retrying {PrintFormats.BOLD}PRETRAINED: {self.config.pretrained_model}{PrintFormats.END}"
+            logger.log(
+                f"ℹ️ No Model found at first try, sleeping for {sleep_period} and retrying {logger.formats.BOLD}PRETRAINED: {self.config.pretrained_model}{logger.formats.END}"
             )
             time.sleep(sleep_period)
             model, tokenizer = safe_load(
@@ -135,7 +136,7 @@ class HuggingfaceModel(Model):
 
     def save(self) -> None:
         if self.model is None or self.tokenizer is None:
-            print("Model is not available to save")
+            logger.log("Model is not available to save", level=logger.levels.THREE)
         self.model.save_pretrained(
             f"{Const.output_pipelines_path}/{self.parent_path}/{self.id}"
         )

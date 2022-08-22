@@ -80,7 +80,7 @@ def overwrite_model_configs_(config: Experiment, pipeline: Pipeline) -> None:
 
 def append_parent_path_and_id_(pipeline: Pipeline) -> None:
     """
-    Appends two values to each object in the pipeline:
+    Appends TWO values to each object in the pipeline:
         - ``id``: adds a unique integer as a suffix at the end of each id
         - ``parent_path``: adds the path to the object (used for saving)
 
