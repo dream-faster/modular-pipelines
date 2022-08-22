@@ -14,7 +14,7 @@ from utils.run_helpers import (
 )
 from .evaluation import evaluate
 from .store import Store
-from utils.printing import LogLevels, LogModes, PrintFormats, logger
+from utils.printing import logger
 
 
 obligatory_plugins_begin = []
@@ -43,8 +43,8 @@ class Runner:
 
     def run(self):
         logger.log(
-            f"Running Experiment in {PrintFormats.BOLD}{'TRAINING' if self.experiment.train else 'INFERENCE'}{PrintFormats.END} mode"
-            + f"\n{PrintFormats.CYAN}{self.experiment.project_name} ~ {self.experiment.run_name} {PrintFormats.END}",
+            f"Running Experiment in {logger.formats.BOLD}{'TRAINING' if self.experiment.train else 'INFERENCE'}{logger.formats.END} mode"
+            + f"\n{logger.formats.CYAN}{self.experiment.project_name} ~ {self.experiment.run_name} {logger.formats.END}",
             mode=logger.modes.BOX,
         )
 

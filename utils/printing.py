@@ -9,7 +9,7 @@ def pprint_indent(text, indent=" " * 4 + "┃ ") -> None:
     print("".join([indent + l for l in text.splitlines(True)]))
 
 
-class PrintFormats(Enum):
+class PrintFormats:
     PURPLE = "\033[95m"
     CYAN = "\033[96m"
     DARKCYAN = "\033[36m"
@@ -31,6 +31,7 @@ class LogLevels(Enum):
     zero = 0
     one = 1
     two = 2
+    three = 3
 
 
 class DocumentWrapper(textwrap.TextWrapper):
@@ -71,10 +72,14 @@ class LogWrapper:
         if mode == LogModes.MULTILINE:
             format_string = multi_line_formatter(text, level)
         elif mode == LogModes.BOX:
-            format_string = string_in_box_formatter(text, thickness_level=level)
+            format_string = box_formatter(text, thickness_level=level)
 
         if level == LogLevels.one:
-            format_string = f"{self.base_indent}'┣━━━ '{format_string}"
+            format_string = f"{self.base_indent}┣━━━ {format_string}"
+        elif level == LogLevels.two:
+            format_string = f"{self.base_indent}┃  ├── {format_string}"
+        elif level == LogLevels.three:
+            format_string = f"{self.base_indent}┃{self.base_indent}{format_string}"
 
         print(format_string)
 
@@ -105,7 +110,7 @@ def multi_line_formatter(text: str, level: int = 0) -> None:
     return d.fill(text)
 
 
-def string_in_box_formatter(
+def box_formatter(
     text: str, width: int = 100, height: int = 1, thickness_level: int = 1
 ) -> None:
     if thickness_level == 0:
