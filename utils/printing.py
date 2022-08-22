@@ -87,17 +87,21 @@ class LogWrapper:
 logger = LogWrapper()
 
 
-def multi_line_formatter(text: str, level: int = 0) -> None:
+def multi_line_formatter(
+    text: str, level: LogLevels = LogLevels.ONE
+) -> DocumentWrapper:
 
     base_indent = " " * 4
+    initial_indent = ""
+    subsequent_indent = ""
 
-    if level == 0:
+    if level == LogLevels.ONE:
         initial_indent = base_indent + "┣━━━ "
         subsequent_indent = base_indent + "┃ "
-    if level == 1:
+    if level == LogLevels.TWO:
         initial_indent = base_indent + "┃  ├── "
         subsequent_indent = base_indent + "┃  │   "
-    if level == 2:
+    if level == LogLevels.THREE:
         initial_indent = base_indent + "┃    "
         subsequent_indent = base_indent + "┃    "
 
@@ -112,7 +116,7 @@ def multi_line_formatter(text: str, level: int = 0) -> None:
 
 def box_formatter(
     text: str, width: int = 100, height: int = 1, thickness_level: int = 1
-) -> None:
+) -> str:
     if thickness_level == 0:
         top_left = "┌"
         top_right = "┐"

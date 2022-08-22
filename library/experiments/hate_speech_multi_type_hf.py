@@ -104,7 +104,7 @@ full_pipeline = Pipeline(
 metrics = classification_metrics
 
 """ Experiments """
-multi_hf_run_experiments = [
+multi_type_hf_run_experiments = [
     Experiment(
         project_name="hate-speech-detection-hf",
         run_name="hf-meta-model",

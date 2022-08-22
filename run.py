@@ -2,13 +2,6 @@ from typing import List
 
 from configs.constants import Const
 
-from library.experiments.hate_speech import (
-    all_tweeteval_experiments,
-    all_tweeteval_cross_experiments,
-    all_merged_cross_experiments,
-)
-from library.experiments.hate_speech_multi_hf import multi_hf_run_experiments
-from library.experiments.hate_speech_perspective import perspective_experiments
 from plugins import WandbConfig, WandbPlugin, OutputAnalyserPlugin
 from runner.runner import Runner
 from type import Experiment, StagingConfig, StagingNames
@@ -74,6 +67,14 @@ def run(
 
 
 if __name__ == "__main__":
+    from library.experiments.hate_speech import (
+        all_tweeteval_experiments,
+        all_tweeteval_cross_experiments,
+        all_merged_cross_experiments,
+    )
+    from library.experiments.hate_speech_multi_hf import multi_hf_run_experiments
+    from library.experiments.hate_speech_perspective import perspective_experiments
+
     prod_config = StagingConfig(
         name=StagingNames.prod,
         save_remote=False,
