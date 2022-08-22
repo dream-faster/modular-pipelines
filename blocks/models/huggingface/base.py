@@ -79,6 +79,10 @@ class HuggingfaceModel(Model):
             model, tokenizer = safe_load(
                 self.config.pretrained_model, config=self.config
             )
+            if model:
+                self.model = model
+                self.tokenizer = tokenizer
+                self.pretrained = True
 
         self.config.training_args.output_dir = (
             f"{Const.output_pipelines_path}/{self.parent_path}/{self.id}"
