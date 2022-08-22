@@ -74,15 +74,14 @@ def run(
 
 
 if __name__ == "__main__":
-    prod_config = StagingConfig(
-        name=StagingNames.prod,
+    dev_config = StagingConfig(
+        name=StagingNames.dev,
         save_remote=False,
-        log_remote=True,
-        limit_dataset_to=None,
+        log_remote=False,
+        limit_dataset_to=60,
     )
 
     run(
         all_tweeteval_experiments,
-        +all_tweeteval_cross_experiments + all_merged_cross_experiments,
-        staging_config=prod_config,
+        staging_config=dev_config,
     )
