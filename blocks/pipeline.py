@@ -150,3 +150,11 @@ class Pipeline(Block):
                 ]
             )
         }
+
+    def get_datasource_configs(self) -> List[BaseConfig]:
+        entire_pipeline = self.children()
+        return {
+            block.id: vars(block.dataloader.preprocessing_configs[0])
+            for block in flatten(entire_pipeline)
+            if isinstance(block, DataSource)
+        }

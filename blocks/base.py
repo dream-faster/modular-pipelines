@@ -76,13 +76,13 @@ class DataSource(Element):
     inputTypes = DataType.Any
     outputType = DataType.Series
 
-    def __init__(self, id: str, data_loader: DataLoader) -> None:
+    def __init__(self, id: str, dataloader: DataLoader) -> None:
         self.id = id
-        self.data_loader = data_loader
+        self.dataloader = dataloader
 
     def deplate(self, store: Store, plugins: List["Plugin"], train: bool) -> pd.Series:
         if not hasattr(self, "data") and hasattr(self, "category"):
-            self.data = self.data_loader.load(self.category)
+            self.data = self.dataloader.load(self.category)
 
         return self.data[Const.input_col]
 

@@ -13,11 +13,9 @@ class Store:
     def __init__(
         self,
         data: Dict[str, Union[List, pd.Series]],
-        labels: List[pd.Series],
         path: str,
     ):
         self.data = data
-        self.labels = labels
         self.id = "store-" + random_string(5)
         self.path = path
         self.stats = dict()

@@ -19,8 +19,7 @@ def run(
 
     for experiment in experiments:
 
-        overwrite_preprocessing_configs_(experiment.dataloader, staging_config)
-        # data = experiment.dataloader.load(experiment.dataset_category)
+        overwrite_preprocessing_configs_(experiment.pipeline, staging_config)
 
         experiment.save_remote = staging_config.save_remote
         experiment.log_remote = staging_config.log_remote
@@ -35,9 +34,7 @@ def run(
                     ),
                     dict(
                         run_config=experiment.get_configs(),
-                        preprocess_config=experiment.dataloader.preprocessing_configs[
-                            0
-                        ].get_configs(),
+                        preprocess_config=experiment.pipeline.get_datasource_configs(),
                         pipeline_configs=experiment.pipeline.get_configs(),
                     ),
                 )

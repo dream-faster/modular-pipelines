@@ -11,15 +11,15 @@ from runner.store import Store
 
 
 def overwrite_preprocessing_configs_(
-    dataloader: DataLoader, staging_config: StagingConfig
+    pipeline: Pipeline, staging_config: StagingConfig
 ) -> None:
     """
     Takes global config values and overwrites the preprocessing config according to the logic of the parameters
 
     Parameters
     ----------
-    config
-        Configurations of the experiment (global settings of the experiment/run)
+    pipeline
+        The entire pipeline the experiment is run on.
     stagingConfig
         The global stagingconfiguration
 
@@ -28,24 +28,28 @@ def overwrite_preprocessing_configs_(
     None
 
     """
-
+    datasources = [
+        block for block in flatten(pipeline.children()) if type(block) == DataSource
+    ]
     if (
         hasattr(staging_config, "limit_dataset_to")
         and staging_config.limit_dataset_to is not None
     ):
-        for preprocessing_config in dataloader.preprocessing_configs:
-            preprocessing_config.test_size = staging_config.limit_dataset_to
-            preprocessing_config.train_size = staging_config.limit_dataset_to
-            preprocessing_config.val_size = staging_config.limit_dataset_to
+
+        for datasource in datasources:
+            for preprocessing_config in datasource.dataloader.preprocessing_configs:
+                preprocessing_config.test_size = staging_config.limit_dataset_to
+                preprocessing_config.train_size = staging_config.limit_dataset_to
+                preprocessing_config.val_size = staging_config.limit_dataset_to
 
     # This is for overwriting exisiting keys in the preprocessing_config
     for key_sta, value_sta in vars(staging_config).items():
         if value_sta is not None:
-
-            for preprocessing_config in dataloader.preprocessing_configs:
-                for key_pre in vars(preprocessing_config).keys():
-                    if key_pre == key_sta:
-                        vars(preprocessing_config)[key_sta] = value_sta
+            for datasource in datasources:
+                for preprocessing_config in datasource.dataloader.preprocessing_configs:
+                    for key_pre in vars(preprocessing_config).keys():
+                        if key_pre == key_sta:
+                            vars(preprocessing_config)[key_sta] = value_sta
 
 
 def overwrite_model_configs_(config: Experiment, pipeline: Pipeline) -> None:
