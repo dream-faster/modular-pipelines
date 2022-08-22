@@ -54,7 +54,14 @@ def run(
             labels=data[Const.label_col],
             plugins=logger_plugins + [OutputAnalyserPlugin()],
         )
-        runner.run()
+
+        try:
+            runner.run()
+        except Exception as e:
+            print(
+                f"Run {experiment.project_name} - {experiment.run_name} - {experiment.pipeline.id} failed, due to"
+                + f"\n{e}"
+            )
 
 
 if __name__ == "__main__":
