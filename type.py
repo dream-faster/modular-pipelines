@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Callable, List, Optional, Tuple
+from typing import Any, Callable, List, Optional, Tuple, Union
 
 import pandas as pd
 from sklearn.base import ClassifierMixin
@@ -107,7 +107,6 @@ class Experiment:
     run_name: str  # Get's appended as a prefix before the pipeline name
     train: bool  # Weather the run should do training
     dataset_category: DatasetSplit
-    dataloader: "DataLoader"
     pipeline: "Pipeline"
     metrics: Evaluators
     force_fit: Optional[bool] = None  # If set to True will make all models train

@@ -11,6 +11,7 @@ from utils.run_helpers import (
     overwrite_model_configs_,
     append_parent_path_and_id_,
     add_experiment_config_to_blocks_,
+    add_split_category_to_datasource_,
 )
 from .evaluation import evaluate
 from .store import Store
@@ -25,8 +26,6 @@ class Runner:
     def __init__(
         self,
         experiment: Experiment,
-        data: Dict[str, Union[pd.Series, List]],
-        labels: pd.Series,
         plugins: List[Optional[Plugin]],
     ) -> None:
 
@@ -38,7 +37,8 @@ class Runner:
         append_parent_path_and_id_(self.pipeline)
 
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
-        self.store = Store(data, labels, self.run_path)
+        self.store = Store(dict(), self.run_path)
+        add_split_category_to_datasource_(self.pipeline, experiment)
         self.plugins = obligatory_plugins_begin + plugins + obligatory_plugins_end
 
     def run(self):

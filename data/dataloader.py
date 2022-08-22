@@ -23,12 +23,14 @@ class DataLoader(Settable):
 
     def __init__(
         self,
+        id: str,
         path: str,
         preprocessing_config: PreprocessConfig,
         transformation: Callable,
         sampler: Optional[BaseSampler] = None,
         name: Optional[str] = None,
     ):
+        self.id = id
         self.transformation = transformation
         self.preprocessing_configs = [preprocessing_config]
         self.data = load_dataset(path, name)

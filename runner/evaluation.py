@@ -12,14 +12,17 @@ from .store import Store
 
 
 def evaluate(
-    predictions: List[PredsWithProbs], store: Store, evaluators: Evaluators, path: str
+    predictions: List[PredsWithProbs],
+    labels: pd.Series,
+    evaluators: Evaluators,
+    path: str,
 ) -> pd.Series:
     stats = pd.Series(dtype="float64")
     if not os.path.isdir(path):
         os.makedirs(path)
 
     for id, evaluator in evaluators:
-        output = evaluator(store.get_labels(), predictions)
+        output = evaluator(labels, predictions)
         if isinstance(output, (float, int, list)):
             stats[id] = output
         elif isinstance(output, dict):

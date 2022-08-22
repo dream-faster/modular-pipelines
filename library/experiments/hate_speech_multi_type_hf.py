@@ -19,7 +19,7 @@ from blocks.adaptors.classification_output import ClassificationOutputAdaptor
 
 from ..dataset.tweet_eval import get_tweet_eval_dataloader
 from ..models.sklearn_voting import sklearn_config
-
+from ..dataset.dynahate import get_dynahate_dataloader
 
 """ Models """
 
@@ -73,16 +73,15 @@ huggingface_distilbert_uncased_emotion_config = (
 
 """ Data """
 
-input_data = DataSource("input")
-
-dataloader = get_tweet_eval_dataloader("hate")
+tweet_eval_hate = DataSource("tweet_eval_hate", get_tweet_eval_dataloader("hate"))
+dynahate = DataSource("dynahate", get_dynahate_dataloader())
 
 
 """ Pipelines"""
 
 hf_distilbert = Pipeline(
     "distilbert-binary",
-    input_data,
+    tweet_eval_hate,
     [
         HuggingfaceModel("distilbert-binary", huggingface_distil_bert_config),
         ClassificationOutputAdaptor(select=0),
@@ -91,7 +90,7 @@ hf_distilbert = Pipeline(
 
 hf_distilbert_uncased_emotion = Pipeline(
     "distilbert-emotion",
-    input_data,
+    dynahate,
     [
         HuggingfaceModel(
             "distilbert-emotion", huggingface_distilbert_uncased_emotion_config
@@ -116,7 +115,6 @@ multi_type_hf_run_experiments = [
     Experiment(
         project_name="hate-speech-detection-hf",
         run_name="hf-meta-model",
-        dataloader=dataloader,
         dataset_category=DatasetSplit.train,
         pipeline=full_pipeline,
         metrics=metrics,
@@ -125,7 +123,6 @@ multi_type_hf_run_experiments = [
     Experiment(
         project_name="hate-speech-detection-hf",
         run_name="hf-meta-model",
-        dataloader=dataloader,
         dataset_category=DatasetSplit.test,
         pipeline=full_pipeline,
         metrics=metrics,

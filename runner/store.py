@@ -11,7 +11,10 @@ class Store:
     path: str
 
     def __init__(
-        self, data: Dict[str, Union[List, pd.Series]], labels: pd.Series, path: str
+        self,
+        data: Dict[str, Union[List, pd.Series]],
+        labels: List[pd.Series],
+        path: str,
     ):
         self.data = data
         self.labels = labels

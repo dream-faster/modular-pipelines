@@ -44,7 +44,7 @@ class OutputAnalyserPlugin(Plugin):
     def on_run_end(self, pipeline: Pipeline, store: Store):
         input = store.get_data(Const.input_col)
         final_output = store.get_data(Const.final_output)
-        original_labels = store.get_labels()
+        original_labels = pipeline.datasource.get_labels()
 
         if type(final_output) == np.ndarray:
             final_output = final_output.tolist()

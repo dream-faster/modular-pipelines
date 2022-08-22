@@ -20,7 +20,7 @@ def run(
     for experiment in experiments:
 
         overwrite_preprocessing_configs_(experiment.dataloader, staging_config)
-        data = experiment.dataloader.load(experiment.dataset_category)
+        # data = experiment.dataloader.load(experiment.dataset_category)
 
         experiment.save_remote = staging_config.save_remote
         experiment.log_remote = staging_config.log_remote
@@ -46,10 +46,7 @@ def run(
             else []
         )
         runner = Runner(
-            experiment,
-            data={Const.input_col: data[Const.input_col]},
-            labels=data[Const.label_col],
-            plugins=logger_plugins + [OutputAnalyserPlugin()],
+            experiment, plugins=logger_plugins  # + [OutputAnalyserPlugin()],
         )
         try:
             runner.run()

@@ -4,8 +4,9 @@ from typing import Callable, List, Optional, Union
 import pandas as pd
 
 from blocks.io import pickle_loading, pickle_saving
+from data.dataloader import DataLoader
 from runner.store import Store
-from type import BaseConfig, DataType, Hierarchy, RunContext
+from type import BaseConfig, DataType, Hierarchy, RunContext, DatasetSplit
 from configs.constants import Const
 from utils.printing import logger
 
@@ -75,14 +76,21 @@ class DataSource(Element):
     inputTypes = DataType.Any
     outputType = DataType.Series
 
-    def __init__(self, id: str):
+    def __init__(self, id: str, data_loader: DataLoader) -> None:
         self.id = id
+        self.data_loader = data_loader
 
     def deplate(self, store: Store, plugins: List["Plugin"], train: bool) -> pd.Series:
-        return store.get_data(self.id)
+        if not hasattr(self, "data") and hasattr(self, "category"):
+            self.data = self.data_loader.load(self.category)
+
+        return self.data[Const.input_col]
 
     def load(self) -> None:
         pass
+
+    def get_labels(self) -> pd.Series:
+        return self.data[Const.label_col]
 
     def children(self) -> List[Element]:
         return [self]

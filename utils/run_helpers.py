@@ -7,6 +7,7 @@ from blocks.base import DataSource
 from data.dataloader import DataLoader
 from type import Hierarchy
 from copy import copy
+from runner.store import Store
 
 
 def overwrite_preprocessing_configs_(
@@ -123,3 +124,13 @@ def add_experiment_config_to_blocks_(
             run_name=experiment.run_name,
             train=experiment.train,
         )
+
+
+def add_split_category_to_datasource_(
+    pipeline: Pipeline, experiment: Experiment
+) -> None:
+    datasources = [
+        block for block in flatten(pipeline.children()) if type(block) == DataSource
+    ]
+    for datasource in datasources:
+        datasource.category = experiment.dataset_category
