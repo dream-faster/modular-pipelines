@@ -7,6 +7,7 @@ from blocks.io import pickle_loading, pickle_saving
 from runner.store import Store
 from type import BaseConfig, DataType, Hierarchy, RunContext
 from configs.constants import Const
+from utils.printing import logger
 
 
 class Element(ABC):
@@ -40,9 +41,9 @@ class Block(Element):
         )
 
         if self.inputTypes is None:
-            print("inputTypes must be set")
+            logger.log("inputTypes must be set", level=logger.levels.TWO)
         if self.outputType is None:
-            print("outputType must be set")
+            logger.log("outputType must be set", level=logger.levels.TWO)
 
     def fit(
         self,

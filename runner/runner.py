@@ -14,7 +14,7 @@ from utils.run_helpers import (
 )
 from .evaluation import evaluate
 from .store import Store
-from utils.printing import PrintFormats, print_box
+from utils.printing import logger
 
 
 obligatory_plugins_begin = []
@@ -42,30 +42,31 @@ class Runner:
         self.plugins = obligatory_plugins_begin + plugins + obligatory_plugins_end
 
     def run(self):
-        print_box(
-            f"Running Experiment in {PrintFormats.BOLD}{'TRAINING' if self.experiment.train else 'INFERENCE'}{PrintFormats.END} mode"
-            + f"\n{PrintFormats.CYAN}{self.experiment.project_name} ~ {self.experiment.run_name} {PrintFormats.END}"
+        logger.log(
+            f"Running Experiment in {logger.formats.BOLD}{'TRAINING' if self.experiment.train else 'INFERENCE'}{logger.formats.END} mode"
+            + f"\n{logger.formats.CYAN}{self.experiment.project_name} ~ {self.experiment.run_name} {logger.formats.END}",
+            mode=logger.modes.BOX,
         )
 
         for plugin in self.plugins:
             plugin.print_me("on_run_begin")
             self.pipeline = plugin.on_run_begin(self.pipeline)
 
-        print("💈 Loading existing models")
+        logger.log("💈 Loading existing models")
         self.pipeline.load(self.plugins)
 
         if self.experiment.train:
-            print("🏋️ Training pipeline")
+            logger.log("🏋️ Training pipeline")
             self.pipeline.fit(self.store, self.plugins)
 
-            print("📡 Uploading models")
+            logger.log("📡 Uploading models")
             self.pipeline.save_remote()
 
-        print("🔮 Predicting with pipeline")
+        logger.log("🔮 Predicting with pipeline")
         preds_probs = self.pipeline.predict(self.store, self.plugins)
         self.store.set_data(Const.final_output, preds_probs)
 
-        print("🤔 Evaluating entire pipeline")
+        logger.log("🤔 Evaluating entire pipeline")
         stats = evaluate(
             preds_probs, self.store, self.experiment.metrics, self.run_path
         )

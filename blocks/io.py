@@ -4,9 +4,8 @@ from typing import Union
 import joblib
 
 from configs.constants import Const
-from utils.printing import PrintFormats
 
-import textwrap
+from utils.printing import logger
 
 
 class PickleIO:
@@ -29,14 +28,11 @@ def pickle_loading(parent_path: str, id: str) -> "Model":
     if not os.path.exists(path):
         return None
 
-    print(
-        textwrap.fill(
-            f"Loading model {parent_path}/{PrintFormats.BOLD}{id}{PrintFormats.END}",
-            initial_indent="    ┣━━━ ",
-            subsequent_indent="    ┃        ",
-            width=100,
-        )
+    logger.log(
+        f"Loading model {parent_path}/{logger.formats.BOLD}{id}{logger.formats.END}",
+        mode=logger.modes.MULTILINE,
     )
+
     with open(path, "rb") as f:
         return joblib.load(f)
 
@@ -48,13 +44,9 @@ def pickle_saving(
     if os.path.exists(path) is False:
         os.makedirs(path)
 
-    print(
-        textwrap.fill(
-            f"Saving model {parent_path}/{PrintFormats.BOLD}{id}{PrintFormats.END}",
-            initial_indent="    ┣━━━ ",
-            subsequent_indent="    ┃        ",
-            width=100,
-        )
+    logger.log(
+        f"Saving model {parent_path}/{logger.formats.BOLD}{id}{logger.formats.END}",
+        mode=logger.modes.MULTILINE,
     )
     with open(path + f"/{id}.pkl", "wb") as f:
         joblib.dump(object, f, compress=9)

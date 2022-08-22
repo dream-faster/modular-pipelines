@@ -5,15 +5,16 @@ from blocks.pipeline import Pipeline
 from type import DataType, Hierarchy
 
 from .base import Plugin
+from utils.printing import logger
 
 
 class IntegrityChecker(Plugin):
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
-        print("    ┃  ├── 🆔 Verifying pipeline integrity")
+        logger.log("🆔 Verifying pipeline integrity", level=logger.levels.TWO)
         if not check_integrity(pipeline):
             raise Exception("Pipeline integrity check failed")
         else:
-            print("    ┃  └── ✅ Integrity check passed")
+            logger.log("✅ Integrity check passed", level=logger.levels.TWO)
 
         return pipeline
 
@@ -47,8 +48,9 @@ def check_if_types_correct(previous_block: Block, next_block: Block) -> bool:
             previous_block.outputType not in next_block.inputTypes
             and DataType.Any not in next_block.inputTypes
         ):
-            print(
-                f"{previous_block.id}'s output type is {previous_block.outputType} and not {next_block.inputTypes} which {next_block.id} requires"
+            logger.log(
+                f"{previous_block.id}'s output type is {previous_block.outputType} and not {next_block.inputTypes} which {next_block.id} requires",
+                level=logger.levels.THREE,
             )
             return False
         else:
@@ -58,8 +60,9 @@ def check_if_types_correct(previous_block: Block, next_block: Block) -> bool:
             previous_block.outputType != next_block.inputTypes
             and next_block.inputTypes is not DataType.Any
         ):
-            print(
-                f"{previous_block.id}'s output type is {previous_block.outputType} and not {next_block.inputTypes} which {next_block.id} requires"
+            logger.log(
+                f"{previous_block.id}'s output type is {previous_block.outputType} and not {next_block.inputTypes} which {next_block.id} requires",
+                level=logger.levels.THREE,
             )
             return False
         else:

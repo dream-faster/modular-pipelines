@@ -7,6 +7,7 @@ from runner.store import Store
 from runner.train import predict, train_predict
 from type import BaseConfig, Hierarchy
 from utils.list import flatten
+from utils.printing import logger
 
 from .base import Block, DataSource, Element
 from .concat import Concat
@@ -53,7 +54,8 @@ class Pipeline(Block):
             plugin.on_load_end()
 
     def fit(self, store: Store, plugins: List["Plugin"]) -> None:
-        print(f"    ┣━━┯ Training on {self.id}")
+        logger.log(f"Training on {self.id}", level=logger.levels.ONE)
+
         """Begin"""
         last_output = process_block(self.datasource, store, plugins, train=True)
         for plugin in plugins:
@@ -73,7 +75,7 @@ class Pipeline(Block):
         store.set_data(self.id, last_output)
 
     def predict(self, store: Store, plugins: List["Plugin"]) -> pd.Series:
-        print(f"    ┣━━━ Predicting on {self.id}")
+        logger.log(f"Predicting on {self.id}", level=logger.levels.ONE)
         """Begin"""
         last_output = process_block(self.datasource, store, plugins, train=False)
         for plugin in plugins:

@@ -7,6 +7,7 @@ from blocks.pipeline import Pipeline
 from configs.constants import LogConst
 from runner.store import Store
 from utils.random import random_string
+from utils.printing import logger
 
 
 def just_custom_functions(obj) -> List[Tuple]:
@@ -23,7 +24,9 @@ class Plugin(ABC):
 
     def print_me(self, key):
         if key in self.print_dict:
-            print(f"{LogConst.plugin_prefix} {self.id}: {key}")
+            logger.log(
+                f"{LogConst.plugin_prefix} {self.id}: {key}", level=logger.levels.ONE
+            )
 
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
         return pipeline

@@ -1,6 +1,7 @@
 from pprint import pformat
 import textwrap
 import re
+from enum import Enum
 
 
 def pprint_indent(text, indent=" " * 4 + "┃ ") -> None:
@@ -21,6 +22,18 @@ class PrintFormats:
     END = "\033[0m"
 
 
+class LogModes(Enum):
+    MULTILINE = "multiline"
+    BOX = "box"
+
+
+class LogLevels(Enum):
+    zero = 0
+    ONE = 1
+    TWO = 2
+    THREE = 3
+
+
 class DocumentWrapper(textwrap.TextWrapper):
     def wrap(self, text):
         split_text = text.split("\n")
@@ -37,7 +50,44 @@ def remove_ansi_escape(s: str) -> str:
     return ansi_escape.sub("", s)
 
 
-def multi_line_print(text: str, level: int = 0) -> None:
+class LogWrapper:
+    modes = LogModes
+    formats = PrintFormats
+    levels = LogLevels
+
+    def __init__(self):
+        self.base_indent = " " * 4
+
+    def log(
+        self,
+        text: str,
+        level: LogLevels = LogLevels.zero,
+        mode: LogModes = None,
+        *args,
+        **kwargs,
+    ) -> None:
+
+        format_string = text
+
+        if mode == LogModes.MULTILINE:
+            format_string = multi_line_formatter(text, level)
+        elif mode == LogModes.BOX:
+            format_string = box_formatter(text, thickness_level=level)
+
+        if level == LogLevels.ONE:
+            format_string = f"{self.base_indent}┣━━━ {format_string}"
+        elif level == LogLevels.TWO:
+            format_string = f"{self.base_indent}┃  ├── {format_string}"
+        elif level == LogLevels.THREE:
+            format_string = f"{self.base_indent}┃{self.base_indent}{format_string}"
+
+        print(format_string)
+
+
+logger = LogWrapper()
+
+
+def multi_line_formatter(text: str, level: int = 0) -> None:
 
     base_indent = " " * 4
 
@@ -56,13 +106,30 @@ def multi_line_print(text: str, level: int = 0) -> None:
         initial_indent=initial_indent,
         subsequent_indent=subsequent_indent,
     )
-    print(d.fill(text))
+
+    return d.fill(text)
 
 
-def print_box(
-    text: str, width: int = 100, height: int = 1, thickness_level: int = 0
+def box_formatter(
+    text: str, width: int = 100, height: int = 1, thickness_level: int = 1
 ) -> None:
     if thickness_level == 0:
+        top_left = "┌"
+        top_right = "┐"
+        vertical = "│"
+        bottom_left = "└"
+        bottom_right = "┘"
+        horizontal = "─"
+        t_down = "┬"
+    elif thickness_level == 1:
+        top_left = "┏"
+        top_right = "┓"
+        vertical = "┃"
+        bottom_left = "┗"
+        bottom_right = "┛"
+        horizontal = "━"
+        t_down = "┳"
+    else:
         top_left = "┏"
         top_right = "┓"
         vertical = "┃"
@@ -71,24 +138,29 @@ def print_box(
         horizontal = "━"
         t_down = "┳"
 
-    print(top_left + horizontal * width + top_right)
+    complex_string = top_left + horizontal * width + top_right + "\n"
+
     for _ in range(height):
-        print(vertical + " " * width + vertical)
+        complex_string += vertical + " " * width + vertical + "\n"
 
     for sub_string in text.split("\n"):
         text_length = len(remove_ansi_escape(sub_string))
         whitespace_around_text = int(max(0, (width - text_length) / 2))
 
-        print(
+        complex_string += (
             vertical
             + " " * whitespace_around_text
             + sub_string
             + " " * max(0, (width - whitespace_around_text - text_length))
             + vertical
+            + "\n"
         )
 
     for _ in range(height):
-        print(vertical + " " * width + vertical)
-    print(
+        complex_string += vertical + " " * width + vertical + "\n"
+
+    complex_string += (
         bottom_left + horizontal * 3 + t_down + horizontal * (width - 4) + bottom_right
     )
+
+    return complex_string
