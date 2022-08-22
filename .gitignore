@@ -132,3 +132,4 @@ dmypy.json
 /model/huggingface/saved/**
 /output/pipelines/**
 /output/runs/**
+/output/failed_runs.txt

@@ -2,18 +2,12 @@ from typing import List
 
 from configs.constants import Const
 
-from library.experiments.hate_speech import (
-    all_tweeteval_experiments,
-    all_tweeteval_cross_experiments,
-    all_merged_cross_experiments,
-)
-from library.experiments.hate_speech_multi_hf import multi_hf_run_experiments
-from library.experiments.hate_speech_perspective import perspective_experiments
 from plugins import WandbConfig, WandbPlugin, OutputAnalyserPlugin
 from runner.runner import Runner
 from type import Experiment, StagingConfig, StagingNames
 from utils.run_helpers import overwrite_preprocessing_configs_
 from utils.json import dump_str
+import traceback
 
 
 def run(
@@ -62,8 +56,8 @@ def run(
         except Exception as e:
             print(
                 f"Run {experiment.project_name} - {experiment.run_name} - {experiment.pipeline.id} failed, due to"
-                + f"\n{e}"
             )
+            print("".join(traceback.format_exception(type(e), e, e.__traceback__)))
             failed.append(experiment)
 
     if len(failed) > 0:
@@ -74,6 +68,14 @@ def run(
 
 
 if __name__ == "__main__":
+    from library.experiments.hate_speech import (
+        all_tweeteval_experiments,
+        all_tweeteval_cross_experiments,
+        all_merged_cross_experiments,
+    )
+    from library.experiments.hate_speech_multi_hf import multi_hf_run_experiments
+    from library.experiments.hate_speech_perspective import perspective_experiments
+
     prod_config = StagingConfig(
         name=StagingNames.prod,
         save_remote=False,
@@ -81,16 +83,8 @@ if __name__ == "__main__":
         limit_dataset_to=None,
     )
 
-    dev_config = StagingConfig(
-        name=StagingNames.dev,
-        save_remote=False,
-        log_remote=False,
-        limit_dataset_to=60,
-    )
-
     run(
         all_tweeteval_experiments,
-        # + all_tweeteval_cross_experiments
-        # + all_merged_cross_experiments,
+        +all_tweeteval_cross_experiments + all_merged_cross_experiments,
         staging_config=prod_config,
     )
