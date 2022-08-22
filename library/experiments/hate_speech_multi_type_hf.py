@@ -56,11 +56,18 @@ huggingface_base_config = HuggingfaceConfig(
 )
 
 
-huggingface_distil_bert_config = deepcopy(huggingface_base_config)
-huggingface_distil_bert_config.pretrained_model = "distilbert-base-uncased"
+huggingface_distil_bert_config = huggingface_base_config
 
-huggingface_distilroberta_config = deepcopy(huggingface_base_config)
-huggingface_distilroberta_config.pretrained_model = "distilroberta-base"
+# huggingface_distilroberta_config = deepcopy(huggingface_base_config)
+# huggingface_distilroberta_config.pretrained_model = "distilroberta-base"
+
+huggingface_distilbert_uncased_emotion_config = (
+    huggingface_base_config.set_attr(
+        "pretrained_model", "bhadresh-savani/distilbert-base-uncased-emotion"
+    )
+    .set_attr("num_classes", 6)
+    .set_attr("task_type", HFTaskTypes.text_classification)
+)
 
 
 """ Data """
@@ -72,20 +79,22 @@ dataloader = get_tweet_eval_dataloader("hate")
 
 """ Pipelines"""
 
-huggingface_baseline_distilbert = Pipeline(
-    "nlp_hf_distilbert",
+hf_distilbert = Pipeline(
+    "distilbert-binary",
     input_data,
     [
-        HuggingfaceModel("hf-model", huggingface_distil_bert_config),
+        HuggingfaceModel("distilbert-binary", huggingface_distil_bert_config),
         ClassificationOutputAdaptor(select=0),
     ],
 )
 
-huggingface_distilroberta = Pipeline(
-    "nlp_hf_distilroberta-base",
+hf_distilbert_uncased_emotion = Pipeline(
+    "distilbert-emotion",
     input_data,
     [
-        HuggingfaceModel("distilroberta-base", huggingface_distilroberta_config),
+        HuggingfaceModel(
+            "distilbert-emotion", huggingface_distilbert_uncased_emotion_config
+        ),
         ClassificationOutputAdaptor(select=0),
     ],
 )
@@ -93,9 +102,7 @@ huggingface_distilroberta = Pipeline(
 
 full_pipeline = Pipeline(
     "nlp_hf_meta-model-pipeline",
-    VectorConcat(
-        "concat-source", [huggingface_distilroberta, huggingface_baseline_distilbert]
-    ),
+    VectorConcat("concat-source", [hf_distilbert, hf_distilbert_uncased_emotion]),
     [
         SKLearnModel("sklearn-meta-model", sklearn_config),
     ],

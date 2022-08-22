@@ -41,6 +41,7 @@ class LoadOrigin(Enum):
 
 class HFTaskTypes(Enum):
     sentiment_analysis = "sentiment-analysis"
+    text_classification = "text-classification"
 
 
 @dataclass
