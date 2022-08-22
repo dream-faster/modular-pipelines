@@ -86,7 +86,9 @@ class Pipeline(Block):
 
         """ Core """
         for model in self.models:
-            last_output = predict(model, last_output, store)
+            last_output = predict(
+                model, last_output, self.datasource.get_labels(), store
+            )
 
         """ End """
         for plugin in plugins:
