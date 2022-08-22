@@ -73,13 +73,13 @@ class LogWrapper:
             format_string = multi_line_formatter(text, level)
         elif mode == LogModes.BOX:
             format_string = box_formatter(text, thickness_level=level)
-
-        if level == LogLevels.ONE:
-            format_string = f"{self.base_indent}┣━━━ {format_string}"
-        elif level == LogLevels.TWO:
-            format_string = f"{self.base_indent}┃  ├── {format_string}"
-        elif level == LogLevels.THREE:
-            format_string = f"{self.base_indent}┃{self.base_indent}{format_string}"
+        else:
+            if level == LogLevels.ONE:
+                format_string = f"{self.base_indent}┣━━━ {format_string}"
+            elif level == LogLevels.TWO:
+                format_string = f"{self.base_indent}┃  ├── {format_string}"
+            elif level == LogLevels.THREE:
+                format_string = f"{self.base_indent}┃{self.base_indent}{format_string}"
 
         print(format_string)
 
