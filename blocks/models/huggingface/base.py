@@ -18,6 +18,7 @@ from .infer import run_inference
 from .train import run_training
 from utils.printing import PrintFormats
 from .loading import safe_load, determine_load_order, get_paths
+import time
 
 device = 0 if torch.cuda.is_available() else -1
 
@@ -68,6 +69,20 @@ class HuggingfaceModel(Model):
                 if load_origin == LoadOrigin.pretrained:
                     self.pretrained = True
                 break
+
+        if model is None and self.config.pretrained_model is not None:
+            sleep_period = 2.0
+            print(
+                f"    ┣━━┯ ℹ️ No Model found at first try, sleeping for {sleep_period} and retrying {PrintFormats.BOLD}PRETRAINED: {self.config.pretrained_model}{PrintFormats.END}"
+            )
+            time.sleep(sleep_period)
+            model, tokenizer = safe_load(
+                self.config.pretrained_model, config=self.config
+            )
+            if model:
+                self.model = model
+                self.tokenizer = tokenizer
+                self.pretrained = True
 
         self.config.training_args.output_dir = (
             f"{Const.output_pipelines_path}/{self.parent_path}/{self.id}"

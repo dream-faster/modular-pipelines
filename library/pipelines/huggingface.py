@@ -7,10 +7,10 @@ from type import HuggingfaceConfig
 
 
 def create_nlp_huggingface_pipeline(
-    input: DataSource, config: HuggingfaceConfig, autocorrect: bool
+    title: str, input: DataSource, config: HuggingfaceConfig, autocorrect: bool
 ) -> Pipeline:
     return Pipeline(
-        "hf_autocorrect" if autocorrect else "hf",
+        title,
         input,
         remove_none(
             [
