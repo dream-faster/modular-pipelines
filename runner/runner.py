@@ -44,8 +44,8 @@ class Runner:
     def run(self):
         logger.log(
             f"Running Experiment in {PrintFormats.BOLD}{'TRAINING' if self.experiment.train else 'INFERENCE'}{PrintFormats.END} mode"
-            + f"\n{PrintFormats.CYAN}{self.experiment.project_name} ~ {self.experiment.run_name} {PrintFormats.END}"
-            mode = logger.LogModes.BOX
+            + f"\n{PrintFormats.CYAN}{self.experiment.project_name} ~ {self.experiment.run_name} {PrintFormats.END}",
+            mode=logger.modes.BOX,
         )
 
         for plugin in self.plugins:

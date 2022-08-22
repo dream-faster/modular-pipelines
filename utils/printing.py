@@ -55,20 +55,28 @@ class LogWrapper:
     levels = LogLevels
 
     def __init__(self):
-        pass
+        self.base_indent = " " * 4
 
     def log(
+        self,
         text: str,
         level: LogLevels = LogLevels.zero,
         mode: LogModes = None,
         *args,
-        **kwargs
+        **kwargs,
     ) -> None:
 
+        format_string = text
+
         if mode == LogModes.MULTILINE:
-            print(multi_line_formatter(text, level))
-        if mode == LogModes.BOX:
-            print(string_in_box_formatter(text, thickness_level=level))
+            format_string = multi_line_formatter(text, level)
+        elif mode == LogModes.BOX:
+            format_string = string_in_box_formatter(text, thickness_level=level)
+
+        if level == LogLevels.one:
+            format_string = f"{self.base_indent}'┣━━━ '{format_string}"
+
+        print(format_string)
 
 
 logger = LogWrapper()
