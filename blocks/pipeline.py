@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Callable, List, Optional, Union
+from typing import Callable, Dict, List, Optional, Union
 
 import pandas as pd
 
@@ -150,7 +150,7 @@ class Pipeline(Block):
             source_hierarchy.children = [current_pipeline_hierarchy]
             return source_hierarchy
 
-    def get_configs(self) -> List[BaseConfig]:
+    def get_configs(self) -> Dict[str, BaseConfig]:
         entire_pipeline = self.children()
         return {
             block.id: vars(block.config)
@@ -164,7 +164,7 @@ class Pipeline(Block):
             )
         }
 
-    def get_datasource_configs(self) -> List[BaseConfig]:
+    def get_datasource_configs(self) -> Dict[str, BaseConfig]:
         entire_pipeline = self.children()
         return {
             block.id: vars(block.dataloader.preprocessing_configs[0])
