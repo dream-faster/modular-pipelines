@@ -4,7 +4,7 @@ from constants import Const
 
 from plugins import WandbConfig, WandbPlugin, OutputAnalyserPlugin
 from runner.runner import Runner
-from type import Experiment, StagingConfig, StagingNames
+from type import Experiment, StagingConfig, StagingNames, SourceTypes
 from runner.utils import overwrite_preprocessing_configs_
 from utils.json import dump_str
 import traceback
