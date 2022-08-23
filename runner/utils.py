@@ -55,6 +55,18 @@ def overwrite_preprocessing_configs_(
                             vars(preprocessing_config)[key_sta] = value_sta
 
 
+def overwrite_dataloaders_(pipeline: Pipeline, dataloader: DataLoader) -> None:
+    datasources = [
+        block
+        for source_type in pipeline.get_datasource_types()
+        for block in flatten(pipeline.children(source_type))
+        if type(block) == DataSource
+    ]
+    
+    for datasource in datasources:
+        datasource.dataloader = dataloader
+
+
 def overwrite_model_configs_(config: Experiment, pipeline: Pipeline) -> None:
     """
     Takes global config values and overwrites the config of

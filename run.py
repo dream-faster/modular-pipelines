@@ -83,7 +83,8 @@ if __name__ == "__main__":
     )
 
     run(
-        all_tweeteval_experiments,
-        +all_tweeteval_cross_experiments + all_merged_cross_experiments,
+        all_tweeteval_experiments
+        + all_tweeteval_cross_experiments
+        + all_merged_cross_experiments,
         staging_config=prod_config,
     )

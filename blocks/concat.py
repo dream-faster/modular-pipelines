@@ -30,8 +30,8 @@ class Concat(Element):
 
         return collected
 
-    def get_labels(self) -> pd.Series:
-        return self.datasource_labels.get_labels()
+    def get_labels(self, source_type: SourceTypes) -> pd.Series:
+        return self.datasource_labels.get_labels(source_type)
 
     def load(self, plugins: List["Plugin"]):
         for block in self.blocks:
