@@ -1,4 +1,5 @@
 from copy import deepcopy
+from enum import Enum
 
 
 from blocks.concat import DataSource, VectorConcat
@@ -41,9 +42,15 @@ huggingface_training_args = TrainingArguments(
 )
 
 
+class HFModels(Enum):
+    distilbert_base_uncased = "distilbert-base-uncased"
+    distilroberta_base = "distilroberta-base"
+    distilbert_emotion = "bhadresh-savani/distilbert-base-uncased-emotion"
+
+
 huggingface_base_config = HuggingfaceConfig(
     preferred_load_origin=None,  # LoadOrigin.local,
-    pretrained_model="distilbert-base-uncased",
+    pretrained_model=HFModels.distilbert_base_uncased.value,
     user_name="semy",
     task_type=HFTaskTypes.sentiment_analysis,
     remote_name_override=None,
@@ -58,12 +65,10 @@ huggingface_base_config = HuggingfaceConfig(
 
 huggingface_distil_bert_config = huggingface_base_config
 
-# huggingface_distilroberta_config = deepcopy(huggingface_base_config)
-# huggingface_distilroberta_config.pretrained_model = "distilroberta-base"
 
 huggingface_distilbert_uncased_emotion_config = (
     huggingface_base_config.set_attr(
-        "pretrained_model", "bhadresh-savani/distilbert-base-uncased-emotion"
+        "pretrained_model", HFModels.distilbert_emotion.value
     )
     .set_attr("num_classes", 6)
     .set_attr("task_type", HFTaskTypes.text_classification)
