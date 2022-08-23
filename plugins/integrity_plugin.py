@@ -22,9 +22,10 @@ class IntegrityChecker(Plugin):
 
 def check_integrity(pipeline: Pipeline) -> bool:
     hierarchies = [
-        pipeline.get_hierarchy(Const.source_type_fit),
-        pipeline.get_hierarchy(Const.source_type_predict),
+        pipeline.get_hierarchy(source_types)
+        for source_types in pipeline.get_datasource_types()
     ]
+
     for hierarchy in hierarchies:
         if hierarchy.children is not None:
             return __check_linear_block_integrity(hierarchy.children)

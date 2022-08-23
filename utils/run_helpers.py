@@ -30,11 +30,8 @@ def overwrite_preprocessing_configs_(
     """
     datasources = [
         block
-        for pipeline_ in [
-            pipeline.children(Const.source_type_fit),
-            pipeline.children(Const.source_type_predict),
-        ]
-        for block in flatten(pipeline_)
+        for source_type in pipeline.get_datasource_types()
+        for block in flatten(pipeline.children(source_type))
         if type(block) == DataSource
     ]
     if (
@@ -83,11 +80,8 @@ def overwrite_model_configs_(config: Experiment, pipeline: Pipeline) -> None:
 
     for key, value in vars(config).items():
         if value is not None:
-            for pipeline_ in [
-                pipeline.children(Const.source_type_fit),
-                pipeline.children(Const.source_type_predict),
-            ]:
-                for model in flatten(pipeline_):
+            for source_type in pipeline.get_datasource_types():
+                for model in flatten(pipeline.children(source_type)):
                     if hasattr(model, "config"):
                         if hasattr(model.config, key):
                             vars(model.config)[key] = value
@@ -110,12 +104,12 @@ def append_parent_path_and_id_(pipeline: Pipeline) -> None:
 
     """
 
-    entire_pipelines = [
-        pipeline.get_hierarchy(Const.source_type_fit),
-        pipeline.get_hierarchy(Const.source_type_predict),
+    hierarchies = [
+        pipeline.get_hierarchy(source_types)
+        for source_types in pipeline.get_datasource_types()
     ]
 
-    for entire_pipeline in entire_pipelines:
+    for hierarchy in hierarchies:
 
         def append(block, parent_path: str, id_with_prefix: str):
             block.obj.parent_path = parent_path
@@ -131,17 +125,14 @@ def append_parent_path_and_id_(pipeline: Pipeline) -> None:
                             id_with_prefix=f"{id_with_prefix}-{i}",
                         )
 
-        append(entire_pipeline, pipeline.run_context.project_name, "")
+        append(hierarchy, pipeline.run_context.project_name, "")
 
 
 def add_experiment_config_to_blocks_(
     pipeline: Pipeline, experiment: Experiment
 ) -> None:
-    for pipeline_ in [
-        pipeline.children(Const.source_type_fit),
-        pipeline.children(Const.source_type_predict),
-    ]:
-        for model in flatten(pipeline_):
+    for source_type in pipeline.get_datasource_types():
+        for model in flatten(pipeline.children(source_type)):
             model.run_context = RunContext(
                 project_name=experiment.project_name,
                 run_name=experiment.run_name,
@@ -155,11 +146,8 @@ def add_split_category_to_datasource_(
 
     datasources = [
         block
-        for pipeline_ in [
-            pipeline.children(Const.source_type_fit),
-            pipeline.children(Const.source_type_predict),
-        ]
-        for block in flatten(pipeline_)
+        for source_type in pipeline.get_datasource_types()
+        for block in flatten(pipeline.children(source_type))
         if type(block) == DataSource
     ]
 

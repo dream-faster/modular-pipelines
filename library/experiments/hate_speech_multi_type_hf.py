@@ -82,7 +82,6 @@ dynahate = DataSource("dynahate", get_dynahate_dataloader())
 hf_distilbert = Pipeline(
     "distilbert-binary",
     datasource_fit=tweet_eval_hate,
-    datasource_predict=tweet_eval_hate,
     models=[
         HuggingfaceModel(
             "distilbert-binary",
@@ -91,12 +90,12 @@ hf_distilbert = Pipeline(
         ),
         ClassificationOutputAdaptor(select=0),
     ],
+    # datasource_predict=tweet_eval_hate,
 )
 
 hf_distilbert_uncased_emotion = Pipeline(
     "distilbert-emotion",
     datasource_fit=dynahate,
-    datasource_predict=tweet_eval_hate,
     models=[
         HuggingfaceModel(
             "distilbert-emotion",
@@ -112,6 +111,7 @@ hf_distilbert_uncased_emotion = Pipeline(
         ),
         ClassificationOutputAdaptor(select=0),
     ],
+    datasource_predict=tweet_eval_hate,
 )
 
 vector_concat = VectorConcat(
@@ -123,10 +123,10 @@ vector_concat = VectorConcat(
 full_pipeline = Pipeline(
     "nlp_hf_meta-model-pipeline",
     datasource_fit=vector_concat,
-    datasource_predict=vector_concat,
     models=[
         SKLearnModel("sklearn-meta-model", sklearn_config),
     ],
+    # datasource_predict=vector_concat,
 )
 
 metrics = classification_metrics

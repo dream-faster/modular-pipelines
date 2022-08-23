@@ -28,16 +28,21 @@ class Pipeline(Block):
         self,
         id: str,
         datasource_fit: Union[DataSource, "Pipeline", "Concat"],
-        datasource_predict: Union[DataSource, "Pipeline", "Concat"],
         models: Union[List[Block], Block],
+        datasource_predict: Optional[Union[DataSource, "Pipeline", "Concat"]] = None,
     ):
         self.id = self.__class__.__name__ if id is None else id
         if isinstance(models, List):
             self.models = [deepcopy(model) for model in models]
         else:
             self.models = [deepcopy(models)]
+
         self.datasource_fit = datasource_fit
-        self.datasource_predict = datasource_predict
+
+        if datasource_predict is None:
+            self.datasource_predict = datasource_fit
+        else:
+            self.datasource_predict = datasource_predict
 
     def load(self, plugins: List["Plugin"]) -> None:
         """Begin"""
@@ -50,10 +55,11 @@ class Pipeline(Block):
             self.datasource_fit, Concat
         ):
             self.datasource_fit.load(plugins)
-        if isinstance(self.datasource_predict, Pipeline) or isinstance(
-            self.datasource_predict, Concat
-        ):
-            self.datasource_predict.load(plugins)
+        if self.datasource_predict is not self.datasource_fit:
+            if isinstance(self.datasource_predict, Pipeline) or isinstance(
+                self.datasource_predict, Concat
+            ):
+                self.datasource_predict.load(plugins)
 
         for model in self.models:
             model.load()
@@ -65,9 +71,10 @@ class Pipeline(Block):
 
     def fit(self, store: Store, plugins: List["Plugin"]) -> None:
         logger.log(f"Training on {self.id}", level=logger.levels.ONE)
+        datasource = self.datasource_fit
 
         """Begin"""
-        last_output = process_block(self.datasource_fit, store, plugins, train=True)
+        last_output = process_block(datasource, store, plugins, train=True)
         for plugin in plugins:
             plugin.print_me("on_fit_begin")
             store, last_output = plugin.on_fit_begin(store, last_output)
@@ -75,7 +82,7 @@ class Pipeline(Block):
         """ Core """
         for model in self.models:
             last_output = train_predict(
-                model, last_output, self.datasource_fit.get_labels(), store
+                model, last_output, datasource.get_labels(), store
             )
 
         """ End """
@@ -88,19 +95,17 @@ class Pipeline(Block):
 
     def predict(self, store: Store, plugins: List["Plugin"]) -> pd.Series:
         logger.log(f"Predicting on {self.id}", level=logger.levels.ONE)
+        datasource = self.datasource_predict
+
         """Begin"""
-        last_output = process_block(
-            self.datasource_predict, store, plugins, train=False
-        )
+        last_output = process_block(datasource, store, plugins, train=False)
         for plugin in plugins:
             plugin.print_me("on_predict_begin")
             store, last_output = plugin.on_predict_begin(store, last_output)
 
         """ Core """
         for model in self.models:
-            last_output = predict(
-                model, last_output, self.datasource_predict.get_labels(), store
-            )
+            last_output = predict(model, last_output, datasource.get_labels(), store)
 
         """ End """
         for plugin in plugins:
@@ -160,6 +165,14 @@ class Pipeline(Block):
             for block in flatten(entire_pipeline)
             if isinstance(block, DataSource)
         }
+
+    def get_datasource_types(self) -> List[str]:
+        if self.children(Const.source_type_fit) == self.children(
+            Const.source_type_predict
+        ):
+            return [Const.source_type_fit]
+        else:
+            return [Const.source_type_fit, Const.source_type_predict]
 
 
 def get_source_hierarchy(pipeline: Pipeline, source_hierarchy: Hierarchy) -> Hierarchy:
