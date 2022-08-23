@@ -84,7 +84,11 @@ hf_distilbert = Pipeline(
     datasource_fit=tweet_eval_hate,
     datasource_predict=tweet_eval_hate,
     models=[
-        HuggingfaceModel("distilbert-binary", huggingface_distil_bert_config),
+        HuggingfaceModel(
+            "distilbert-binary",
+            huggingface_distil_bert_config,
+            dict_lookup={"LABEL_0": 0, "LABEL_1": 1},
+        ),
         ClassificationOutputAdaptor(select=0),
     ],
 )
@@ -95,7 +99,16 @@ hf_distilbert_uncased_emotion = Pipeline(
     datasource_predict=tweet_eval_hate,
     models=[
         HuggingfaceModel(
-            "distilbert-emotion", huggingface_distilbert_uncased_emotion_config
+            "distilbert-emotion",
+            huggingface_distilbert_uncased_emotion_config,
+            dict_lookup={
+                "sadness": 0,
+                "joy": 1,
+                "anger": 2,
+                "fear": 3,
+                "love": 4,
+                "surprise": 5,
+            },
         ),
         ClassificationOutputAdaptor(select=0),
     ],
