@@ -3,7 +3,7 @@ from typing import Optional
 import pandas as pd
 from spello.model import SpellCorrectionModel
 
-from configs import Const
+from constants import Const
 from type import DataType
 
 from .base import Augmenter

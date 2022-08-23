@@ -14,6 +14,7 @@ from .concat import Concat
 from type import DataType
 
 from utils.process_block import process_block
+from constants import Const
 
 
 class Pipeline(Block):

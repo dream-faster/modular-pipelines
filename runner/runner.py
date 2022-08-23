@@ -3,7 +3,7 @@ from copy import deepcopy
 from typing import Dict, List, Optional, Union
 
 import pandas as pd
-from configs import Const
+from constants import Const
 from plugins import IntegrityChecker, PipelineAnalyser
 from plugins.base import Plugin
 from type import Experiment

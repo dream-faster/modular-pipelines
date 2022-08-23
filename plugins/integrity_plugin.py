@@ -6,6 +6,7 @@ from type import DataType, Hierarchy
 
 from .base import Plugin
 from utils.printing import logger
+from constants import Const
 
 
 class IntegrityChecker(Plugin):

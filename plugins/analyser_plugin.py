@@ -6,6 +6,7 @@ from blocks.pipeline import Pipeline
 
 from .base import Plugin
 from utils.printing import logger
+from constants import Const
 
 
 class PipelineAnalyser(Plugin):
