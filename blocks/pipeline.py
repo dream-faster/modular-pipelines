@@ -182,6 +182,12 @@ class Pipeline(Block):
         else:
             return [SourceTypes.fit, SourceTypes.predict]
 
+    def get_labels(self, source_type: SourceTypes) -> pd.Series:
+        if source_type == SourceTypes.predict:
+            return self.datasource_predict.get_labels(source_type)
+        else:
+            return self.datasource.get_labels(source_type)
+
 
 def get_source_hierarchy(pipeline: Pipeline, source_hierarchy: Hierarchy) -> Hierarchy:
     current_pipeline_hierarchy = Hierarchy(

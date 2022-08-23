@@ -171,20 +171,20 @@ single_dataset_experiments_tweeteval = [
     Experiment(
         project_name="hate-speech-detection-tweeteval",
         run_name="tweeteval",
-        # dataloader=dataloader_tweeteval,
         dataset_category=DatasetSplit.train,
         pipeline=sklearn,
         metrics=metrics,
         train=True,
+        global_dataloader=dataloader_tweeteval,
     ),
     Experiment(
         project_name="hate-speech-detection-tweeteval",
         run_name="tweeteval",
-        # dataloader=dataloader_tweeteval,
         dataset_category=DatasetSplit.test,
         pipeline=sklearn,
         metrics=metrics,
         train=False,
+        global_dataloader=dataloader_tweeteval,
     ),
 ]
 
@@ -192,20 +192,20 @@ single_dataset_experiments_tweeteval_balanced = [
     Experiment(
         project_name="hate-speech-detection-tweeteval-balanced",
         run_name="tweeteval",
-        # dataloader=dataloader_tweeteval.set_attr("sampler", RandomOverSampler()),
         dataset_category=DatasetSplit.train,
         pipeline=sklearn,
         metrics=metrics,
         train=True,
+        global_dataloader=dataloader_tweeteval.set_attr("sampler", RandomOverSampler()),
     ),
     Experiment(
         project_name="hate-speech-detection-tweeteval-balanced",
         run_name="tweeteval",
-        # dataloader=dataloader_tweeteval.set_attr("sampler", RandomOverSampler()),
         dataset_category=DatasetSplit.test,
         pipeline=sklearn,
         metrics=metrics,
         train=False,
+        global_dataloader=dataloader_tweeteval.set_attr("sampler", RandomOverSampler()),
     ),
 ]
 
@@ -215,20 +215,20 @@ cross_dataset_experiments_tweeteval_hatecheck = [
     Experiment(
         project_name="hate-speech-detection-cross-tweeteval-hatecheck",
         run_name="tweeteval",
-        # dataloader=dataloader_tweeteval,
         dataset_category=DatasetSplit.train,
         pipeline=sklearn,
         metrics=metrics,
         train=True,
+        global_dataloader=dataloader_tweeteval,
     ),
     Experiment(
         project_name="hate-speech-detection-cross-tweeteval-hatecheck",
         run_name="hatecheck",
-        # dataloader=get_hatecheck_dataloader(),
         dataset_category=DatasetSplit.test,
         pipeline=sklearn,
         metrics=metrics,
         train=False,
+        global_dataloader=get_hatecheck_dataloader(),
     ),
 ]
 
@@ -237,20 +237,20 @@ cross_dataset_experiments_tweeteval_dynahate = [
     Experiment(
         project_name="hate-speech-detection-cross-tweeteval-dynahate",
         run_name="tweeteval",
-        # dataloader=dataloader_tweeteval,
         dataset_category=DatasetSplit.train,
         pipeline=sklearn,
         metrics=metrics,
         train=True,
+        global_dataloader=dataloader_tweeteval,
     ),
     Experiment(
         project_name="hate-speech-detection-cross-tweeteval-dynahate",
         run_name="dynahate",
-        # dataloader=get_dynahate_dataloader(),
         dataset_category=DatasetSplit.test,
         pipeline=sklearn,
         metrics=metrics,
         train=False,
+        global_dataloader=get_dynahate_dataloader(),
     ),
 ]
 
@@ -258,20 +258,20 @@ cross_dataset_experiments_tweeteval_merged = [
     Experiment(
         project_name="hate-speech-detection-cross-tweeteval-merged",
         run_name="tweeteval",
-        # dataloader=dataloader_tweeteval,
         dataset_category=DatasetSplit.train,
         pipeline=sklearn,
         metrics=metrics,
         train=True,
+        global_dataloader=dataloader_tweeteval,
     ),
     Experiment(
         project_name="hate-speech-detection-cross-tweeteval-merged",
         run_name="merged",
-        # dataloader=data_merged_train,
         dataset_category=DatasetSplit.test,
         pipeline=sklearn,
         metrics=metrics,
         train=False,
+        global_dataloader=data_merged_train,
     ),
 ]
 
@@ -281,20 +281,20 @@ cross_dataset_experiments_merged_hatecheck = [
     Experiment(
         project_name="hate-speech-detection-cross-merged-hatecheck",
         run_name="merged_dataset",
-        # dataloader=data_merged_train,
         dataset_category=DatasetSplit.train,
         pipeline=sklearn,
         metrics=metrics,
         train=True,
+        global_dataloader=data_merged_train,
     ),
     Experiment(
         project_name="hate-speech-detection-cross-merged-hatecheck",
         run_name="hatecheck",
-        # dataloader=get_hatecheck_dataloader(),
         dataset_category=DatasetSplit.test,
         pipeline=sklearn,
         metrics=metrics,
         train=False,
+        global_dataloader=get_hatecheck_dataloader(),
     ),
 ]
 
@@ -303,20 +303,20 @@ cross_dataset_experiments_merged_dynahate = [
     Experiment(
         project_name="hate-speech-detection-cross-merged-dynahate",
         run_name="merged_dataset",
-        # dataloader=data_merged_train,
         dataset_category=DatasetSplit.train,
         pipeline=sklearn,
         metrics=metrics,
         train=True,
+        global_dataloader=data_merged_train,
     ),
     Experiment(
         project_name="hate-speech-detection-cross-merged-dynahate",
         run_name="dynahate",
-        # dataloader=get_dynahate_dataloader(),
         dataset_category=DatasetSplit.test,
         pipeline=sklearn,
         metrics=metrics,
         train=False,
+        global_dataloader=get_dynahate_dataloader(),
     ),
 ]
 
@@ -325,20 +325,20 @@ cross_dataset_experiments_merged_merged = [
     Experiment(
         project_name="hate-speech-detection-cross-merged-merged",
         run_name="merged_dataset",
-        # dataloader=data_merged_train,
         dataset_category=DatasetSplit.train,
         pipeline=sklearn,
         metrics=metrics,
         train=True,
+        global_dataloader=data_merged_train,
     ),
     Experiment(
         project_name="hate-speech-detection-cross-merged-merged",
         run_name="merged_dataset",
-        # dataloader=data_merged_train,
         dataset_category=DatasetSplit.test,
         pipeline=sklearn,
         metrics=metrics,
         train=False,
+        global_dataloader=data_merged_train,
     ),
 ]
 

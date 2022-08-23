@@ -8,6 +8,7 @@ from plugins import IntegrityChecker, PipelineAnalyser
 from plugins.base import Plugin
 from type import Experiment
 from runner.utils import (
+    overwrite_dataloaders_,
     overwrite_model_configs_,
     append_parent_path_and_id_,
     add_experiment_config_to_blocks_,
@@ -34,6 +35,8 @@ class Runner:
 
         add_experiment_config_to_blocks_(self.pipeline, experiment)
         overwrite_model_configs_(experiment, self.pipeline)
+        if self.experiment.global_dataloader is not None:
+            overwrite_dataloaders_(self.pipeline, experiment.global_dataloader)
         append_parent_path_and_id_(self.pipeline)
 
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"

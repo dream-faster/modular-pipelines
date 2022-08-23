@@ -4,7 +4,7 @@ from constants import Const
 
 from plugins import WandbConfig, WandbPlugin, OutputAnalyserPlugin
 from runner.runner import Runner
-from type import Experiment, StagingConfig, StagingNames
+from type import Experiment, StagingConfig, StagingNames, SourceTypes
 from runner.utils import overwrite_preprocessing_configs_
 from utils.json import dump_str
 import traceback
@@ -34,13 +34,18 @@ def run(
                     ),
                     dict(
                         run_config=experiment.get_configs(),
-                        preprocess_config=[
-                            experiment.pipeline.get_datasource_configs(SourceTypes.fit),
-                            experiment.pipeline.get_datasource_configs(
-                                SourceTypes.predict
-                            ),
-                        ],
-                        pipeline_configs=experiment.pipeline.get_configs(),
+                        preprocess_config={
+                            source_type.value: experiment.pipeline.get_datasource_configs(
+                                source_type
+                            )
+                            for source_type in experiment.pipeline.get_datasource_types()
+                        },
+                        pipeline_configs={
+                            source_type.value: experiment.pipeline.get_configs(
+                                source_type
+                            )
+                            for source_type in experiment.pipeline.get_datasource_types()
+                        },
                     ),
                 )
             ]
@@ -83,7 +88,8 @@ if __name__ == "__main__":
     )
 
     run(
-        all_tweeteval_experiments,
-        +all_tweeteval_cross_experiments + all_merged_cross_experiments,
+        all_tweeteval_experiments
+        + all_tweeteval_cross_experiments
+        + all_merged_cross_experiments,
         staging_config=prod_config,
     )

@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 from runner.store import Store
-from type import PredsWithProbs, Hierarchy
+from type import PredsWithProbs, Hierarchy, SourceTypes
 
 from .base import Block, Element
 from .pipeline import Pipeline

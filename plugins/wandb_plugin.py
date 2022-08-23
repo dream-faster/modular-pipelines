@@ -11,7 +11,7 @@ from blocks.models.huggingface.base import HuggingfaceModel
 from blocks.pipeline import Pipeline
 from constants import Const
 from runner.store import Store
-from type import BaseConfig
+from type import BaseConfig, SourceTypes
 from utils.env_interface import get_env
 from utils.list import flatten
 
@@ -52,7 +52,7 @@ class WandbPlugin(Plugin):
             self.configs,
         )
 
-        for element in flatten(pipeline.children()):
+        for element in flatten(pipeline.children(SourceTypes.fit)):
             if isinstance(element, HuggingfaceModel):
                 element.trainer_callbacks = [
                     WandbCallback(wandb=self.wandb, config=self.config)
