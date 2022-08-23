@@ -20,14 +20,14 @@ from constants import Const
 class Pipeline(Block):
 
     id: str
-    datasource_fit: Union[DataSource, "Pipeline", "Concat"]
+    datasource: Union[DataSource, "Pipeline", "Concat"]
     datasource_predict: Union[DataSource, "Pipeline", "Concat"]
     models: List[Block]
 
     def __init__(
         self,
         id: str,
-        datasource_fit: Union[DataSource, "Pipeline", "Concat"],
+        datasource: Union[DataSource, "Pipeline", "Concat"],
         models: Union[List[Block], Block],
         datasource_predict: Optional[Union[DataSource, "Pipeline", "Concat"]] = None,
     ):
@@ -37,10 +37,10 @@ class Pipeline(Block):
         else:
             self.models = [deepcopy(models)]
 
-        self.datasource_fit = datasource_fit
+        self.datasource = datasource
 
         if datasource_predict is None:
-            self.datasource_predict = datasource_fit
+            self.datasource_predict = datasource
         else:
             self.datasource_predict = datasource_predict
 
@@ -51,11 +51,9 @@ class Pipeline(Block):
             plugin.on_load_begin()
 
         """ Core """
-        if isinstance(self.datasource_fit, Pipeline) or isinstance(
-            self.datasource_fit, Concat
-        ):
-            self.datasource_fit.load(plugins)
-        if self.datasource_predict is not self.datasource_fit:
+        if isinstance(self.datasource, Pipeline) or isinstance(self.datasource, Concat):
+            self.datasource.load(plugins)
+        if self.datasource_predict is not self.datasource:
             if isinstance(self.datasource_predict, Pipeline) or isinstance(
                 self.datasource_predict, Concat
             ):
@@ -71,7 +69,7 @@ class Pipeline(Block):
 
     def fit(self, store: Store, plugins: List["Plugin"]) -> None:
         logger.log(f"Training on {self.id}", level=logger.levels.ONE)
-        datasource = self.datasource_fit
+        datasource = self.datasource
 
         """Begin"""
         last_output = process_block(datasource, store, plugins, train=True)
@@ -128,7 +126,7 @@ class Pipeline(Block):
 
     def children(self, source_type: str) -> List[Element]:
         if source_type == Const.source_type_fit:
-            return self.datasource_fit.children(source_type) + [self] + [self.models]
+            return self.datasource.children(source_type) + [self] + [self.models]
         elif source_type == Const.source_type_predict:
             return (
                 self.datasource_predict.children(source_type) + [self] + [self.models]
@@ -137,7 +135,7 @@ class Pipeline(Block):
     def get_hierarchy(self, source_type: str) -> Hierarchy:
         if source_type == Const.source_type_fit:
             return get_source_hierarchy(
-                self, self.datasource_fit.get_hierarchy(source_type)
+                self, self.datasource.get_hierarchy(source_type)
             )
         elif source_type == Const.source_type_predict:
             return get_source_hierarchy(
