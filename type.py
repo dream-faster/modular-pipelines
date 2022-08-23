@@ -109,7 +109,7 @@ class Experiment:
     dataset_category: DatasetSplit
     pipeline: "Pipeline"
     metrics: Evaluators
-    global_dataloader: Optional["DataLoader"] # If set, will override all DataSource's DataLoaders
+    global_dataloader: Optional["DataLoader"] = None # If set, will override all DataSource's DataLoaders
     force_fit: Optional[bool] = None  # If set to True will make all models train
 
     def get_configs(self):
