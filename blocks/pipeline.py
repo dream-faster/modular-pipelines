@@ -168,12 +168,8 @@ class Pipeline(Block):
 
     def get_datasource_types(self) -> List[SourceTypes]:
         """
-        Returns the type of Datas
-
-        Example
-        -------
-        if ``save_remote`` is set in the experiment configuration file,
-        it will overwrite ``save_remote`` in all models that have that attribute.
+        Checks if any block in the pipeline has
+        a different datasource for SourceTypes.predict and Sourcetypes.fit.
 
         Returns
         -------
