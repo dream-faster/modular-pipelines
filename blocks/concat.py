@@ -40,14 +40,14 @@ class Concat(Element):
     def transform(self, data: List[pd.Series]) -> pd.Series:
         raise NotImplementedError()
 
-    def children(self) -> List[Element]:
-        return [self] + [block.children() for block in self.blocks]
+    def children(self, source_type: str) -> List[Element]:
+        return [self] + [block.children(source_type) for block in self.blocks]
 
-    def get_hierarchy(self, type: str) -> Hierarchy:
+    def get_hierarchy(self, source_type: str) -> Hierarchy:
         return Hierarchy(
             name=self.id,
             obj=self,
-            children=[block.get_hierarchy(type) for block in self.blocks],
+            children=[block.get_hierarchy(source_type) for block in self.blocks],
         )
 
 

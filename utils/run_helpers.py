@@ -29,7 +29,10 @@ def overwrite_preprocessing_configs_(
 
     """
     datasources = [
-        block for block in flatten(pipeline.children()) if type(block) == DataSource
+        block
+        for pipeline_ in [pipeline.children("fit"), pipeline.children("predict")]
+        for block in flatten(pipeline_)
+        if type(block) == DataSource
     ]
     if (
         hasattr(staging_config, "limit_dataset_to")
@@ -77,10 +80,11 @@ def overwrite_model_configs_(config: Experiment, pipeline: Pipeline) -> None:
 
     for key, value in vars(config).items():
         if value is not None:
-            for model in flatten(pipeline.children()):
-                if hasattr(model, "config"):
-                    if hasattr(model.config, key):
-                        vars(model.config)[key] = value
+            for pipeline_ in [pipeline.children("fit"), pipeline.children("predict")]:
+                for model in flatten(pipeline_):
+                    if hasattr(model, "config"):
+                        if hasattr(model.config, key):
+                            vars(model.config)[key] = value
 
 
 def append_parent_path_and_id_(pipeline: Pipeline) -> None:
@@ -127,19 +131,25 @@ def append_parent_path_and_id_(pipeline: Pipeline) -> None:
 def add_experiment_config_to_blocks_(
     pipeline: Pipeline, experiment: Experiment
 ) -> None:
-    for model in flatten(pipeline.children()):
-        model.run_context = RunContext(
-            project_name=experiment.project_name,
-            run_name=experiment.run_name,
-            train=experiment.train,
-        )
+    for pipeline_ in [pipeline.children("fit"), pipeline.children("predict")]:
+        for model in flatten(pipeline_):
+            model.run_context = RunContext(
+                project_name=experiment.project_name,
+                run_name=experiment.run_name,
+                train=experiment.train,
+            )
 
 
 def add_split_category_to_datasource_(
     pipeline: Pipeline, experiment: Experiment
 ) -> None:
+
     datasources = [
-        block for block in flatten(pipeline.children()) if type(block) == DataSource
+        block
+        for pipeline_ in [pipeline.children("fit"), pipeline.children("predict")]
+        for block in flatten(pipeline_)
+        if type(block) == DataSource
     ]
+
     for datasource in datasources:
         datasource.category = experiment.dataset_category

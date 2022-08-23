@@ -92,8 +92,8 @@ class DataSource(Element):
     def get_labels(self) -> pd.Series:
         return self.data[Const.label_col]
 
-    def children(self) -> List[Element]:
+    def children(self, source_type: str) -> List[Element]:
         return [self]
 
-    def get_hierarchy(self, type: str) -> Hierarchy:
+    def get_hierarchy(self, source_type: str) -> Hierarchy:
         return Hierarchy(name=self.id, obj=self)

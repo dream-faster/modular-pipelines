@@ -120,8 +120,37 @@ class Pipeline(Block):
             if model.config.save and model.config.save_remote:
                 model.save_remote()
 
-    def children(self) -> List[Element]:
-        return self.datasource_fit.children() + [self] + [self.models]
+    def children(self, source_type: str) -> List[Element]:
+        if source_type == "fit":
+            return self.datasource_fit.children(source_type) + [self] + [self.models]
+        elif source_type == "predict":
+            return (
+                self.datasource_predict.children(source_type) + [self] + [self.models]
+            )
+
+    def get_hierarchy(self, source_type: str) -> Hierarchy:
+        if source_type == "fit":
+            return self.get_source_hierarchy(
+                self.datasource_fit.get_hierarchy(source_type)
+            )
+        elif source_type == "predict":
+            return self.get_source_hierarchy(
+                self.datasource_predict.get_hierarchy(source_type)
+            )
+
+    def get_configs(self, source_type: str) -> Dict[str, BaseConfig]:
+        entire_pipeline = self.children(source_type)
+        return {
+            block.id: vars(block.config)
+            for block in flatten(entire_pipeline)
+            if not any(
+                [
+                    isinstance(block, DataSource),
+                    isinstance(block, Pipeline),
+                    isinstance(block, Concat),
+                ]
+            )
+        }
 
     def get_source_hierarchy(self, source_hierarchy: Hierarchy) -> Hierarchy:
         current_pipeline_hierarchy = Hierarchy(
@@ -148,30 +177,8 @@ class Pipeline(Block):
             source_hierarchy.children = [current_pipeline_hierarchy]
             return source_hierarchy
 
-    def get_hierarchy(self, type: str) -> Hierarchy:
-        if type == "fit":
-            return self.get_source_hierarchy(self.datasource_fit.get_hierarchy(type))
-        elif type == "predict":
-            return self.get_source_hierarchy(
-                self.datasource_predict.get_hierarchy(type)
-            )
-
-    def get_configs(self) -> Dict[str, BaseConfig]:
-        entire_pipeline = self.children()
-        return {
-            block.id: vars(block.config)
-            for block in flatten(entire_pipeline)
-            if not any(
-                [
-                    isinstance(block, DataSource),
-                    isinstance(block, Pipeline),
-                    isinstance(block, Concat),
-                ]
-            )
-        }
-
-    def get_datasource_configs(self) -> Dict[str, BaseConfig]:
-        entire_pipeline = self.children()
+    def get_datasource_configs(self, source_type: str) -> Dict[str, BaseConfig]:
+        entire_pipeline = self.children(source_type)
         return {
             block.id: vars(block.dataloader.preprocessing_configs[0])
             for block in flatten(entire_pipeline)
