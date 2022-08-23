@@ -93,7 +93,9 @@ huggingface_distilroberta = Pipeline(
 full_pipeline = Pipeline(
     "nlp_hf_meta-model-pipeline",
     VectorConcat(
-        "concat-source", [huggingface_distilroberta, huggingface_baseline_distilbert]
+        "concat-source",
+        [huggingface_distilroberta, huggingface_baseline_distilbert],
+        tweet_eval_hate,
     ),
     [
         SKLearnModel("sklearn-meta-model", sklearn_config),
