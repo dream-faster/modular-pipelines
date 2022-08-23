@@ -42,7 +42,7 @@ class OutputAnalyserPlugin(Plugin):
         return store, last_output
 
     def on_run_end(self, pipeline: Pipeline, store: Store):
-        input = pipeline.datasource.data[Const.input_col]
+        input = pipeline.datasource.deplate(store, [], False)
         final_output = store.get_data(Const.final_output)
         original_labels = pipeline.datasource.get_labels()
 

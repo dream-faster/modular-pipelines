@@ -48,7 +48,8 @@ def run(
             else []
         )
         runner = Runner(
-            experiment, plugins=logger_plugins  # + [OutputAnalyserPlugin()],
+            experiment,
+            plugins=logger_plugins + [OutputAnalyserPlugin()],
         )
         try:
             runner.run()
