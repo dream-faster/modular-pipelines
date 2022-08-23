@@ -8,7 +8,7 @@ from torch.nn import functional as F
 from torch.utils.data import DataLoader, random_split
 
 from blocks.models.base import Model
-from configs.constants import Const
+from constants import Const
 from type import DataType, Evaluators, PytorchConfig
 
 from .decoder import Decoder

@@ -6,7 +6,7 @@ from blocks.pipeline import Pipeline
 
 from .base import Plugin
 from runner.store import Store
-from configs.constants import Const
+from constants import Const
 
 from collections import Counter
 import numpy as np

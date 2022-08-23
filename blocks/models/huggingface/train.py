@@ -9,7 +9,7 @@ from transformers.tokenization_utils import PreTrainedTokenizer
 from transformers.modeling_utils import PreTrainedModel
 from transformers.data.data_collator import DataCollatorWithPadding
 
-from configs.constants import Const
+from constants import Const
 from type import HuggingfaceConfig
 
 

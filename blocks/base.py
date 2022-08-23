@@ -7,7 +7,7 @@ from blocks.io import pickle_loading, pickle_saving
 from data.dataloader import DataLoader
 from runner.store import Store
 from type import BaseConfig, DataType, Hierarchy, RunContext, DatasetSplit
-from configs.constants import Const
+from constants import Const
 from utils.printing import logger
 
 

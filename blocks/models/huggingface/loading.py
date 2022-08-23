@@ -8,7 +8,7 @@ from transformers.modeling_utils import PreTrainedModel
 from transformers.tokenization_utils import PreTrainedTokenizer
 from transformers.models.auto.tokenization_auto import AutoTokenizer
 from transformers.models.auto.modeling_auto import AutoModelForSequenceClassification
-from configs.constants import Const
+from constants import Const
 import torch
 
 device = 0 if torch.cuda.is_available() else -1

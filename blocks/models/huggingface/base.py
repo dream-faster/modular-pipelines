@@ -5,7 +5,7 @@ import pandas as pd
 import torch
 from transformers import PreTrainedTokenizer
 from blocks.models.base import Model
-from configs.constants import Const
+from constants import Const
 from datasets import ClassLabel, Features, Value
 from datasets.arrow_dataset import Dataset
 from sklearn.model_selection import train_test_split

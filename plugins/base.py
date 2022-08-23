@@ -4,7 +4,7 @@ from typing import Any, Callable, List, Tuple
 import pandas as pd
 
 from blocks.pipeline import Pipeline
-from configs.constants import LogConst
+from constants import LogConst
 from runner.store import Store
 from utils.random import random_string
 from utils.printing import logger

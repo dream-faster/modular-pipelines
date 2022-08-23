@@ -3,7 +3,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import MultinomialNB
 from type import SKLearnConfig
-from configs.constants import Const
+from constants import Const
 
 sklearn_config = SKLearnConfig(
     frozen=False,
@@ -24,5 +24,5 @@ sklearn_config = SKLearnConfig(
     ),
     one_vs_rest=False,
     save_remote=False,
-    calibrate=False
+    calibrate=False,
 )

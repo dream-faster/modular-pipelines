@@ -2,7 +2,7 @@ import pandas as pd
 from datasets.arrow_dataset import Dataset
 from sklearn.model_selection import train_test_split
 
-from configs.constants import Const
+from constants import Const
 from type import PreprocessConfig, DatasetSplit
 from data.dataloader import DataLoader
 

@@ -1,6 +1,6 @@
 from typing import List
 
-from configs.constants import Const
+from constants import Const
 
 from plugins import WandbConfig, WandbPlugin, OutputAnalyserPlugin
 from runner.runner import Runner

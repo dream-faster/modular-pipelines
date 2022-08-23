@@ -9,7 +9,7 @@ from transformers import TrainerCallback
 import wandb
 from blocks.models.huggingface.base import HuggingfaceModel
 from blocks.pipeline import Pipeline
-from configs.constants import Const
+from constants import Const
 from runner.store import Store
 from type import BaseConfig
 from utils.env_interface import get_env

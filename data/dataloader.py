@@ -4,7 +4,7 @@ from type import (
     TrainDataset,
     TestDataset,
 )
-from configs.constants import Const
+from constants import Const
 from typing import List, Callable, Optional, Union
 from datasets.load import load_dataset
 
