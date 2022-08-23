@@ -69,7 +69,7 @@ class Runner:
         logger.log("🤔 Evaluating entire pipeline")
         stats = evaluate(
             preds_probs,
-            self.pipeline.datasource.get_labels(),
+            self.pipeline.datasource_fit.get_labels(),
             self.experiment.metrics,
             self.run_path,
         )
