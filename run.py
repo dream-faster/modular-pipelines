@@ -35,8 +35,12 @@ def run(
                     dict(
                         run_config=experiment.get_configs(),
                         preprocess_config=[
-                            experiment.pipeline.get_datasource_configs("fit"),
-                            experiment.pipeline.get_datasource_configs("predict"),
+                            experiment.pipeline.get_datasource_configs(
+                                Const.source_type_fit
+                            ),
+                            experiment.pipeline.get_datasource_configs(
+                                Const.source_type_predict
+                            ),
                         ],
                         pipeline_configs=experiment.pipeline.get_configs(),
                     ),

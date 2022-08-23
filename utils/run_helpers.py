@@ -30,7 +30,10 @@ def overwrite_preprocessing_configs_(
     """
     datasources = [
         block
-        for pipeline_ in [pipeline.children("fit"), pipeline.children("predict")]
+        for pipeline_ in [
+            pipeline.children(Const.source_type_fit),
+            pipeline.children(Const.source_type_predict),
+        ]
         for block in flatten(pipeline_)
         if type(block) == DataSource
     ]
@@ -80,7 +83,10 @@ def overwrite_model_configs_(config: Experiment, pipeline: Pipeline) -> None:
 
     for key, value in vars(config).items():
         if value is not None:
-            for pipeline_ in [pipeline.children("fit"), pipeline.children("predict")]:
+            for pipeline_ in [
+                pipeline.children(Const.source_type_fit),
+                pipeline.children(Const.source_type_predict),
+            ]:
                 for model in flatten(pipeline_):
                     if hasattr(model, "config"):
                         if hasattr(model.config, key):
@@ -105,8 +111,8 @@ def append_parent_path_and_id_(pipeline: Pipeline) -> None:
     """
 
     entire_pipelines = [
-        pipeline.get_hierarchy("fit"),
-        pipeline.get_hierarchy("predict"),
+        pipeline.get_hierarchy(Const.source_type_fit),
+        pipeline.get_hierarchy(Const.source_type_predict),
     ]
 
     for entire_pipeline in entire_pipelines:
@@ -131,7 +137,10 @@ def append_parent_path_and_id_(pipeline: Pipeline) -> None:
 def add_experiment_config_to_blocks_(
     pipeline: Pipeline, experiment: Experiment
 ) -> None:
-    for pipeline_ in [pipeline.children("fit"), pipeline.children("predict")]:
+    for pipeline_ in [
+        pipeline.children(Const.source_type_fit),
+        pipeline.children(Const.source_type_predict),
+    ]:
         for model in flatten(pipeline_):
             model.run_context = RunContext(
                 project_name=experiment.project_name,
@@ -146,7 +155,10 @@ def add_split_category_to_datasource_(
 
     datasources = [
         block
-        for pipeline_ in [pipeline.children("fit"), pipeline.children("predict")]
+        for pipeline_ in [
+            pipeline.children(Const.source_type_fit),
+            pipeline.children(Const.source_type_predict),
+        ]
         for block in flatten(pipeline_)
         if type(block) == DataSource
     ]

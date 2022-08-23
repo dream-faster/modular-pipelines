@@ -11,7 +11,7 @@ from utils.printing import logger
 class PipelineAnalyser(Plugin):
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
         logger.log("🗼 Hierarchy of Models:", level=logger.levels.TWO)
-        for source_type in ["fit", "predict"]:
+        for source_type in [Const.source_type_fit, Const.source_type_predict]:
             logger.log(
                 f"{logger.formats.BOLD}{source_type}{logger.formats.END}",
                 level=logger.levels.THREE,

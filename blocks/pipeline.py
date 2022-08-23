@@ -121,19 +121,19 @@ class Pipeline(Block):
                 model.save_remote()
 
     def children(self, source_type: str) -> List[Element]:
-        if source_type == "fit":
+        if source_type == Const.source_type_fit:
             return self.datasource_fit.children(source_type) + [self] + [self.models]
-        elif source_type == "predict":
+        elif source_type == Const.source_type_predict:
             return (
                 self.datasource_predict.children(source_type) + [self] + [self.models]
             )
 
     def get_hierarchy(self, source_type: str) -> Hierarchy:
-        if source_type == "fit":
+        if source_type == Const.source_type_fit:
             return get_source_hierarchy(
                 self, self.datasource_fit.get_hierarchy(source_type)
             )
-        elif source_type == "predict":
+        elif source_type == Const.source_type_predict:
             return get_source_hierarchy(
                 self, self.datasource_predict.get_hierarchy(source_type)
             )
