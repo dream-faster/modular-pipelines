@@ -11,7 +11,7 @@ from utils.printing import logger
 
 from .base import Block, DataSource, Element
 from .concat import Concat
-from type import DataType
+from type import DataType, SourceTypes
 
 from utils.process_block import process_block
 from constants import Const
@@ -124,25 +124,27 @@ class Pipeline(Block):
             if model.config.save and model.config.save_remote:
                 model.save_remote()
 
-    def children(self, source_type: str) -> List[Element]:
-        if source_type == Const.source_type_fit:
+    def children(self, source_type: SourceTypes) -> List[Element]:
+        if source_type == SourceTypes.fit:
             return self.datasource.children(source_type) + [self] + [self.models]
-        elif source_type == Const.source_type_predict:
+        elif source_type == SourceTypes.predict:
             return (
                 self.datasource_predict.children(source_type) + [self] + [self.models]
             )
+        else:
+            raise KeyError(f"source-type: {source_type} not a valid type")
 
-    def get_hierarchy(self, source_type: str) -> Hierarchy:
-        if source_type == Const.source_type_fit:
+    def get_hierarchy(self, source_type: SourceTypes) -> Hierarchy:
+        if source_type == SourceTypes.fit:
             return get_source_hierarchy(
                 self, self.datasource.get_hierarchy(source_type)
             )
-        elif source_type == Const.source_type_predict:
+        elif source_type == SourceTypes.predict:
             return get_source_hierarchy(
                 self, self.datasource_predict.get_hierarchy(source_type)
             )
 
-    def get_configs(self, source_type: str) -> Dict[str, BaseConfig]:
+    def get_configs(self, source_type: SourceTypes) -> Dict[str, dict]:
         entire_pipeline = self.children(source_type)
         return {
             block.id: vars(block.config)
@@ -156,7 +158,7 @@ class Pipeline(Block):
             )
         }
 
-    def get_datasource_configs(self, source_type: str) -> Dict[str, BaseConfig]:
+    def get_datasource_configs(self, source_type: SourceTypes) -> Dict[str, dict]:
         entire_pipeline = self.children(source_type)
         return {
             block.id: vars(block.dataloader.preprocessing_configs[0])
@@ -164,13 +166,25 @@ class Pipeline(Block):
             if isinstance(block, DataSource)
         }
 
-    def get_datasource_types(self) -> List[str]:
-        if self.children(Const.source_type_fit) == self.children(
-            Const.source_type_predict
-        ):
-            return [Const.source_type_fit]
+    def get_datasource_types(self) -> List[SourceTypes]:
+        """
+        Returns the type of Datas
+
+        Example
+        -------
+        if ``save_remote`` is set in the experiment configuration file,
+        it will overwrite ``save_remote`` in all models that have that attribute.
+
+        Returns
+        -------
+        List[str]
+
+        """
+
+        if self.children(SourceTypes.fit) == self.children(SourceTypes.predict):
+            return [SourceTypes.fit]
         else:
-            return [Const.source_type_fit, Const.source_type_predict]
+            return [SourceTypes.fit, SourceTypes.predict]
 
 
 def get_source_hierarchy(pipeline: Pipeline, source_hierarchy: Hierarchy) -> Hierarchy:

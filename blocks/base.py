@@ -6,7 +6,7 @@ import pandas as pd
 from blocks.io import pickle_loading, pickle_saving
 from data.dataloader import DataLoader
 from runner.store import Store
-from type import BaseConfig, DataType, Hierarchy, RunContext, DatasetSplit
+from type import BaseConfig, DataType, Hierarchy, RunContext, DatasetSplit, SourceTypes
 from constants import Const
 from utils.printing import logger
 
@@ -97,8 +97,8 @@ class DataSource(Element):
     def get_labels(self) -> pd.Series:
         return self.data[Const.label_col]
 
-    def children(self, source_type: str) -> List[Element]:
+    def children(self, source_type: SourceTypes) -> List[Element]:
         return [self]
 
-    def get_hierarchy(self, source_type: str) -> Hierarchy:
+    def get_hierarchy(self, source_type: SourceTypes) -> Hierarchy:
         return Hierarchy(name=self.id, obj=self)

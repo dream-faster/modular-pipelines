@@ -40,7 +40,7 @@ class Ensemble(Pipeline):
     def is_fitted(self) -> bool:
         return all([pipeline.is_fitted() for pipeline in self.pipelines])
 
-    def children(self, source_type: str) -> List[Element]:
+    def children(self, source_type: SourceTypes) -> List[Element]:
         return [self] + [pipeline.children(source_type) for pipeline in self.pipelines]
 
     def get_hierarchy(self) -> Hierarchy:

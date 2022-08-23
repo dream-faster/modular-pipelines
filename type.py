@@ -121,6 +121,11 @@ class StagingNames(Enum):
     exp = "experiment"
 
 
+class SourceTypes(Enum):
+    fit = "fit"
+    predict = "predict"
+
+
 @dataclass
 class StagingConfig:
     name: StagingNames

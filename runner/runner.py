@@ -7,7 +7,7 @@ from constants import Const
 from plugins import IntegrityChecker, PipelineAnalyser
 from plugins.base import Plugin
 from type import Experiment
-from utils.run_helpers import (
+from runner.utils import (
     overwrite_model_configs_,
     append_parent_path_and_id_,
     add_experiment_config_to_blocks_,

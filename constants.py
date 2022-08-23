@@ -17,9 +17,6 @@ class Const:
     final_eval_name = "final"
     seed = 42
 
-    source_type_fit = "fit"
-    source_type_predict = "predict"
-
 
 class LogConst:
     plugin_prefix = "🔌  Plugin"

@@ -6,7 +6,7 @@ import pandas as pd
 from runner.store import Store
 
 from .base import DataSource, Element
-from type import BaseConfig, DataType, Hierarchy
+from type import BaseConfig, DataType, Hierarchy, SourceTypes
 from utils.process_block import process_block
 
 
@@ -40,10 +40,10 @@ class Concat(Element):
     def transform(self, data: List[pd.Series]) -> pd.Series:
         raise NotImplementedError()
 
-    def children(self, source_type: str) -> List[Element]:
+    def children(self, source_type: SourceTypes) -> List[Element]:
         return [self] + [block.children(source_type) for block in self.blocks]
 
-    def get_hierarchy(self, source_type: str) -> Hierarchy:
+    def get_hierarchy(self, source_type: SourceTypes) -> Hierarchy:
         return Hierarchy(
             name=self.id,
             obj=self,

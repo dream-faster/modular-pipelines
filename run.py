@@ -5,7 +5,7 @@ from constants import Const
 from plugins import WandbConfig, WandbPlugin, OutputAnalyserPlugin
 from runner.runner import Runner
 from type import Experiment, StagingConfig, StagingNames
-from utils.run_helpers import overwrite_preprocessing_configs_
+from runner.utils import overwrite_preprocessing_configs_
 from utils.json import dump_str
 import traceback
 
@@ -35,11 +35,9 @@ def run(
                     dict(
                         run_config=experiment.get_configs(),
                         preprocess_config=[
+                            experiment.pipeline.get_datasource_configs(SourceTypes.fit),
                             experiment.pipeline.get_datasource_configs(
-                                Const.source_type_fit
-                            ),
-                            experiment.pipeline.get_datasource_configs(
-                                Const.source_type_predict
+                                SourceTypes.predict
                             ),
                         ],
                         pipeline_configs=experiment.pipeline.get_configs(),
