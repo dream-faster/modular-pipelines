@@ -43,11 +43,11 @@ class Concat(Element):
     def children(self) -> List[Element]:
         return [self] + [block.children() for block in self.blocks]
 
-    def get_hierarchy(self) -> Hierarchy:
+    def get_hierarchy(self, type: str) -> Hierarchy:
         return Hierarchy(
             name=self.id,
             obj=self,
-            children=[block.get_hierarchy() for block in self.blocks],
+            children=[block.get_hierarchy(type) for block in self.blocks],
         )
 
 

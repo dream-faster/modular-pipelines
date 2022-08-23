@@ -95,5 +95,5 @@ class DataSource(Element):
     def children(self) -> List[Element]:
         return [self]
 
-    def get_hierarchy(self) -> Hierarchy:
+    def get_hierarchy(self, type: str) -> Hierarchy:
         return Hierarchy(name=self.id, obj=self)

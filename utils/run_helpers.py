@@ -100,7 +100,10 @@ def append_parent_path_and_id_(pipeline: Pipeline) -> None:
 
     """
 
-    entire_pipelines = pipeline.get_hierarchy()
+    entire_pipelines = [
+        pipeline.get_hierarchy("fit"),
+        pipeline.get_hierarchy("predict"),
+    ]
 
     for entire_pipeline in entire_pipelines:
 
