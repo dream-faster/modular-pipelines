@@ -130,12 +130,12 @@ class Pipeline(Block):
 
     def get_hierarchy(self, source_type: str) -> Hierarchy:
         if source_type == "fit":
-            return self.get_source_hierarchy(
-                self.datasource_fit.get_hierarchy(source_type)
+            return get_source_hierarchy(
+                self, self.datasource_fit.get_hierarchy(source_type)
             )
         elif source_type == "predict":
-            return self.get_source_hierarchy(
-                self.datasource_predict.get_hierarchy(source_type)
+            return get_source_hierarchy(
+                self, self.datasource_predict.get_hierarchy(source_type)
             )
 
     def get_configs(self, source_type: str) -> Dict[str, BaseConfig]:
@@ -152,31 +152,6 @@ class Pipeline(Block):
             )
         }
 
-    def get_source_hierarchy(self, source_hierarchy: Hierarchy) -> Hierarchy:
-        current_pipeline_hierarchy = Hierarchy(
-            name=self.id,
-            obj=self,
-            children=[child.get_hierarchy() for child in self.models]
-            if hasattr(self, "models")
-            else [],
-        )
-
-        if (
-            hasattr(source_hierarchy, "children")
-            and source_hierarchy.children is not None
-            and len(source_hierarchy.children) > 0
-        ):
-
-            current_pipeline_hierarchy.children = [
-                source_hierarchy
-            ] + current_pipeline_hierarchy.children
-
-            return current_pipeline_hierarchy
-
-        else:
-            source_hierarchy.children = [current_pipeline_hierarchy]
-            return source_hierarchy
-
     def get_datasource_configs(self, source_type: str) -> Dict[str, BaseConfig]:
         entire_pipeline = self.children(source_type)
         return {
@@ -184,3 +159,29 @@ class Pipeline(Block):
             for block in flatten(entire_pipeline)
             if isinstance(block, DataSource)
         }
+
+
+def get_source_hierarchy(pipeline: Pipeline, source_hierarchy: Hierarchy) -> Hierarchy:
+    current_pipeline_hierarchy = Hierarchy(
+        name=pipeline.id,
+        obj=pipeline,
+        children=[child.get_hierarchy() for child in pipeline.models]
+        if hasattr(pipeline, "models")
+        else [],
+    )
+
+    if (
+        hasattr(source_hierarchy, "children")
+        and source_hierarchy.children is not None
+        and len(source_hierarchy.children) > 0
+    ):
+
+        current_pipeline_hierarchy.children = [
+            source_hierarchy
+        ] + current_pipeline_hierarchy.children
+
+        return current_pipeline_hierarchy
+
+    else:
+        source_hierarchy.children = [current_pipeline_hierarchy]
+        return source_hierarchy

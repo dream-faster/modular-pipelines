@@ -80,7 +80,12 @@ class DataSource(Element):
         self.id = id
         self.dataloader = dataloader
 
-    def deplate(self, store: Store, plugins: List["Plugin"], train: bool) -> pd.Series:
+    def deplate(
+        self,
+        store: Optional[Store] = None,
+        plugins: Optional[List["Plugin"]] = None,
+        train: Optional[bool] = None,
+    ) -> pd.Series:
         if not hasattr(self, "data") and hasattr(self, "category"):
             self.data = self.dataloader.load(self.category)
 
