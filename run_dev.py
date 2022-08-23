@@ -1,5 +1,6 @@
 from library.experiments.hate_speech_multi_type_hf import multi_type_hf_run_experiments
-from library.experiments.hate_speech_multi_hf import multi_hf_run_experiments
+
+# from library.experiments.hate_speech_multi_hf import multi_hf_run_experiments
 
 from type import StagingConfig, StagingNames
 
@@ -15,6 +16,6 @@ dev_config = StagingConfig(
 )
 
 run(
-    multi_hf_run_experiments,
+    multi_type_hf_run_experiments,
     staging_config=dev_config,
 )

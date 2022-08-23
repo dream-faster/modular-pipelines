@@ -13,9 +13,15 @@ from utils.process_block import process_block
 class Concat(Element):
     blocks: List[Union[DataSource, "Pipeline"]]
 
-    def __init__(self, id: str, blocks: List[Union[DataSource, "Pipeline", "Concat"]]):
+    def __init__(
+        self,
+        id: str,
+        blocks: List[Union[DataSource, "Pipeline", "Concat"]],
+        datasource_labels: DataSource,
+    ):
         self.blocks = blocks
         self.id = id
+        self.datasource_labels = datasource_labels
 
     def deplate(self, store: Store, plugins: List["Plugin"], train: bool) -> pd.Series:
         collected = self.transform(
@@ -23,6 +29,9 @@ class Concat(Element):
         )
 
         return collected
+
+    def get_labels(self) -> pd.Series:
+        return self.datasource_labels.get_labels()
 
     def load(self, plugins: List["Plugin"]):
         for block in self.blocks:
