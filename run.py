@@ -1,11 +1,11 @@
 from typing import List
 
-from configs.constants import Const
+from constants import Const
 
 from plugins import WandbConfig, WandbPlugin, OutputAnalyserPlugin
 from runner.runner import Runner
 from type import Experiment, StagingConfig, StagingNames
-from utils.run_helpers import overwrite_preprocessing_configs_
+from runner.utils import overwrite_preprocessing_configs_
 from utils.json import dump_str
 import traceback
 
@@ -19,8 +19,7 @@ def run(
 
     for experiment in experiments:
 
-        overwrite_preprocessing_configs_(experiment.dataloader, staging_config)
-        data = experiment.dataloader.load(experiment.dataset_category)
+        overwrite_preprocessing_configs_(experiment.pipeline, staging_config)
 
         experiment.save_remote = staging_config.save_remote
         experiment.log_remote = staging_config.log_remote
@@ -35,9 +34,12 @@ def run(
                     ),
                     dict(
                         run_config=experiment.get_configs(),
-                        preprocess_config=experiment.dataloader.preprocessing_configs[
-                            0
-                        ].get_configs(),
+                        preprocess_config=[
+                            experiment.pipeline.get_datasource_configs(SourceTypes.fit),
+                            experiment.pipeline.get_datasource_configs(
+                                SourceTypes.predict
+                            ),
+                        ],
                         pipeline_configs=experiment.pipeline.get_configs(),
                     ),
                 )
@@ -46,10 +48,7 @@ def run(
             else []
         )
         runner = Runner(
-            experiment,
-            data={Const.input_col: data[Const.input_col]},
-            labels=data[Const.label_col],
-            plugins=logger_plugins + [OutputAnalyserPlugin()],
+            experiment, plugins=logger_plugins  # + [OutputAnalyserPlugin()],
         )
         try:
             runner.run()

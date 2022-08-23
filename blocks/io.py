@@ -3,7 +3,7 @@ from typing import Union
 
 import joblib
 
-from configs.constants import Const
+from constants import Const
 
 from utils.printing import logger
 

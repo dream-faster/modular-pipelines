@@ -1,7 +1,7 @@
 import pandas as pd
 from datasets.arrow_dataset import Dataset
 
-from configs.constants import Const
+from constants import Const
 from type import PreprocessConfig, DatasetSplit
 from data.dataloader import DataLoader
 
@@ -27,10 +27,14 @@ def transform_hatecheck_dataset(dataset: Dataset, config: PreprocessConfig) -> d
 
 
 def get_hatecheck_dataloader() -> DataLoader:
-    return DataLoader("Paul/hatecheck", PreprocessConfig(
-        train_size=-1,
-        val_size=-1,
-        test_size=-1,
-        input_col="text",
-        label_col="label",
-    ), transform_hatecheck_dataset)
+    return DataLoader(
+        "Paul/hatecheck",
+        PreprocessConfig(
+            train_size=-1,
+            val_size=-1,
+            test_size=-1,
+            input_col="text",
+            label_col="label",
+        ),
+        transform_hatecheck_dataset,
+    )

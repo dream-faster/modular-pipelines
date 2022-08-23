@@ -2,7 +2,7 @@ import pandas as pd
 
 from .base import Adaptor
 from type import DataType, PredsWithProbs
-from typing import List
+from typing import List, Optional
 
 
 class ClassificationOutputAdaptor(Adaptor):

@@ -3,7 +3,7 @@ from typing import Any, List
 import pandas as pd
 import spacy
 
-from configs.constants import Const
+from constants import Const
 from type import DataType
 from utils.spacy import get_spacy
 

@@ -6,6 +6,7 @@ from type import DataType, Hierarchy
 
 from .base import Plugin
 from utils.printing import logger
+from constants import Const
 
 
 class IntegrityChecker(Plugin):
@@ -20,11 +21,16 @@ class IntegrityChecker(Plugin):
 
 
 def check_integrity(pipeline: Pipeline) -> bool:
-    hierarchy = pipeline.get_hierarchy()
-    if hierarchy.children is not None:
-        return __check_linear_block_integrity(hierarchy.children)
-    else:
-        return True
+    hierarchies = [
+        pipeline.get_hierarchy(source_types)
+        for source_types in pipeline.get_datasource_types()
+    ]
+
+    for hierarchy in hierarchies:
+        if hierarchy.children is not None:
+            return __check_linear_block_integrity(hierarchy.children)
+        else:
+            return True
 
 
 def __check_linear_block_integrity(hierarchies: List[Hierarchy]) -> bool:

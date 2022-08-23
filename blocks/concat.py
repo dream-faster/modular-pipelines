@@ -6,16 +6,22 @@ import pandas as pd
 from runner.store import Store
 
 from .base import DataSource, Element
-from type import BaseConfig, DataType, Hierarchy
+from type import BaseConfig, DataType, Hierarchy, SourceTypes
 from utils.process_block import process_block
 
 
 class Concat(Element):
     blocks: List[Union[DataSource, "Pipeline"]]
 
-    def __init__(self, id: str, blocks: List[Union[DataSource, "Pipeline", "Concat"]]):
+    def __init__(
+        self,
+        id: str,
+        blocks: List[Union[DataSource, "Pipeline", "Concat"]],
+        datasource_labels: DataSource,
+    ):
         self.blocks = blocks
         self.id = id
+        self.datasource_labels = datasource_labels
 
     def deplate(self, store: Store, plugins: List["Plugin"], train: bool) -> pd.Series:
         collected = self.transform(
@@ -24,6 +30,9 @@ class Concat(Element):
 
         return collected
 
+    def get_labels(self) -> pd.Series:
+        return self.datasource_labels.get_labels()
+
     def load(self, plugins: List["Plugin"]):
         for block in self.blocks:
             block.load(plugins)
@@ -31,14 +40,14 @@ class Concat(Element):
     def transform(self, data: List[pd.Series]) -> pd.Series:
         raise NotImplementedError()
 
-    def children(self) -> List[Element]:
-        return [self] + [block.children() for block in self.blocks]
+    def children(self, source_type: SourceTypes) -> List[Element]:
+        return [self] + [block.children(source_type) for block in self.blocks]
 
-    def get_hierarchy(self) -> Hierarchy:
+    def get_hierarchy(self, source_type: SourceTypes) -> Hierarchy:
         return Hierarchy(
             name=self.id,
             obj=self,
-            children=[block.get_hierarchy() for block in self.blocks],
+            children=[block.get_hierarchy(source_type) for block in self.blocks],
         )
 
 

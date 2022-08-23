@@ -1,4 +1,5 @@
 from copy import deepcopy
+from enum import Enum
 
 
 from blocks.concat import DataSource, VectorConcat
@@ -19,7 +20,7 @@ from blocks.adaptors.classification_output import ClassificationOutputAdaptor
 
 from ..dataset.tweet_eval import get_tweet_eval_dataloader
 from ..models.sklearn_voting import sklearn_config
-
+from ..dataset.dynahate import get_dynahate_dataloader
 
 """ Models """
 
@@ -41,9 +42,15 @@ huggingface_training_args = TrainingArguments(
 )
 
 
+class HFModels(Enum):
+    distilbert_base_uncased = "distilbert-base-uncased"
+    distilroberta_base = "distilroberta-base"
+    distilbert_emotion = "bhadresh-savani/distilbert-base-uncased-emotion"
+
+
 huggingface_base_config = HuggingfaceConfig(
     preferred_load_origin=None,  # LoadOrigin.local,
-    pretrained_model="distilbert-base-uncased",
+    pretrained_model=HFModels.distilbert_base_uncased.value,
     user_name="semy",
     task_type=HFTaskTypes.sentiment_analysis,
     remote_name_override=None,
@@ -58,12 +65,10 @@ huggingface_base_config = HuggingfaceConfig(
 
 huggingface_distil_bert_config = huggingface_base_config
 
-# huggingface_distilroberta_config = deepcopy(huggingface_base_config)
-# huggingface_distilroberta_config.pretrained_model = "distilroberta-base"
 
 huggingface_distilbert_uncased_emotion_config = (
     huggingface_base_config.set_attr(
-        "pretrained_model", "bhadresh-savani/distilbert-base-uncased-emotion"
+        "pretrained_model", HFModels.distilbert_emotion.value
     )
     .set_attr("num_classes", 6)
     .set_attr("task_type", HFTaskTypes.text_classification)
@@ -73,38 +78,56 @@ huggingface_distilbert_uncased_emotion_config = (
 
 """ Data """
 
-input_data = DataSource("input")
-
-dataloader = get_tweet_eval_dataloader("hate")
+tweet_eval_hate = DataSource("tweet_eval_hate", get_tweet_eval_dataloader("hate"))
+dynahate = DataSource("dynahate", get_dynahate_dataloader())
 
 
 """ Pipelines"""
 
 hf_distilbert = Pipeline(
-    "distilbert-binary",
-    input_data,
-    [
-        HuggingfaceModel("distilbert-binary", huggingface_distil_bert_config),
-        ClassificationOutputAdaptor(select=0),
-    ],
-)
-
-hf_distilbert_uncased_emotion = Pipeline(
-    "distilbert-emotion",
-    input_data,
-    [
+    "hf-pipeline",
+    datasource=tweet_eval_hate,
+    models=[
         HuggingfaceModel(
-            "distilbert-emotion", huggingface_distilbert_uncased_emotion_config
+            "distilbert-binary",
+            huggingface_distil_bert_config,
+            dict_lookup={"LABEL_0": 0, "LABEL_1": 1},
         ),
         ClassificationOutputAdaptor(select=0),
     ],
 )
 
+hf_distilbert_uncased_emotion = Pipeline(
+    "hf-pipeline",
+    datasource=dynahate,
+    models=[
+        HuggingfaceModel(
+            "distilbert-multiclass",
+            huggingface_distilbert_uncased_emotion_config,
+            dict_lookup={
+                "sadness": 0,
+                "joy": 1,
+                "anger": 2,
+                "fear": 3,
+                "love": 4,
+                "surprise": 5,
+            },
+        ),
+        ClassificationOutputAdaptor(select=0),
+    ],
+    datasource_predict=tweet_eval_hate,
+)
+
+vector_concat = VectorConcat(
+    "concat-source",
+    [hf_distilbert, hf_distilbert_uncased_emotion],
+    datasource_labels=tweet_eval_hate,
+)
 
 full_pipeline = Pipeline(
-    "nlp_hf_meta-model-pipeline",
-    VectorConcat("concat-source", [hf_distilbert, hf_distilbert_uncased_emotion]),
-    [
+    "hf-multi-objective-pipeline",
+    datasource=vector_concat,
+    models=[
         SKLearnModel("sklearn-meta-model", sklearn_config),
     ],
 )
@@ -115,8 +138,7 @@ metrics = classification_metrics
 multi_type_hf_run_experiments = [
     Experiment(
         project_name="hate-speech-detection-hf",
-        run_name="hf-meta-model",
-        dataloader=dataloader,
+        run_name="hf-multi-objective",
         dataset_category=DatasetSplit.train,
         pipeline=full_pipeline,
         metrics=metrics,
@@ -124,8 +146,7 @@ multi_type_hf_run_experiments = [
     ),
     Experiment(
         project_name="hate-speech-detection-hf",
-        run_name="hf-meta-model",
-        dataloader=dataloader,
+        run_name="hf-multi-objective",
         dataset_category=DatasetSplit.test,
         pipeline=full_pipeline,
         metrics=metrics,

@@ -5,7 +5,7 @@ import pandas as pd
 import torch
 from transformers import PreTrainedTokenizer
 from blocks.models.base import Model
-from configs.constants import Const
+from constants import Const
 from datasets import ClassLabel, Features, Value
 from datasets.arrow_dataset import Dataset
 from sklearn.model_selection import train_test_split
@@ -42,6 +42,7 @@ class HuggingfaceModel(Model):
         id: str,
         config: HuggingfaceConfig,
         evaluators: Optional[Evaluators] = None,
+        dict_lookup: dict = None,
     ):
         self.id = id
         self.config = config
@@ -49,6 +50,7 @@ class HuggingfaceModel(Model):
         self.trainer = None
         self.pretrained = False
         self.evaluators = evaluators
+        self.dict_lookup = dict_lookup
 
     def load(self) -> None:
         enable_full_determinism(Const.seed)
@@ -129,6 +131,7 @@ class HuggingfaceModel(Model):
             tokenizer=self.tokenizer,
             config=self.config,
             device=device,
+            dict_lookup=self.dict_lookup,
         )
 
     def is_fitted(self) -> bool:

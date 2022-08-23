@@ -11,14 +11,12 @@ from type import (
 from ..dataset.tweet_eval import get_tweet_eval_dataloader
 from blocks.models.perspective import PerspectiveModel
 
-input_data = DataSource("input")
 
-dataloader = get_tweet_eval_dataloader("hate")
-
+tweet_eval_hate = DataSource("tweet_eval_hate", get_tweet_eval_dataloader("hate"))
 
 perspective_baseline_pipeline = Pipeline(
     "perspective_baseline",
-    input_data,
+    tweet_eval_hate,
     [PerspectiveModel("perspective_model")],
 )
 
@@ -29,7 +27,6 @@ perspective_experiments = [
     Experiment(
         project_name="hate-speech-detection-hf",
         run_name="perspective-baseline",
-        dataloader=dataloader,
         dataset_category=DatasetSplit.test,
         pipeline=perspective_baseline_pipeline,
         metrics=metrics,

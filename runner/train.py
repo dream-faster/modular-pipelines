@@ -13,21 +13,22 @@ from utils.printing import logger
 def train_predict(
     model: Block,
     dataset: pd.Series,
+    labels: pd.Series,
     store: Store,
 ):
     if not model.is_fitted() or model.config.frozen == False:
         logger.log(
             f"Block: {model.id}, {model.__class__.__name__}", level=logger.levels.TWO
         )
-        model.fit(dataset, store.get_labels())
+        model.fit(dataset, labels)
 
         if model.config.save:
             model.save()
 
-    return predict(model, dataset, store)
+    return predict(model, dataset, labels, store)
 
 
-def predict(model: Block, dataset: pd.Series, store: Store) -> List:
+def predict(model: Block, dataset: pd.Series, labels: pd.Series, store: Store) -> List:
     logger.log(
         f"Block: {model.id}, {model.__class__.__name__}", level=logger.levels.TWO
     )
@@ -39,7 +40,7 @@ def predict(model: Block, dataset: pd.Series, store: Store) -> List:
         and hasattr(model, "evaluators")
         and model.evaluators is not None
     ):
-        stats = evaluate(output, store, model.evaluators, f"{store.path}/{model.id}")
+        stats = evaluate(output, labels, model.evaluators, f"{store.path}/{model.id}")
 
         store.set_stats(model.id, stats)
 

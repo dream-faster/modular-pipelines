@@ -1,7 +1,7 @@
 import pandas as pd
 from datasets import Dataset
 
-from configs.constants import Const
+from constants import Const
 
 
 class RawDataset(Dataset):

@@ -4,9 +4,10 @@ from typing import Callable, List, Optional, Union
 import pandas as pd
 
 from blocks.io import pickle_loading, pickle_saving
+from data.dataloader import DataLoader
 from runner.store import Store
-from type import BaseConfig, DataType, Hierarchy, RunContext
-from configs.constants import Const
+from type import BaseConfig, DataType, Hierarchy, RunContext, DatasetSplit, SourceTypes
+from constants import Const
 from utils.printing import logger
 
 
@@ -75,17 +76,29 @@ class DataSource(Element):
     inputTypes = DataType.Any
     outputType = DataType.Series
 
-    def __init__(self, id: str):
+    def __init__(self, id: str, dataloader: DataLoader) -> None:
         self.id = id
+        self.dataloader = dataloader
 
-    def deplate(self, store: Store, plugins: List["Plugin"], train: bool) -> pd.Series:
-        return store.get_data(self.id)
+    def deplate(
+        self,
+        store: Optional[Store] = None,
+        plugins: Optional[List["Plugin"]] = None,
+        train: Optional[bool] = None,
+    ) -> pd.Series:
+        if not hasattr(self, "data") and hasattr(self, "category"):
+            self.data = self.dataloader.load(self.category)
+
+        return self.data[Const.input_col]
 
     def load(self) -> None:
         pass
 
-    def children(self) -> List[Element]:
+    def get_labels(self) -> pd.Series:
+        return self.data[Const.label_col]
+
+    def children(self, source_type: SourceTypes) -> List[Element]:
         return [self]
 
-    def get_hierarchy(self) -> Hierarchy:
+    def get_hierarchy(self, source_type: SourceTypes) -> Hierarchy:
         return Hierarchy(name=self.id, obj=self)
