@@ -123,9 +123,7 @@ class Pipeline(Block):
     def children(self) -> List[Element]:
         return self.datasource_fit.children() + [self] + [self.models]
 
-    def get_hierarchy(self) -> Hierarchy:
-        source_hierarchy = self.datasource_fit.get_hierarchy()
-
+    def get_source_hierarchy(self, source_hierarchy: Hierarchy) -> Hierarchy:
         current_pipeline_hierarchy = Hierarchy(
             name=self.id,
             obj=self,
@@ -149,6 +147,15 @@ class Pipeline(Block):
         else:
             source_hierarchy.children = [current_pipeline_hierarchy]
             return source_hierarchy
+
+    def get_hierarchy(self) -> List[Hierarchy]:
+        return [
+            self.get_source_hierarchy(source_hierarchy)
+            for source_hierarchy in [
+                self.datasource_fit.get_hierarchy(),
+                self.datasource_predict.get_hierarchy(),
+            ]
+        ]
 
     def get_configs(self) -> Dict[str, BaseConfig]:
         entire_pipeline = self.children()

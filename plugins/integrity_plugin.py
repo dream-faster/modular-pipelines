@@ -20,11 +20,12 @@ class IntegrityChecker(Plugin):
 
 
 def check_integrity(pipeline: Pipeline) -> bool:
-    hierarchy = pipeline.get_hierarchy()
-    if hierarchy.children is not None:
-        return __check_linear_block_integrity(hierarchy.children)
-    else:
-        return True
+    hierarchies = pipeline.get_hierarchy()
+    for hierarchy in hierarchies:
+        if hierarchy.children is not None:
+            return __check_linear_block_integrity(hierarchy.children)
+        else:
+            return True
 
 
 def __check_linear_block_integrity(hierarchies: List[Hierarchy]) -> bool:

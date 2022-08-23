@@ -100,23 +100,25 @@ def append_parent_path_and_id_(pipeline: Pipeline) -> None:
 
     """
 
-    entire_pipeline = pipeline.get_hierarchy()
+    entire_pipelines = pipeline.get_hierarchy()
 
-    def append(block, parent_path: str, id_with_prefix: str):
-        block.obj.parent_path = parent_path
-        if not isinstance(block.obj, DataSource):
-            block.obj.id += id_with_prefix
+    for entire_pipeline in entire_pipelines:
 
-        if hasattr(block, "children"):
-            if block.children is not None:
-                for i, child in enumerate(block.children):
-                    append(
-                        child,
-                        parent_path=f"{parent_path}/{block.obj.id}",
-                        id_with_prefix=f"{id_with_prefix}-{i}",
-                    )
+        def append(block, parent_path: str, id_with_prefix: str):
+            block.obj.parent_path = parent_path
+            if not isinstance(block.obj, DataSource):
+                block.obj.id += id_with_prefix
 
-    append(entire_pipeline, pipeline.run_context.project_name, "")
+            if hasattr(block, "children"):
+                if block.children is not None:
+                    for i, child in enumerate(block.children):
+                        append(
+                            child,
+                            parent_path=f"{parent_path}/{block.obj.id}",
+                            id_with_prefix=f"{id_with_prefix}-{i}",
+                        )
+
+        append(entire_pipeline, pipeline.run_context.project_name, "")
 
 
 def add_experiment_config_to_blocks_(
