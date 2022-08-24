@@ -1,5 +1,6 @@
 from copy import deepcopy
-from typing import Callable, Dict, List, Optional, Union
+from enum import Enum
+from typing import Callable, Dict, Iterable, List, Optional, Union, Any
 
 import pandas as pd
 
@@ -80,7 +81,7 @@ class Pipeline(Block):
         """ Core """
         for model in self.models:
             last_output = train_predict(
-                model, last_output, datasource.get_labels(), store
+                model, last_output, datasource.get_labels(SourceTypes.fit), store
             )
 
         """ End """
@@ -103,7 +104,9 @@ class Pipeline(Block):
 
         """ Core """
         for model in self.models:
-            last_output = predict(model, last_output, datasource.get_labels(), store)
+            last_output = predict(
+                model, last_output, datasource.get_labels(SourceTypes.predict), store
+            )
 
         """ End """
         for plugin in plugins:
@@ -144,18 +147,28 @@ class Pipeline(Block):
                 self, self.datasource_predict.get_hierarchy(source_type)
             )
 
-    def get_configs(self, source_type: SourceTypes) -> Dict[str, dict]:
-        entire_pipeline = self.children(source_type)
+    def get_configs(self) -> Dict[str, dict]:
+        def get_config_per_datasource(source_type: SourceTypes):
+            return {
+                "pipeline": self.id,
+                "datasources": self.get_datasource_configs(source_type),
+                "models": {
+                    block.id: obj_to_dict(block.config)  # vars(block.config)
+                    for block in flatten(self.children(source_type))
+                    if not any(
+                        [
+                            isinstance(block, DataSource),
+                            isinstance(block, Pipeline),
+                            isinstance(block, Concat),
+                        ]
+                    )
+                },
+                "hierarchy": self.get_hierarchy(source_type),
+            }
+
         return {
-            block.id: vars(block.config)
-            for block in flatten(entire_pipeline)
-            if not any(
-                [
-                    isinstance(block, DataSource),
-                    isinstance(block, Pipeline),
-                    isinstance(block, Concat),
-                ]
-            )
+            source_type.value: get_config_per_datasource(source_type)
+            for source_type in self.get_datasource_types()
         }
 
     def get_datasource_configs(self, source_type: SourceTypes) -> Dict[str, dict]:
@@ -213,3 +226,38 @@ def get_source_hierarchy(pipeline: Pipeline, source_hierarchy: Hierarchy) -> Hie
     else:
         source_hierarchy.children = [current_pipeline_hierarchy]
         return source_hierarchy
+
+
+def is_custom_obj(obj: Any):
+    if (
+        type(obj).__module__ is not object.__module__
+        and isinstance(obj, Enum) is False
+        and hasattr(obj, "__dict__")
+    ):
+        return True
+    else:
+        return False
+
+
+def list_to_dict(obj: List):
+    return {
+        el.id
+        if hasattr(el, "id")
+        else type(el): obj_to_dict(el)
+        if is_custom_obj(el)
+        else el
+        for el in obj
+    }
+
+
+def obj_to_dict(obj: Any):
+    obj_dict = vars(obj)
+
+    for key, value in obj_dict.items():
+        if isinstance(value, List):
+            obj_dict[key] = list_to_dict(value)
+
+        elif is_custom_obj(value):
+            obj_dict[key] = obj_to_dict(value)
+
+    return obj_dict

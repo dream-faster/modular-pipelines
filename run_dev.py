@@ -17,6 +17,6 @@ dev_config = StagingConfig(
 )
 
 run(
-    all_experiments,
+    multi_type_hf_run_experiments,
     staging_config=dev_config,
 )
