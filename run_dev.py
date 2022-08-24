@@ -12,11 +12,11 @@ from run import run
 dev_config = StagingConfig(
     name=StagingNames.dev,
     save_remote=False,
-    log_remote=False,
+    log_remote=True,
     limit_dataset_to=60,
 )
 
 run(
-    all_experiments,
+    multi_type_hf_run_experiments,
     staging_config=dev_config,
 )

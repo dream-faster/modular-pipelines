@@ -1,5 +1,6 @@
 from copy import deepcopy
-from typing import Callable, Dict, List, Optional, Union
+from enum import Enum
+from typing import Callable, Dict, List, Optional, Union, Any
 
 import pandas as pd
 
@@ -144,18 +145,28 @@ class Pipeline(Block):
                 self, self.datasource_predict.get_hierarchy(source_type)
             )
 
-    def get_configs(self, source_type: SourceTypes) -> Dict[str, dict]:
-        entire_pipeline = self.children(source_type)
+    def get_configs(self) -> Dict[str, dict]:
+        def get_config_per_datasource(source_type: SourceTypes):
+            return {
+                "pipeline": self.id,
+                "datasources": self.get_datasource_configs(source_type),
+                "models": {
+                    block.id: obj_to_dict(block.config)  # vars(block.config)
+                    for block in flatten(self.children(source_type))
+                    if not any(
+                        [
+                            isinstance(block, DataSource),
+                            isinstance(block, Pipeline),
+                            isinstance(block, Concat),
+                        ]
+                    )
+                },
+                "hierarchy": self.get_hierarchy(source_type),
+            }
+
         return {
-            block.id: vars(block.config)
-            for block in flatten(entire_pipeline)
-            if not any(
-                [
-                    isinstance(block, DataSource),
-                    isinstance(block, Pipeline),
-                    isinstance(block, Concat),
-                ]
-            )
+            source_type.value: get_config_per_datasource(source_type)
+            for source_type in self.get_datasource_types()
         }
 
     def get_datasource_configs(self, source_type: SourceTypes) -> Dict[str, dict]:
@@ -213,3 +224,17 @@ def get_source_hierarchy(pipeline: Pipeline, source_hierarchy: Hierarchy) -> Hie
     else:
         source_hierarchy.children = [current_pipeline_hierarchy]
         return source_hierarchy
+
+
+def obj_to_dict(obj: Any):
+    obj_dict = vars(obj)
+
+    for key, value in obj_dict.items():
+        if (
+            type(value).__module__ is not object.__module__
+            and isinstance(value, Enum) is False
+            and hasattr(value, "__dict__")
+        ):
+            obj_dict[key] = obj_to_dict(value)
+
+    return obj_dict

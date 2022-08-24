@@ -29,23 +29,12 @@ def run(
                 WandbPlugin(
                     WandbConfig(
                         project_id=experiment.project_name,
-                        run_name=experiment.run_name + "-" + experiment.pipeline.id,
+                        run_name=experiment.run_name + "---" + experiment.pipeline.id,
                         train=experiment.train,
                     ),
                     dict(
                         run_config=experiment.get_configs(),
-                        preprocess_config={
-                            source_type.value: experiment.pipeline.get_datasource_configs(
-                                source_type
-                            )
-                            for source_type in experiment.pipeline.get_datasource_types()
-                        },
-                        pipeline_configs={
-                            source_type.value: experiment.pipeline.get_configs(
-                                source_type
-                            )
-                            for source_type in experiment.pipeline.get_datasource_types()
-                        },
+                        pipeline_config=experiment.pipeline.get_configs(),
                     ),
                 )
             ]
