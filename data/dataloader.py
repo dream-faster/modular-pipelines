@@ -42,6 +42,7 @@ class HuggingfaceDataLoader(DataLoader):
         self.data = load_dataset(path, name)
         self.is_transformed = False
         self.sampler = sampler
+        self.path = path
 
     def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
         if self.is_transformed == False:
@@ -88,6 +89,7 @@ class MergedDataLoader(DataLoader):
         self.preprocessing_configs = flatten(
             [dataloader.preprocessing_configs for dataloader in self.dataloaders]
         )
+        self.path = "/".join([dl.path for dl in dataloaders])
 
     def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
         datasets = [data_loader.load(category) for data_loader in self.dataloaders]
