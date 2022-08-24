@@ -243,7 +243,7 @@ def list_to_dict(obj: List):
     return {
         el.id
         if hasattr(el, "id")
-        else type(el): obj_to_dict(el)
+        else type(el).__name__: obj_to_dict(el)
         if is_custom_obj(el)
         else el
         for el in obj
