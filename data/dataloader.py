@@ -18,8 +18,16 @@ import numpy as np
 class DataLoader(Settable):
 
     preprocessing_configs: List[PreprocessConfig]
-    is_transformed: bool
     sampler: Optional[BaseSampler]
+    path: str
+
+    def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
+        raise NotImplementedError()
+
+
+class HuggingfaceDataLoader(DataLoader):
+
+    is_transformed: bool
 
     def __init__(
         self,
@@ -46,7 +54,7 @@ class DataLoader(Settable):
         return self.data[category.value]
 
 
-class DataLoaderMerger(DataLoader):
+class MergedDataLoader(DataLoader):
     def __init__(self, dataloaders: List[DataLoader]):
         self.dataloaders = dataloaders
         self.preprocessing_configs = flatten(

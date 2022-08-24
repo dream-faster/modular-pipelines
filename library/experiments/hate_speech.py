@@ -13,7 +13,7 @@ from blocks.transformations import (
     SpacyTokenizer,
     TextStatisticTransformation,
 )
-from data.dataloader import DataLoaderMerger
+from data.dataloader import MergedDataLoader
 from ..evaluation.classification import classification_metrics
 from ..evaluation.calibration import calibration_metrics
 from sklearn.preprocessing import MinMaxScaler
@@ -42,8 +42,6 @@ from .utils import populate_experiments_with_pipelines
 ### Models
 
 tweet_eval_hate = DataSource("tweet_eval_hate", get_tweet_eval_dataloader("hate"))
-# input_data = DataSource("input")
-
 
 ### Pipelines
 
@@ -151,7 +149,7 @@ ensemble_hf_vader = Ensemble(
 dataloader_tweeteval = get_tweet_eval_dataloader("hate")
 
 
-data_merged_train = DataLoaderMerger(
+data_merged_train = MergedDataLoader(
     [
         dataloader_tweeteval,
         get_tweets_hate_speech_detection_dataloader(),
