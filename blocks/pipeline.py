@@ -15,7 +15,8 @@ from .concat import Concat
 from type import DataType, SourceTypes
 
 from utils.process_block import process_block
-from copy import copy
+from constants import Const
+from utils.hierarchy import hierarchy_to_str
 
 
 class Pipeline(Block):
@@ -149,7 +150,7 @@ class Pipeline(Block):
                 "pipeline": self.id,
                 "datasources": self.get_datasource_configs(source_type),
                 "models": {
-                    block.id: obj_to_dict(block.config)  # vars(block.config)
+                    block.id: obj_to_dict(block.config)
                     for block in flatten(self.children(source_type))
                     if not any(
                         [
@@ -159,7 +160,7 @@ class Pipeline(Block):
                         ]
                     )
                 },
-                "hierarchy": self.get_hierarchy(source_type),
+                "hierarchy": hierarchy_to_str(self.children(source_type)),
             }
 
         return {
