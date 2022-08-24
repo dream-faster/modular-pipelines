@@ -54,6 +54,34 @@ class HuggingfaceDataLoader(DataLoader):
         return self.data[category.value]
 
 
+class PandasDataLoader(DataLoader):
+
+    is_sampled = False
+
+    def __init__(
+        self,
+        path: str,
+        preprocessing_config: PreprocessConfig,
+        train_data: pd.DataFrame,
+        test_data: pd.DataFrame,
+        sampler: Optional[BaseSampler] = None,
+    ):
+        self.preprocessing_configs = [preprocessing_config]
+        self.train_data = train_data
+        self.test_data = test_data
+        self.is_transformed = False
+        self.sampler = sampler
+
+    def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
+        if self.sampler is not None and self.is_sampled == False:
+            self.train_data = apply_sampler(self.train_data, self.sampler)
+            self.is_sampled = True
+        if category == DatasetSplit.test:
+            return self.test_data
+        else:
+            return self.train_data
+
+
 class MergedDataLoader(DataLoader):
     def __init__(self, dataloaders: List[DataLoader]):
         self.dataloaders = dataloaders
