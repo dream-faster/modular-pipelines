@@ -81,7 +81,7 @@ class Pipeline(Block):
         """ Core """
         for model in self.models:
             last_output = train_predict(
-                model, last_output, datasource.get_labels(), store
+                model, last_output, datasource.get_labels(SourceTypes.fit), store
             )
 
         """ End """
@@ -104,7 +104,9 @@ class Pipeline(Block):
 
         """ Core """
         for model in self.models:
-            last_output = predict(model, last_output, datasource.get_labels(), store)
+            last_output = predict(
+                model, last_output, datasource.get_labels(SourceTypes.predict), store
+            )
 
         """ End """
         for plugin in plugins:
