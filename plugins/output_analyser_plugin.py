@@ -15,6 +15,8 @@ from utils.printing import PrintFormats, multi_line_formatter
 from typing import Any, Tuple, Callable, Union
 import matplotlib.pyplot as plt
 import pandas as pd
+from type import SourceTypes
+from utils.list import flatten
 
 
 class OutputAnalyserPlugin(Plugin):
@@ -42,28 +44,34 @@ class OutputAnalyserPlugin(Plugin):
         return store, last_output
 
     def on_run_end(self, pipeline: Pipeline, store: Store):
-        input = pipeline.datasource.data[Const.input_col]
-        final_output = store.get_data(Const.final_output)
-        original_labels = pipeline.datasource.get_labels()
+        all_datasources = [
+            block
+            for block in flatten(pipeline.children(SourceTypes.fit))
+            if type(block) is DataSource
+        ]
+        for datasource in all_datasources:
+            input = datasource.deplate(store, [], False)
+            final_output = store.get_data(Const.final_output)
+            original_labels = datasource.get_labels()
 
-        if type(final_output) == np.ndarray:
-            final_output = final_output.tolist()
-        if type(original_labels) == np.ndarray:
-            original_labels = original_labels.tolist()
+            if type(final_output) == np.ndarray:
+                final_output = final_output.tolist()
+            if type(original_labels) == np.ndarray:
+                original_labels = original_labels.tolist()
 
-        predictions, probabilities = store.data_to_preds_probs(final_output)
+            predictions, probabilities = store.data_to_preds_probs(final_output)
 
-        for analysis_function in self.analysis_functions:
-            print("    ┃")
-            analysis_function(
-                store,
-                input,
-                original_labels,
-                final_output,
-                predictions,
-                probabilities,
-            )
-            print("    ┃")
+            for analysis_function in self.analysis_functions:
+                print("    ┃")
+                analysis_function(
+                    store,
+                    input,
+                    original_labels,
+                    final_output,
+                    predictions,
+                    probabilities,
+                )
+                print("    ┃")
 
         return pipeline, store
 
