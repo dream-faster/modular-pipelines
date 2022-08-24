@@ -12,7 +12,7 @@ from run import run
 dev_config = StagingConfig(
     name=StagingNames.dev,
     save_remote=False,
-    log_remote=True,
+    log_remote=False,
     limit_dataset_to=60,
 )
 
