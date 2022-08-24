@@ -20,6 +20,19 @@ def run(
     for experiment in experiments:
 
         overwrite_preprocessing_configs_(experiment.pipeline, staging_config)
+        if (
+            experiment.global_dataloader is not None
+            and staging_config.limit_dataset_to is not None
+        ):
+            experiment.global_dataloader.preprocessing_configs[
+                0
+            ].train_size = staging_config.limit_dataset_to
+            experiment.global_dataloader.preprocessing_configs[
+                0
+            ].test_size = staging_config.limit_dataset_to
+            experiment.global_dataloader.preprocessing_configs[
+                0
+            ].val_size = staging_config.limit_dataset_to
 
         experiment.save_remote = staging_config.save_remote
         experiment.log_remote = staging_config.log_remote
