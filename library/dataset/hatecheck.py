@@ -3,7 +3,7 @@ from datasets.arrow_dataset import Dataset
 
 from constants import Const
 from type import PreprocessConfig, DatasetSplit
-from data.dataloader import DataLoader
+from data.dataloader import DataLoader, HuggingfaceDataLoader
 
 
 def transform_hatecheck_dataset(dataset: Dataset, config: PreprocessConfig) -> dict:
@@ -27,7 +27,7 @@ def transform_hatecheck_dataset(dataset: Dataset, config: PreprocessConfig) -> d
 
 
 def get_hatecheck_dataloader() -> DataLoader:
-    return DataLoader(
+    return HuggingfaceDataLoader(
         "Paul/hatecheck",
         PreprocessConfig(
             train_size=-1,

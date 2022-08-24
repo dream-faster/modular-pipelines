@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 
 from constants import Const
 from type import PreprocessConfig, DatasetSplit
-from data.dataloader import DataLoader
+from data.dataloader import DataLoader, HuggingfaceDataLoader
 
 
 def transform_hatespeech_offensive_dataset(
@@ -31,7 +31,7 @@ def transform_hatespeech_offensive_dataset(
 
 
 def get_hate_speech_offensive_dataloader() -> DataLoader:
-    return DataLoader(
+    return HuggingfaceDataLoader(
         "hate_speech_offensive",
         PreprocessConfig(
             train_size=-1,

@@ -3,7 +3,7 @@ from datasets.arrow_dataset import Dataset
 
 from constants import Const
 from type import PreprocessConfig, DatasetSplit
-from data.dataloader import DataLoader
+from data.dataloader import HuggingfaceDataLoader, DataLoader
 
 
 def transform_dataset(dataset: Dataset, config: PreprocessConfig) -> dict:
@@ -27,7 +27,7 @@ def transform_dataset(dataset: Dataset, config: PreprocessConfig) -> dict:
 
 
 def get_tweet_eval_dataloader(name: str) -> DataLoader:
-    return DataLoader(
+    return HuggingfaceDataLoader(
         "tweet_eval",
         PreprocessConfig(
             train_size=-1,
