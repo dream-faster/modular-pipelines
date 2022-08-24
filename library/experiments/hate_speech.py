@@ -37,6 +37,7 @@ from ..pipelines.huggingface import create_nlp_huggingface_pipeline
 from ..pipelines.sklearn_nlp import create_nlp_sklearn_pipeline
 
 from imblearn.over_sampling import RandomOverSampler
+from .utils import populate_experiments_with_pipelines
 
 ### Models
 
@@ -361,27 +362,6 @@ pipelines_to_evaluate = [
     ensemble_sklearn_vader,
     meta_model_all,
 ]
-
-
-def set_pipeline(experiment: Experiment, pipeline: Pipeline) -> Experiment:
-    experiment.pipeline = pipeline
-    return experiment
-
-
-def populate_experiments_with_pipelines(
-    experiments: List[Experiment], pipelines: List[Pipeline]
-) -> List[Experiment]:
-    return flatten(
-        [
-            [
-                [
-                    set_pipeline(deepcopy(experiment), pipeline)
-                    for experiment in experiments
-                ]
-            ]
-            for pipeline in pipelines
-        ]
-    )
 
 
 all_tweeteval_experiments = populate_experiments_with_pipelines(
