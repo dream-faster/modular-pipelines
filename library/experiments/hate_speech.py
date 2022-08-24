@@ -192,7 +192,7 @@ cross_dataset_experiments_tweeteval = [
     ),
     Experiment(
         project_name="hate-speech-detection",
-        run_name="dynahate",
+        run_name="tweeteval-dynahate",
         dataset_category=DatasetSplit.test,
         pipeline=sklearn,
         metrics=metrics,
@@ -242,13 +242,22 @@ cross_dataset_experiments_merged = [
         global_dataloader=get_hatecheck_dataloader(),
     ),
     Experiment(
-        project_name="hate-speech-detection-cross-merged-dynahate",
+        project_name="hate-speech-detection",
         run_name="merged-dynahate",
         dataset_category=DatasetSplit.test,
         pipeline=sklearn,
         metrics=metrics,
         train=False,
         global_dataloader=get_dynahate_dataloader(),
+    ),
+    Experiment(
+        project_name="hate-speech-detection",
+        run_name="merged-tweeteval",
+        dataset_category=DatasetSplit.test,
+        pipeline=sklearn,
+        metrics=metrics,
+        train=False,
+        global_dataloader=dataloader_tweeteval,
     ),
 ]
 
