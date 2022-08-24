@@ -95,7 +95,7 @@ class DataSource(Element):
     def load(self) -> None:
         pass
 
-    def get_labels(self, source_type: SourceTypes) -> pd.Series:
+    def get_labels(self, source_type: Optional[SourceTypes] = None) -> pd.Series:
         return self.data[Const.label_col]
 
     def children(self, source_type: SourceTypes) -> List[Element]:
