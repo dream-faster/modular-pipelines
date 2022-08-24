@@ -70,8 +70,8 @@ if __name__ == "__main__":
     prod_config = StagingConfig(
         name=StagingNames.prod,
         save_remote=False,
-        log_remote=False,
-        limit_dataset_to=100,
+        log_remote=True,
+        limit_dataset_to=None,
     )
 
     run(
