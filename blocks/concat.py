@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -30,7 +30,7 @@ class Concat(Element):
 
         return collected
 
-    def get_labels(self, source_type: SourceTypes) -> pd.Series:
+    def get_labels(self, source_type: Optional[SourceTypes] = None) -> pd.Series:
         return self.datasource_labels.get_labels(source_type)
 
     def load(self, plugins: List["Plugin"]):
