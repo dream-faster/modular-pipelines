@@ -23,7 +23,7 @@ jobs:
       - name: Run pytest
         shell: bash -l {0}
         run: |
-          pytest --junit-xml pytest.xml
+          pytest -s --junit-xml pytest.xml
       - name: Upload Unit Test Results
         if: always()
         uses: actions/upload-artifact@v2

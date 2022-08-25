@@ -133,12 +133,12 @@ from run import run
 
 def __check_correct_stats(stats: pd.Series, experiment: Experiment):
     correct_ranges = [
-        ("f1", 0.3, 1.0),
+        ("f1", 0.0, 1.0),
         ("accuracy", 0.0, 1.0),
         ("precision", 0.0, 1.0),
         ("recall", 0.0, 1.0),
-        ("roc_auc", 0.1, 1.0),
-        ("mce", 0.3, 1.0),
+        ("roc_auc", 0.0, 1.0),
+        ("mce", 0.0, 1.0),
     ]
 
     context_string = f"~ Failed for {experiment.run_name} with stats: {stats}."
