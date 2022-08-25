@@ -25,6 +25,7 @@ class WandbConfig:
     project_id: str
     run_name: str
     train: bool
+    delete_run: bool
 
 
 class WandbCallback(TrainerCallback):
@@ -43,13 +44,13 @@ class WandbPlugin(Plugin):
     def __init__(self, config: WandbConfig, configs: Optional[Dict[str, Dict]]):
         super().__init__()
         self.config = config
-        self.configs = configs
+        self.block_configs = configs
 
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
         self.wandb = launch_wandb(
             self.config.project_id,
             self.config.run_name + ("_train" if self.config.train is True else "_test"),
-            self.configs,
+            self.block_configs,
         )
 
         for element in flatten(pipeline.children(SourceTypes.fit)):
@@ -78,6 +79,9 @@ class WandbPlugin(Plugin):
             if run is not None:
                 run.save()
                 run.finish()
+
+                if self.config.delete_run:
+                    run.delete()
 
         return pipeline, store
 

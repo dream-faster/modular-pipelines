@@ -92,7 +92,7 @@ def create_experiments() -> List[Experiment]:
 
     single_dataset_experiments_tweeteval = [
         Experiment(
-            project_name="hate-speech-detection-tweeteval",
+            project_name="test",
             run_name="tweeteval",
             dataset_category=DatasetSplit.train,
             pipeline=sklearn,
@@ -101,7 +101,7 @@ def create_experiments() -> List[Experiment]:
             global_dataloader=dataloader_tweeteval,
         ),
         Experiment(
-            project_name="hate-speech-detection-tweeteval",
+            project_name="test",
             run_name="tweeteval",
             dataset_category=DatasetSplit.test,
             pipeline=sklearn,
@@ -174,6 +174,7 @@ def test_experiments():
         save_remote=True,
         log_remote=False,
         limit_dataset_to=100,
+        delete_remote_log=True,
     )
 
     successes = run(
