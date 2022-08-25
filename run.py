@@ -58,14 +58,15 @@ def run(
             experiment,
             plugins=logger_plugins + [OutputAnalyserPlugin()],
         )
-        try:
-            runner.run()
-        except Exception as e:
-            print(
-                f"Run {experiment.project_name} - {experiment.run_name} - {experiment.pipeline.id} failed, due to"
-            )
-            print("".join(traceback.format_exception(type(e), e, e.__traceback__)))
-            failed.append(experiment)
+        runner.run()
+
+        # try:
+        # except Exception as e:
+        #     print(
+        #         f"Run {experiment.project_name} - {experiment.run_name} - {experiment.pipeline.id} failed, due to"
+        #     )
+        #     print("".join(traceback.format_exception(type(e), e, e.__traceback__)))
+        #     failed.append(experiment)
 
     if len(failed) > 0:
         failed_ids = "\n".join(
