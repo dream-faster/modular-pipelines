@@ -131,7 +131,7 @@ def append_parent_path_and_id_(pipeline: Pipeline, mask: bool = False) -> None:
                 block.obj.id += id_with_prefix
             elif mask:
                 if block.obj.id not in seen_datasources.keys():
-                    original_block_obj_id = copy(block.obj.id)
+                    original_block_obj_id = block.obj.id
                     block.obj.id = f"datasource_{len(seen_datasources)}"
                     seen_datasources[original_block_obj_id] = block.obj.id
                 else:
