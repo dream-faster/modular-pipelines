@@ -100,6 +100,15 @@ def overwrite_model_configs_(config: Experiment, pipeline: Pipeline) -> None:
                             vars(model.config)[key] = value
 
 
+def handle_datasource_id_(block, seen_datasources: dict) -> None:
+    if block.obj.id not in seen_datasources.keys():
+        original_block_obj_id = block.obj.id
+        block.obj.id = f"datasource_{len(seen_datasources)}"
+        seen_datasources[original_block_obj_id] = block.obj.id
+    else:
+        block.obj.id = seen_datasources[block.obj.id]
+
+
 def append_parent_path_and_id_(pipeline: Pipeline, mask: bool = False) -> None:
     """
     Appends TWO values to each object in the pipeline:
@@ -130,21 +139,15 @@ def append_parent_path_and_id_(pipeline: Pipeline, mask: bool = False) -> None:
             if not isinstance(block.obj, DataSource):
                 block.obj.id += id_with_prefix
             elif mask:
-                if block.obj.id not in seen_datasources.keys():
-                    original_block_obj_id = block.obj.id
-                    block.obj.id = f"datasource_{len(seen_datasources)}"
-                    seen_datasources[original_block_obj_id] = block.obj.id
-                else:
-                    block.obj.id = seen_datasources[block.obj.id]
+                handle_datasource_id_(block, seen_datasources)
 
-            if hasattr(block, "children"):
-                if block.children is not None:
-                    for i, child in enumerate(block.children):
-                        append(
-                            child,
-                            parent_path=f"{parent_path}/{block.obj.id}",
-                            id_with_prefix=f"{id_with_prefix}-{i}",
-                        )
+            if hasattr(block, "children") and block.children is not None:
+                for i, child in enumerate(block.children):
+                    append(
+                        child,
+                        parent_path=f"{parent_path}/{block.obj.id}",
+                        id_with_prefix=f"{id_with_prefix}-{i}",
+                    )
 
         append(hierarchy, pipeline.run_context.project_name, "")
 
