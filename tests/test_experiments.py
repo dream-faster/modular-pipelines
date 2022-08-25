@@ -144,7 +144,21 @@ from run import run
 
 
 def __check_correct_stats(stats: pd.Series):
-    return False
+    correct_ranges = [
+        ("f1", 0.3, 1.0),
+        ("accuracy", 0.3, 1.0),
+        ("precision", 0.3, 1.0),
+        ("recall", 0.3, 1.0),
+        ("roc_auc", 0.1, 1.0),
+        ("mce", 0.3, 1.0),
+    ]
+
+    return any(
+        [
+            True if stats[metric] > minimum and stats[metric] < maximum else False
+            for metric, minimum, maximum in correct_ranges
+        ]
+    )
 
 
 def test_experiments():
