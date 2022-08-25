@@ -1,4 +1,4 @@
-from copy import copy
+from copy import copy, deepcopy
 from enum import Enum
 from typing import Dict, List, Optional, Union, Any
 
