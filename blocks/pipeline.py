@@ -1,4 +1,4 @@
-from copy import deepcopy
+from copy import copy, deepcopy
 from enum import Enum
 from typing import Dict, List, Optional, Union, Any
 
@@ -15,7 +15,10 @@ from .concat import Concat
 from type import DataType, SourceTypes
 
 from utils.process_block import process_block
+
 from utils.dict import obj_to_dict
+from constants import Const
+from utils.hierarchy import hierarchy_to_str
 
 
 class Pipeline(Block):
@@ -52,13 +55,9 @@ class Pipeline(Block):
             plugin.on_load_begin()
 
         """ Core """
-        if isinstance(self.datasource, Pipeline) or isinstance(self.datasource, Concat):
-            self.datasource.load(plugins)
+        self.datasource.load(plugins)
         if self.datasource_predict is not self.datasource:
-            if isinstance(self.datasource_predict, Pipeline) or isinstance(
-                self.datasource_predict, Concat
-            ):
-                self.datasource_predict.load(plugins)
+            self.datasource_predict.load(plugins)
 
         for model in self.models:
             model.load()
@@ -153,7 +152,7 @@ class Pipeline(Block):
                 "pipeline": self.id,
                 "datasources": get_datasource_configs(self, source_type),
                 "models": {
-                    block.id: obj_to_dict(block.config)  # vars(block.config)
+                    block.id: obj_to_dict(block.config)
                     for block in flatten(self.children(source_type))
                     if not any(
                         [
@@ -163,7 +162,7 @@ class Pipeline(Block):
                         ]
                     )
                 },
-                "hierarchy": self.get_hierarchy(source_type),
+                "hierarchy": hierarchy_to_str(self.children(source_type)),
             }
 
         return {
@@ -229,3 +228,4 @@ def get_source_hierarchy(pipeline: Pipeline, source_hierarchy: Hierarchy) -> Hie
     else:
         source_hierarchy.children = [current_pipeline_hierarchy]
         return source_hierarchy
+
