@@ -113,6 +113,7 @@ vader = Pipeline("vader", tweet_eval_hate, [VaderModel("vader")])
 
 ensemble_all = Ensemble(
     "ensemble_all-all",
+    tweet_eval_hate,
     [sklearn, huggingface_baseline, text_statistics_pipeline, vader],
 )
 
@@ -126,17 +127,22 @@ meta_model_all = Pipeline(
     [SKLearnModel("meta_model", sklearn_config_simple_lr.set_attr("calibrate", True))],
 )
 
-ensemble_sklearn_vader = Ensemble("ensemble_sklearn_vader", [sklearn, vader])
-
-ensemble_sklearn_hf_vader = Ensemble(
-    "ensemble_sklearn_hf_vader", [sklearn, vader, huggingface_baseline]
+ensemble_sklearn_vader = Ensemble(
+    "ensemble_sklearn_vader", tweet_eval_hate, [sklearn, vader]
 )
 
-ensemble_sklearn_hf = Ensemble("ensemble_sklearn_hf", [sklearn, huggingface_baseline])
+ensemble_sklearn_hf_vader = Ensemble(
+    "ensemble_sklearn_hf_vader", tweet_eval_hate, [sklearn, vader, huggingface_baseline]
+)
+
+ensemble_sklearn_hf = Ensemble(
+    "ensemble_sklearn_hf", tweet_eval_hate, [sklearn, huggingface_baseline]
+)
 
 ensemble_hf_vader = Ensemble(
     "ensemble_hf_vader",
-    [huggingface_baseline],
+    tweet_eval_hate,
+    [huggingface_baseline, vader],
 )
 
 
