@@ -15,6 +15,6 @@ dev_config = StagingConfig(
 )
 
 run(
-    multi_objective_experiments,
+    all_experiments,
     staging_config=dev_config,
 )

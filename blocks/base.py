@@ -87,13 +87,19 @@ class DataSource(Element):
         plugins: Optional[List["Plugin"]] = None,
         train: Optional[bool] = None,
     ) -> pd.Series:
-        if not hasattr(self, "data") and hasattr(self, "category"):
-            self.data = self.dataloader.load(self.category)
-
         return self.data[Const.input_col]
 
-    def load(self) -> None:
-        pass
+    def load(self, plugins: List["Plugin"]) -> None:
+        if not hasattr(self, "data") and hasattr(self, "category"):
+            self.data = self.dataloader.load(self.category)
+            logger.log(
+                f"✅ Loaded dataloader on datasource: {self.id}", level=logger.levels.ONE
+            )
+        else:
+            logger.log(
+                f"❌ Couldn't load dataloader on datasource: {self.id}",
+                level=logger.levels.ONE,
+            )
 
     def get_labels(self, source_type: Optional[SourceTypes] = None) -> pd.Series:
         return self.data[Const.label_col]

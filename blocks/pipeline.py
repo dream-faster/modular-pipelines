@@ -52,13 +52,9 @@ class Pipeline(Block):
             plugin.on_load_begin()
 
         """ Core """
-        if isinstance(self.datasource, Pipeline) or isinstance(self.datasource, Concat):
-            self.datasource.load(plugins)
+        self.datasource.load(plugins)
         if self.datasource_predict is not self.datasource:
-            if isinstance(self.datasource_predict, Pipeline) or isinstance(
-                self.datasource_predict, Concat
-            ):
-                self.datasource_predict.load(plugins)
+            self.datasource_predict.load(plugins)
 
         for model in self.models:
             model.load()
