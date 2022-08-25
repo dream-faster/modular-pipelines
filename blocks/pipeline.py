@@ -15,6 +15,8 @@ from .concat import Concat
 from type import DataType, SourceTypes
 
 from utils.process_block import process_block
+
+from utils.dict import obj_to_dict
 from constants import Const
 from utils.hierarchy import hierarchy_to_str
 
@@ -148,7 +150,7 @@ class Pipeline(Block):
         def get_config_per_datasource(source_type: SourceTypes):
             return {
                 "pipeline": self.id,
-                "datasources": self.get_datasource_configs(source_type),
+                "datasources": get_datasource_configs(self, source_type),
                 "models": {
                     block.id: obj_to_dict(block.config)
                     for block in flatten(self.children(source_type))
@@ -166,14 +168,6 @@ class Pipeline(Block):
         return {
             source_type.value: get_config_per_datasource(source_type)
             for source_type in self.get_datasource_types()
-        }
-
-    def get_datasource_configs(self, source_type: SourceTypes) -> Dict[str, dict]:
-        entire_pipeline = self.children(source_type)
-        return {
-            block.id: vars(block.dataloader.preprocessing_configs[0])
-            for block in flatten(entire_pipeline)
-            if isinstance(block, DataSource)
         }
 
     def get_datasource_types(self) -> List[SourceTypes]:
@@ -197,6 +191,17 @@ class Pipeline(Block):
             return self.datasource_predict.get_labels(source_type)
         else:
             return self.datasource.get_labels(source_type)
+
+
+def get_datasource_configs(
+    pipeline: Pipeline, source_type: SourceTypes
+) -> Dict[str, dict]:
+    entire_pipeline = pipeline.children(source_type)
+    return {
+        block.id: vars(block.dataloader.preprocessing_configs[0])
+        for block in flatten(entire_pipeline)
+        if isinstance(block, DataSource)
+    }
 
 
 def get_source_hierarchy(pipeline: Pipeline, source_hierarchy: Hierarchy) -> Hierarchy:
@@ -224,37 +229,3 @@ def get_source_hierarchy(pipeline: Pipeline, source_hierarchy: Hierarchy) -> Hie
         source_hierarchy.children = [current_pipeline_hierarchy]
         return source_hierarchy
 
-
-def is_custom_obj(obj: Any):
-    if (
-        type(obj).__module__ is not object.__module__
-        and isinstance(obj, Enum) is False
-        and hasattr(obj, "__dict__")
-    ):
-        return True
-    else:
-        return False
-
-
-def list_to_dict(obj: List) -> dict:
-    return {
-        el.id
-        if hasattr(el, "id")
-        else type(el).__name__: obj_to_dict(el)
-        if is_custom_obj(el)
-        else copy(el)
-        for el in obj
-    }
-
-
-def obj_to_dict(obj: Any) -> dict:
-    obj_dict = vars(copy(obj))
-
-    for key, value in obj_dict.items():
-        if isinstance(value, List):
-            obj_dict[key] = list_to_dict(value)
-
-        elif is_custom_obj(value):
-            obj_dict[key] = obj_to_dict(value)
-
-    return obj_dict
