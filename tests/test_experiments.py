@@ -115,10 +115,10 @@ def create_experiments() -> List[Experiment]:
         random,
         all_0s,
         all_1s,
-        # sklearn,
-        # huggingface_baseline,
-        # ensemble_all,
-        # meta_model_all,
+        sklearn,
+        huggingface_baseline,
+        ensemble_all,
+        meta_model_all,
     ]
 
     all_tweeteval_experiments = populate_experiments_with_pipelines(
