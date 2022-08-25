@@ -1,3 +1,5 @@
+from utils.printing import logger
+from random import seed
 from type import (
     PreprocessConfig,
     DatasetSplit,
@@ -13,6 +15,7 @@ import pandas as pd
 from imblearn.base import BaseSampler
 from utils.setter import Settable
 import numpy as np
+from constants import Const
 
 
 class DataLoader(Settable):
@@ -36,6 +39,7 @@ class HuggingfaceDataLoader(DataLoader):
         transformation: Callable,
         sampler: Optional[BaseSampler] = None,
         name: Optional[str] = None,
+        shuffle_first: Optional[bool] = False,
     ):
         self.transformation = transformation
         self.preprocessing_configs = [preprocessing_config]
@@ -43,9 +47,13 @@ class HuggingfaceDataLoader(DataLoader):
         self.is_transformed = False
         self.sampler = sampler
         self.path = path
+        self.shuffle_first = shuffle_first
 
     def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
         if self.is_transformed == False:
+            if self.shuffle_first:
+                logger.log("⚠️ Shuffling Data", level=logger.levels.TWO)
+                self.data = self.data.shuffle(Const.seed)
             self.data = self.transformation(self.data, self.preprocessing_configs[0])
             if self.sampler is not None:
                 self.data[DatasetSplit.train.value] = apply_sampler(
@@ -66,14 +74,24 @@ class PandasDataLoader(DataLoader):
         train_data: pd.DataFrame,
         test_data: pd.DataFrame,
         sampler: Optional[BaseSampler] = None,
+        shuffle_first: Optional[bool] = False,
     ):
         self.preprocessing_configs = [preprocessing_config]
         self.train_data = train_data
         self.test_data = test_data
         self.is_transformed = False
         self.sampler = sampler
+        self.shuffle_first = shuffle_first
+        self.transformed = False
 
     def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
+        if self.transformed is False and self.shuffle_first:
+            logger.log("⚠️ Shuffling Data", level=logger.levels.TWO)
+            self.train_data = self.train_data.sample(frac=1, random_state=Const.seed)
+            self.test_data = self.test_data.sample(frac=1, random_state=Const.seed)
+
+            self.transformed = True
+
         if self.sampler is not None and self.is_sampled == False:
             self.train_data = apply_sampler(self.train_data, self.sampler)
             self.is_sampled = True

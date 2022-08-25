@@ -7,6 +7,7 @@ from blocks.pipeline import Pipeline
 from .base import Plugin
 from utils.printing import logger
 from constants import Const
+from utils.hierarchy import hierarchy_to_str
 
 
 class PipelineAnalyser(Plugin):
@@ -21,19 +22,6 @@ class PipelineAnalyser(Plugin):
                 )
             full_pipeline = pipeline.children(source_type)
 
-            def print_all(blocks: List[Element], indent="    ┃       "):
-
-                for block in blocks:
-                    if isinstance(block, List):
-                        indent += "    "
-                        print_all(block, indent)
-                        indent = indent[: len(indent) - len("    ")]
-                    elif isinstance(block, DataSource):
-                        print(indent + " - " + block.id)
-                        indent += "    "
-                    else:
-                        print(indent + " - " + block.id)
-
-            print_all(full_pipeline)
+            print(hierarchy_to_str(full_pipeline))
 
         return pipeline

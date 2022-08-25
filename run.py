@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 from constants import Const
 
@@ -13,13 +13,26 @@ import traceback
 def run(
     experiments: List[Experiment],
     staging_config: StagingConfig,
-) -> None:
+) -> List[Tuple[Experiment, "Store"]]:
 
-    failed: List[Experiment] = []
+    successes = []
 
     for experiment in experiments:
 
         overwrite_preprocessing_configs_(experiment.pipeline, staging_config)
+        if (
+            experiment.global_dataloader is not None
+            and staging_config.limit_dataset_to is not None
+        ):
+            experiment.global_dataloader.preprocessing_configs[
+                0
+            ].train_size = staging_config.limit_dataset_to
+            experiment.global_dataloader.preprocessing_configs[
+                0
+            ].test_size = staging_config.limit_dataset_to
+            experiment.global_dataloader.preprocessing_configs[
+                0
+            ].val_size = staging_config.limit_dataset_to
 
         experiment.save_remote = staging_config.save_remote
         experiment.log_remote = staging_config.log_remote
@@ -45,20 +58,11 @@ def run(
             experiment,
             plugins=logger_plugins + [OutputAnalyserPlugin()],
         )
-        try:
-            runner.run()
-        except Exception as e:
-            print(
-                f"Run {experiment.project_name} - {experiment.run_name} - {experiment.pipeline.id} failed, due to"
-            )
-            print("".join(traceback.format_exception(type(e), e, e.__traceback__)))
-            failed.append(experiment)
 
-    if len(failed) > 0:
-        failed_ids = "\n".join(
-            [f"{exp.project_name}-{exp.run_name}-{exp.pipeline.id}" for exp in failed]
-        )
-        dump_str(failed_ids, "output/failed_runs.txt")
+        store = runner.run()
+        successes.append((experiment, store))
+
+    return successes
 
 
 if __name__ == "__main__":

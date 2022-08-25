@@ -1,6 +1,6 @@
-from copy import deepcopy
+from copy import copy, deepcopy
 from enum import Enum
-from typing import Callable, Dict, Iterable, List, Optional, Union, Any
+from typing import Dict, List, Optional, Union, Any
 
 import pandas as pd
 
@@ -16,6 +16,7 @@ from type import DataType, SourceTypes
 
 from utils.process_block import process_block
 from constants import Const
+from utils.hierarchy import hierarchy_to_str
 
 
 class Pipeline(Block):
@@ -52,13 +53,9 @@ class Pipeline(Block):
             plugin.on_load_begin()
 
         """ Core """
-        if isinstance(self.datasource, Pipeline) or isinstance(self.datasource, Concat):
-            self.datasource.load(plugins)
+        self.datasource.load(plugins)
         if self.datasource_predict is not self.datasource:
-            if isinstance(self.datasource_predict, Pipeline) or isinstance(
-                self.datasource_predict, Concat
-            ):
-                self.datasource_predict.load(plugins)
+            self.datasource_predict.load(plugins)
 
         for model in self.models:
             model.load()
@@ -153,7 +150,7 @@ class Pipeline(Block):
                 "pipeline": self.id,
                 "datasources": self.get_datasource_configs(source_type),
                 "models": {
-                    block.id: obj_to_dict(block.config)  # vars(block.config)
+                    block.id: obj_to_dict(block.config)
                     for block in flatten(self.children(source_type))
                     if not any(
                         [
@@ -163,7 +160,7 @@ class Pipeline(Block):
                         ]
                     )
                 },
-                "hierarchy": self.get_hierarchy(source_type),
+                "hierarchy": hierarchy_to_str(self.children(source_type)),
             }
 
         return {
@@ -239,19 +236,19 @@ def is_custom_obj(obj: Any):
         return False
 
 
-def list_to_dict(obj: List):
+def list_to_dict(obj: List) -> dict:
     return {
         el.id
         if hasattr(el, "id")
-        else type(el): obj_to_dict(el)
+        else type(el).__name__: obj_to_dict(el)
         if is_custom_obj(el)
-        else el
+        else copy(el)
         for el in obj
     }
 
 
-def obj_to_dict(obj: Any):
-    obj_dict = vars(obj)
+def obj_to_dict(obj: Any) -> dict:
+    obj_dict = vars(copy(obj))
 
     for key, value in obj_dict.items():
         if isinstance(value, List):

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union, Optional
 
 import numpy as np
 import pandas as pd
@@ -6,14 +6,25 @@ import pandas as pd
 from runner.store import Store
 from type import PredsWithProbs, Hierarchy, SourceTypes
 
-from .base import Block, Element
+from .base import Block, Element, DataSource
 from .pipeline import Pipeline
 
 
 class Ensemble(Pipeline):
-    def __init__(self, id: str, pipelines: List[Pipeline]):
+    def __init__(
+        self,
+        id: str,
+        datasource: Union[DataSource, "Pipeline", "Concat"],
+        pipelines: List[Pipeline],
+        datasource_predict: Optional[Union[DataSource, "Pipeline", "Concat"]] = None,
+    ):
         self.id = id
         self.pipelines = pipelines
+        self.datasource = datasource
+        if datasource_predict is None:
+            self.datasource_predict = datasource
+        else:
+            self.datasource_predict = datasource_predict
 
     def load(self, plugins: List["Plugin"]) -> None:
         for pipeline in self.pipelines:
@@ -27,7 +38,7 @@ class Ensemble(Pipeline):
         for pipeline in self.pipelines:
             pipeline.fit(store, plugins)
 
-    def predict(self, store: Store, plugins: List["Plugin"]) -> pd.Series:
+    def predict(self, store: Store, plugins: List["Plugin"]) -> List[PredsWithProbs]:
         outputs: List[List[PredsWithProbs]] = []
         for pipeline in self.pipelines:
             output = pipeline.predict(store, plugins)
@@ -43,11 +54,11 @@ class Ensemble(Pipeline):
     def children(self, source_type: SourceTypes) -> List[Element]:
         return [self] + [pipeline.children(source_type) for pipeline in self.pipelines]
 
-    def get_hierarchy(self) -> Hierarchy:
+    def get_hierarchy(self, source_hierarchy: Hierarchy) -> Hierarchy:
         return Hierarchy(
             name=self.id,
             obj=self,
-            children=[child.get_hierarchy() for child in self.pipelines]
+            children=[child.get_hierarchy(source_hierarchy) for child in self.pipelines]
             if hasattr(self, "pipelines")
             else [],
         )

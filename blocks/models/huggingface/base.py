@@ -41,8 +41,8 @@ class HuggingfaceModel(Model):
         self,
         id: str,
         config: HuggingfaceConfig,
+        dict_lookup: dict,
         evaluators: Optional[Evaluators] = None,
-        dict_lookup: dict = None,
     ):
         self.id = id
         self.config = config

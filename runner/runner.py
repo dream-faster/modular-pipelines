@@ -34,9 +34,9 @@ class Runner:
         self.pipeline = deepcopy(experiment.pipeline)
 
         add_experiment_config_to_blocks_(self.pipeline, experiment)
-        overwrite_model_configs_(experiment, self.pipeline)
         if self.experiment.global_dataloader is not None:
             overwrite_dataloaders_(self.pipeline, experiment.global_dataloader)
+        overwrite_model_configs_(experiment, self.pipeline)
         append_parent_path_and_id_(self.pipeline)
 
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
@@ -44,7 +44,7 @@ class Runner:
         add_split_category_to_datasource_(self.pipeline, experiment)
         self.plugins = obligatory_plugins_begin + plugins + obligatory_plugins_end
 
-    def run(self):
+    def run(self) -> Store:
         logger.log(
             f"Running Experiment in {logger.formats.BOLD}{'TRAINING' if self.experiment.train else 'INFERENCE'}{logger.formats.END} mode"
             + f"\n{logger.formats.CYAN}{self.experiment.project_name} ~ {self.experiment.run_name} {logger.formats.END}",
@@ -81,3 +81,5 @@ class Runner:
         for plugin in self.plugins:
             plugin.print_me("on_run_end")
             _, _ = plugin.on_run_end(self.pipeline, self.store)
+
+        return self.store
