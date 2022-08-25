@@ -62,9 +62,10 @@ def overwrite_dataloaders_(pipeline: Pipeline, dataloader: DataLoader) -> None:
         for block in flatten(pipeline.children(source_type))
         if type(block) == DataSource
     ]
-    
+
     for datasource in datasources:
         datasource.dataloader = dataloader
+        datasource.id = dataloader.path
 
 
 def overwrite_model_configs_(config: Experiment, pipeline: Pipeline) -> None:

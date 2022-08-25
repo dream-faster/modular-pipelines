@@ -14,7 +14,11 @@ dev_config = StagingConfig(
     limit_dataset_to=60,
 )
 
+for experiment in all_experiments:
+    experiment.project_name = "hate-speech-DEV"
+
+
 run(
-    multi_objective_experiments,
+    all_experiments,
     staging_config=dev_config,
 )

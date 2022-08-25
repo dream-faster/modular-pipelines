@@ -1,6 +1,6 @@
 from copy import copy, deepcopy
 from enum import Enum
-from typing import Dict, List, Optional, Union, Any
+from typing import Dict, List, Optional, Union, Any, Tuple
 
 import pandas as pd
 
@@ -146,7 +146,7 @@ class Pipeline(Block):
                 self, self.datasource_predict.get_hierarchy(source_type)
             )
 
-    def get_configs(self) -> Dict[str, dict]:
+    def get_configs(self) -> Tuple[dict[str, Any], dict[str, Any]]:
         def get_config_per_datasource(source_type: SourceTypes):
             return {
                 "pipeline": self.id,
@@ -161,14 +161,20 @@ class Pipeline(Block):
                             isinstance(block, Concat),
                         ]
                     )
-                },
-                "hierarchy": hierarchy_to_str(self.children(source_type)),
+                }
             }
 
-        return {
-            source_type.value: get_config_per_datasource(source_type)
-            for source_type in self.get_datasource_types()
-        }
+        source_types = self.get_datasource_types()
+        return (
+            {
+                source_type.value: get_config_per_datasource(source_type)
+                for source_type in source_types
+            },
+            {
+                source_type.value: hierarchy_to_str(self.children(source_type))
+                for source_type in source_types
+            },
+        )
 
     def get_datasource_types(self) -> List[SourceTypes]:
         """
@@ -228,4 +234,3 @@ def get_source_hierarchy(pipeline: Pipeline, source_hierarchy: Hierarchy) -> Hie
     else:
         source_hierarchy.children = [current_pipeline_hierarchy]
         return source_hierarchy
-

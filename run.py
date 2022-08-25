@@ -8,6 +8,7 @@ from type import Experiment, StagingConfig, StagingNames, SourceTypes
 from runner.utils import overwrite_preprocessing_configs_
 from utils.json import dump_str
 import traceback
+from blocks.pipeline import Pipeline
 
 
 def run(
@@ -24,15 +25,12 @@ def run(
             experiment.global_dataloader is not None
             and staging_config.limit_dataset_to is not None
         ):
-            experiment.global_dataloader.preprocessing_configs[
-                0
-            ].train_size = staging_config.limit_dataset_to
-            experiment.global_dataloader.preprocessing_configs[
-                0
-            ].test_size = staging_config.limit_dataset_to
-            experiment.global_dataloader.preprocessing_configs[
-                0
-            ].val_size = staging_config.limit_dataset_to
+            for (
+                preprocessing_config
+            ) in experiment.global_dataloader.preprocessing_configs:
+                preprocessing_config.test_size = staging_config.limit_dataset_to
+                preprocessing_config.train_size = staging_config.limit_dataset_to
+                preprocessing_config.val_size = staging_config.limit_dataset_to
 
         experiment.save_remote = staging_config.save_remote
         experiment.log_remote = staging_config.log_remote
@@ -46,10 +44,7 @@ def run(
                         train=experiment.train,
                         delete_run=staging_config.delete_remote_log,
                     ),
-                    dict(
-                        run_config=experiment.get_configs(),
-                        pipeline_config=experiment.pipeline.get_configs(),
-                    ),
+                    run_config=experiment.get_configs(type_exclude=["Pipeline"]),
                 )
             ]
             if staging_config.log_remote
@@ -77,7 +72,6 @@ if __name__ == "__main__":
         save_remote=False,
         log_remote=True,
         limit_dataset_to=None,
-        delete_remote_log=True,
     )
 
     run(

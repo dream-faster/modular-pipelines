@@ -41,16 +41,33 @@ class WandbCallback(TrainerCallback):
 
 
 class WandbPlugin(Plugin):
-    def __init__(self, config: WandbConfig, configs: Optional[Dict[str, Dict]]):
+    def __init__(
+        self, config: WandbConfig, run_config: Optional[Dict[str, Dict]] = None
+    ):
         super().__init__()
         self.config = config
-        self.block_configs = configs
+        self.run_config = run_config
 
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
+        pipeline_config, hierarchy = pipeline.get_configs()
+        all_configs = [
+            ("run_config", self.run_config),
+            ("pipeline_config", pipeline_config),
+        ]
         self.wandb = launch_wandb(
             self.config.project_id,
             self.config.run_name + ("_train" if self.config.train is True else "_test"),
-            self.block_configs,
+            {
+                config_name: config
+                for config_name, config in all_configs
+                if config is not None
+            },
+            notes="\n\n".join(
+                [
+                    hierarchy[source_type.value]
+                    for source_type in pipeline.get_datasource_types()
+                ]
+            ),
         )
 
         for element in flatten(pipeline.children(SourceTypes.fit)):
@@ -80,21 +97,30 @@ class WandbPlugin(Plugin):
                 run.save()
                 run.finish()
 
-                if self.config.delete_run:
-                    run.delete()
+                # if self.config.delete_run:
+                # run.delete()
 
         return pipeline, store
 
 
 def launch_wandb(
-    project_name: str, run_name: str, configs: Optional[Dict[str, Dict]] = None
+    project_name: str,
+    run_name: str,
+    configs: Optional[Dict[str, Dict]] = None,
+    notes: Optional[str] = None,
 ) -> Optional[object]:
 
     wsb_token = get_env("WANDB_API_KEY")
 
     try:
         wandb.login(key=wsb_token)
-        wandb.init(project=project_name, config=configs, reinit=True, name=run_name)
+        wandb.init(
+            project=project_name,
+            config=configs,
+            reinit=True,
+            name=run_name,
+            notes=notes,
+        )
         return wandb
     except Exception as e:
         logger.debug(e, exc_info=True)
