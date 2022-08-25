@@ -46,7 +46,7 @@ class OutputAnalyserPlugin(Plugin):
     def on_run_end(self, pipeline: Pipeline, store: Store):
         all_datasources = [
             block
-            for block in flatten(pipeline.children(SourceTypes.fit))
+            for block in flatten(pipeline.children(SourceTypes.predict))
             if type(block) is DataSource
         ]
         for datasource in all_datasources:
