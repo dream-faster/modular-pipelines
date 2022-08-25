@@ -18,7 +18,6 @@ from .evaluation import evaluate
 from .store import Store
 from utils.printing import logger
 
-
 obligatory_plugins_begin = []
 obligatory_plugins_end = [PipelineAnalyser(), IntegrityChecker()]
 
@@ -37,7 +36,7 @@ class Runner:
         if self.experiment.global_dataloader is not None:
             overwrite_dataloaders_(self.pipeline, experiment.global_dataloader)
         overwrite_model_configs_(experiment, self.pipeline)
-        append_parent_path_and_id_(self.pipeline)
+        append_parent_path_and_id_(self.pipeline, mask=True)
 
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
         self.store = Store(dict(), self.run_path)

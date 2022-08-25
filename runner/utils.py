@@ -100,7 +100,7 @@ def overwrite_model_configs_(config: Experiment, pipeline: Pipeline) -> None:
                             vars(model.config)[key] = value
 
 
-def append_parent_path_and_id_(pipeline: Pipeline) -> None:
+def append_parent_path_and_id_(pipeline: Pipeline, mask: bool = False) -> None:
     """
     Appends TWO values to each object in the pipeline:
         - ``id``: adds a unique integer as a suffix at the end of each id
@@ -123,11 +123,19 @@ def append_parent_path_and_id_(pipeline: Pipeline) -> None:
     ]
 
     for hierarchy in hierarchies:
+        seen_datasources = {}
 
         def append(block, parent_path: str, id_with_prefix: str):
             block.obj.parent_path = parent_path
             if not isinstance(block.obj, DataSource):
                 block.obj.id += id_with_prefix
+            elif mask:
+                if block.obj.id not in seen_datasources.keys():
+                    original_block_obj_id = copy(block.obj.id)
+                    block.obj.id = f"datasource_{len(seen_datasources)}"
+                    seen_datasources[original_block_obj_id] = block.obj.id
+                else:
+                    block.obj.id = seen_datasources[block.obj.id]
 
             if hasattr(block, "children"):
                 if block.children is not None:
