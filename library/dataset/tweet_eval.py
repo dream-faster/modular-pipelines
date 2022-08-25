@@ -4,6 +4,7 @@ from datasets.arrow_dataset import Dataset
 from constants import Const
 from type import PreprocessConfig, DatasetSplit
 from data.dataloader import HuggingfaceDataLoader, DataLoader
+from typing import Optional
 
 
 def transform_dataset(dataset: Dataset, config: PreprocessConfig) -> dict:
@@ -26,7 +27,9 @@ def transform_dataset(dataset: Dataset, config: PreprocessConfig) -> dict:
     return {DatasetSplit.train.value: df_train, DatasetSplit.test.value: df_test}
 
 
-def get_tweet_eval_dataloader(name: str) -> DataLoader:
+def get_tweet_eval_dataloader(
+    name: str, shuffle_first: Optional[bool] = False
+) -> DataLoader:
     return HuggingfaceDataLoader(
         "tweet_eval",
         PreprocessConfig(
@@ -38,4 +41,5 @@ def get_tweet_eval_dataloader(name: str) -> DataLoader:
         ),
         transform_dataset,
         name=name,
+        shuffle_first=shuffle_first,
     )

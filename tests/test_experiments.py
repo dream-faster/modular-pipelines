@@ -36,7 +36,9 @@ from library.models.sklearn_simple import (
 def create_experiments() -> List[Experiment]:
     ### Datasources
 
-    tweet_eval_hate = DataSource("tweet_eval_hate", get_tweet_eval_dataloader("hate"))
+    tweet_eval_hate = DataSource(
+        "tweet_eval_hate", get_tweet_eval_dataloader("hate", shuffle_first=True)
+    )
 
     ### Pipelines
 
@@ -80,7 +82,7 @@ def create_experiments() -> List[Experiment]:
         ],
     )
 
-    dataloader_tweeteval = get_tweet_eval_dataloader("hate")
+    dataloader_tweeteval = get_tweet_eval_dataloader("hate", shuffle_first=True)
 
     ### Metrics
 
@@ -129,7 +131,7 @@ def create_experiments() -> List[Experiment]:
 from run import run
 
 
-def __check_correct_stats(stats: pd.Series):
+def __check_correct_stats(stats: pd.Series, experiment: Experiment):
     correct_ranges = [
         ("f1", 0.3, 1.0),
         ("accuracy", 0.3, 1.0),
@@ -139,12 +141,14 @@ def __check_correct_stats(stats: pd.Series):
         ("mce", 0.3, 1.0),
     ]
 
-    return any(
-        [
-            True if stats[metric] > minimum and stats[metric] < maximum else False
-            for metric, minimum, maximum in correct_ranges
-        ]
-    )
+    context_string = f"~ Failed for {experiment.run_name} with stats: {stats}."
+    for metric, minimum, maximum in correct_ranges:
+        assert (
+            stats[metric] > minimum
+        ), f"{metric}: {stats[metric]} is larger than {minimum} (minimum) {context_string}"
+        assert (
+            stats[metric] < maximum
+        ), f"{metric}: {stats[metric]} is larger than {maximum} (maximum) {context_string}"
 
 
 def test_experiments():
@@ -162,6 +166,4 @@ def test_experiments():
 
     for experiment, store in successes:
         stats = store.get_all_stats()[Const.final_eval_name]
-        assert __check_correct_stats(
-            stats
-        ), f"Failed for {experiment.run_name} with stats:{stats}"
+        __check_correct_stats(stats, experiment)
