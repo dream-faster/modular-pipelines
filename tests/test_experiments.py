@@ -166,7 +166,7 @@ def test_experiments():
         name=StagingNames.dev,
         save_remote=False,
         log_remote=False,
-        limit_dataset_to=60,
+        limit_dataset_to=1000,
     )
 
     successes = run(
