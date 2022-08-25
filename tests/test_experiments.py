@@ -62,6 +62,7 @@ def create_experiments() -> List[Experiment]:
 
     ensemble_all = Ensemble(
         "ensemble_all-all",
+        tweet_eval_hate,
         [sklearn, huggingface_baseline, vader],
     )
 
@@ -77,21 +78,6 @@ def create_experiments() -> List[Experiment]:
                 "meta_model", sklearn_config_simple_lr.set_attr("calibrate", True)
             )
         ],
-    )
-
-    ensemble_sklearn_vader = Ensemble("ensemble_sklearn_vader", [sklearn, vader])
-
-    ensemble_sklearn_hf_vader = Ensemble(
-        "ensemble_sklearn_hf_vader", [sklearn, vader, huggingface_baseline]
-    )
-
-    ensemble_sklearn_hf = Ensemble(
-        "ensemble_sklearn_hf", [sklearn, huggingface_baseline]
-    )
-
-    ensemble_hf_vader = Ensemble(
-        "ensemble_hf_vader",
-        [huggingface_baseline],
     )
 
     dataloader_tweeteval = get_tweet_eval_dataloader("hate")
@@ -124,10 +110,10 @@ def create_experiments() -> List[Experiment]:
     ]
 
     pipelines_to_evaluate = [
-        sklearn,
         random,
         all_0s,
         all_1s,
+        sklearn,
         huggingface_baseline,
         ensemble_all,
         meta_model_all,
@@ -166,7 +152,7 @@ def test_experiments():
         name=StagingNames.dev,
         save_remote=False,
         log_remote=False,
-        limit_dataset_to=1000,
+        limit_dataset_to=100,
     )
 
     successes = run(
