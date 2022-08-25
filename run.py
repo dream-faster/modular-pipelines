@@ -25,15 +25,12 @@ def run(
             experiment.global_dataloader is not None
             and staging_config.limit_dataset_to is not None
         ):
-            experiment.global_dataloader.preprocessing_configs[
-                0
-            ].train_size = staging_config.limit_dataset_to
-            experiment.global_dataloader.preprocessing_configs[
-                0
-            ].test_size = staging_config.limit_dataset_to
-            experiment.global_dataloader.preprocessing_configs[
-                0
-            ].val_size = staging_config.limit_dataset_to
+            for (
+                preprocessing_config
+            ) in experiment.global_dataloader.preprocessing_configs:
+                preprocessing_config.test_size = staging_config.limit_dataset_to
+                preprocessing_config.train_size = staging_config.limit_dataset_to
+                preprocessing_config.val_size = staging_config.limit_dataset_to
 
         experiment.save_remote = staging_config.save_remote
         experiment.log_remote = staging_config.log_remote
