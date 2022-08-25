@@ -13,12 +13,15 @@ from type import (
 )
 
 from ..dataset.tweet_eval import get_tweet_eval_dataloader
+from ..dataset.dynahate import get_dynahate_dataloader
 from .utils import populate_experiments_with_pipelines
 
 
 dataloader_tweeteval = get_tweet_eval_dataloader("hate")
+global_dataloader = get_dynahate_dataloader()
 
 tweet_eval_hate = DataSource("tweet_eval_hate", dataloader_tweeteval)
+
 all_0s = Pipeline(
     "all_0s",
     tweet_eval_hate,
@@ -45,7 +48,7 @@ tweeteval_simple = [
         pipeline=all_0s,
         metrics=metrics,
         train=False,
-        # global_dataloader=dataloader_tweeteval,
+        global_dataloader=global_dataloader,
     ),
 ]
 

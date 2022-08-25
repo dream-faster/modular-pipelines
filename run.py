@@ -8,6 +8,7 @@ from type import Experiment, StagingConfig, StagingNames, SourceTypes
 from runner.utils import overwrite_preprocessing_configs_
 from utils.json import dump_str
 import traceback
+from blocks.pipeline import Pipeline
 
 
 def run(
@@ -46,10 +47,7 @@ def run(
                         train=experiment.train,
                         delete_run=staging_config.delete_remote_log,
                     ),
-                    dict(
-                        run_config=experiment.get_configs(),
-                        pipeline_config=experiment.pipeline.get_configs(),
-                    ),
+                    run_config=experiment.get_configs(type_exclude="Pipeline"),
                 )
             ]
             if staging_config.log_remote

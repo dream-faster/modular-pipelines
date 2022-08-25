@@ -41,16 +41,20 @@ class WandbCallback(TrainerCallback):
 
 
 class WandbPlugin(Plugin):
-    def __init__(self, config: WandbConfig, configs: Optional[Dict[str, Dict]]):
+    def __init__(
+        self, config: WandbConfig, run_config: Optional[Dict[str, Dict]] = None
+    ):
         super().__init__()
         self.config = config
-        self.block_configs = configs
+        self.run_config = run_config
 
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
+        
+        all_configs = [("run_config", self.run_config), ("pipeline_config", pipeline.get_configs())]
         self.wandb = launch_wandb(
             self.config.project_id,
             self.config.run_name + ("_train" if self.config.train is True else "_test"),
-            self.block_configs,
+            {config_name:config for config_name, config in all_configs if config is not None},
         )
 
         for element in flatten(pipeline.children(SourceTypes.fit)):

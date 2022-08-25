@@ -1,4 +1,4 @@
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Tuple, Union
 from enum import Enum
 from copy import copy
 import pandas as pd
@@ -17,23 +17,29 @@ def is_custom_obj(obj: Any):
         return False
 
 
-def list_to_dict(obj: List):
+def list_to_dict(obj: Union[List, Tuple], type_exclude: Optional[str] = None):
     return {
         el.id
         if hasattr(el, "id")
-        else type(el).__name__: obj_to_dict(el)
+        else type(el).__name__: obj_to_dict(el, type_exclude=type_exclude)
         if is_custom_obj(el)
         else el
         for el in obj
     }
 
 
-def obj_to_dict(obj: Any) -> dict:
+def obj_to_dict(obj: Any, type_exclude: Optional[str] = None) -> dict:
     obj_dict = vars(copy(obj))
 
-    for key, value in obj_dict.items():
-        if isinstance(value, List):
-            obj_dict[key] = list_to_dict(value)
+    for key in list(obj_dict.keys()):
+        value = obj_dict[key]
+
+        if type_exclude is not None and type(value).__name__ == type_exclude:
+            del obj_dict[key]
+            continue
+
+        if isinstance(value, (List, Tuple)):
+            obj_dict[key] = list_to_dict(value, type_exclude=type_exclude)
 
         elif isinstance(value, np.ndarray):
             obj_dict[key] = copy(pd.DataFrame(value).to_dict())
@@ -42,7 +48,7 @@ def obj_to_dict(obj: Any) -> dict:
             obj_dict[key] = copy(value.to_dict())
 
         elif is_custom_obj(value):
-            obj_dict[key] = obj_to_dict(value)
+            obj_dict[key] = obj_to_dict(value, type_exclude=type_exclude)
 
     return obj_dict
 

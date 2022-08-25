@@ -10,11 +10,15 @@ from run import run
 dev_config = StagingConfig(
     name=StagingNames.dev,
     save_remote=False,
-    log_remote=False,
+    log_remote=True,
     limit_dataset_to=60,
 )
 
+for experiment in all_experiments:
+    experiment.project_name = "hate-speech-DEV"
+
+
 run(
-    multi_objective_experiments,
+    all_experiments,
     staging_config=dev_config,
 )

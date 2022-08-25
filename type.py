@@ -6,6 +6,7 @@ import pandas as pd
 from sklearn.base import ClassifierMixin
 from transformers.training_args import TrainingArguments
 from utils.setter import Settable
+from utils.dict import obj_to_dict
 
 TrainDataset = pd.DataFrame
 TestDataset = pd.DataFrame
@@ -114,8 +115,8 @@ class Experiment:
     ] = None  # If set, will override all DataSource's DataLoaders
     force_fit: Optional[bool] = None  # If set to True will make all models train
 
-    def get_configs(self):
-        return vars(self)
+    def get_configs(self, type_exclude: Optional[str] = None):
+        return obj_to_dict(self, type_exclude=type_exclude)
 
 
 class StagingNames(Enum):
