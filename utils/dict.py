@@ -17,7 +17,7 @@ def is_custom_obj(obj: Any):
         return False
 
 
-def list_to_dict(obj: Union[List, Tuple], type_exclude: Optional[str] = None):
+def list_to_dict(obj: Union[List, Tuple], type_exclude: Optional[List[str]] = None):
     return {
         el.id
         if hasattr(el, "id")
@@ -28,13 +28,13 @@ def list_to_dict(obj: Union[List, Tuple], type_exclude: Optional[str] = None):
     }
 
 
-def obj_to_dict(obj: Any, type_exclude: Optional[str] = None) -> dict:
+def obj_to_dict(obj: Any, type_exclude: Optional[List[str]] = None) -> dict:
     obj_dict = vars(copy(obj))
 
     for key in list(obj_dict.keys()):
         value = obj_dict[key]
 
-        if type_exclude is not None and type(value).__name__ == type_exclude:
+        if type_exclude is not None and type(value).__name__ in type_exclude:
             del obj_dict[key]
             continue
 

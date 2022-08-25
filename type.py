@@ -115,7 +115,7 @@ class Experiment:
     ] = None  # If set, will override all DataSource's DataLoaders
     force_fit: Optional[bool] = None  # If set to True will make all models train
 
-    def get_configs(self, type_exclude: Optional[str] = None):
+    def get_configs(self, type_exclude: Optional[List[str]] = None):
         return obj_to_dict(self, type_exclude=type_exclude)
 
 

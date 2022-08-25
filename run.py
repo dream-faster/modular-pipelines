@@ -47,7 +47,7 @@ def run(
                         train=experiment.train,
                         delete_run=staging_config.delete_remote_log,
                     ),
-                    run_config=experiment.get_configs(type_exclude="Pipeline"),
+                    run_config=experiment.get_configs(type_exclude=["Pipeline"]),
                 )
             ]
             if staging_config.log_remote

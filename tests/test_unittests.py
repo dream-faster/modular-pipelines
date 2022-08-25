@@ -30,6 +30,6 @@ def get_random_obj():
 
 def test_obj_to_dict():
     random_obj = get_random_obj()
-    for k, v in flatten(obj_to_dict(random_obj, type_exclude="str")).items():
+    for k, v in flatten(obj_to_dict(random_obj, type_exclude=["str"])).items():
         assert isinstance(k, str), f"{k} is not a string"
         assert isinstance(v, (str, int, float)), f"{v} is not a string, int or float"
