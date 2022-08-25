@@ -146,7 +146,7 @@ class Pipeline(Block):
                 self, self.datasource_predict.get_hierarchy(source_type)
             )
 
-    def get_configs(self) -> Tuple[Dict[str, dict], Dict[str, dict]]:
+    def get_configs(self) -> Tuple[dict[str, Any], dict[str, Any]]:
         def get_config_per_datasource(source_type: SourceTypes):
             return {
                 "pipeline": self.id,
@@ -161,18 +161,20 @@ class Pipeline(Block):
                             isinstance(block, Concat),
                         ]
                     )
-                },
-                "hierarchy": hierarchy_to_str(self.children(source_type)),
+                }
             }
 
         source_types = self.get_datasource_types()
-        return {
-            source_type.value: get_config_per_datasource(source_type)
-            for source_type in source_types
-        }, {
-            source_type.value: hierarchy_to_str(self.children(source_type))
-            for source_type in source_types
-        }
+        return (
+            {
+                source_type.value: get_config_per_datasource(source_type)
+                for source_type in source_types
+            },
+            {
+                source_type.value: hierarchy_to_str(self.children(source_type))
+                for source_type in source_types
+            },
+        )
 
     def get_datasource_types(self) -> List[SourceTypes]:
         """
