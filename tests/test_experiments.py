@@ -159,11 +159,24 @@ def test_experiments():
         limit_dataset_to=100,
     )
 
+    experiments = create_experiments()
     successes = run(
-        create_experiments(),
+        experiments,
         staging_config=dev_config,
     )
 
     for experiment, store in successes:
         stats = store.get_all_stats()[Const.final_eval_name]
         __check_correct_stats(stats, experiment)
+
+    prod_config = StagingConfig(
+        name=StagingNames.prod,
+        save_remote=True,
+        log_remote=False,
+        limit_dataset_to=100,
+    )
+
+    successes = run(
+        [experiments[0]],
+        staging_config=prod_config,
+    )
