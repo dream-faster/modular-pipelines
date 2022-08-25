@@ -235,7 +235,7 @@ def is_custom_obj(obj: Any):
         return False
 
 
-def list_to_dict(obj: List):
+def list_to_dict(obj: List) -> dict:
     return {
         el.id
         if hasattr(el, "id")
@@ -246,7 +246,7 @@ def list_to_dict(obj: List):
     }
 
 
-def obj_to_dict(obj: Any):
+def obj_to_dict(obj: Any) -> dict:
     obj_dict = copy(vars(obj))
 
     for key, value in obj_dict.items():
