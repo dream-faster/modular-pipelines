@@ -1,6 +1,4 @@
-from tempfile import NamedTemporaryFile
 from utils.printing import logger
-from random import seed
 from type import (
     PreprocessConfig,
     DatasetSplit,
@@ -48,7 +46,7 @@ class HuggingfaceDataLoader(DataLoader):
         self.sampler = sampler
         self.path = path
         self.shuffle_first = shuffle_first
-        self.name = NamedTemporaryFile
+        self.name = name
 
     def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
         self.data = load_dataset(self.path, self.name)
