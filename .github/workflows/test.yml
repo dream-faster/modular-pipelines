@@ -17,6 +17,7 @@ jobs:
           auto-update-conda: false
           auto-activate-base: false
           show-channel-urls: true
+          use-mamba: true
 
       - uses: iterative/setup-cml@v1
       - name: Run pytest
