@@ -15,7 +15,7 @@ from .concat import Concat
 from type import DataType, SourceTypes
 
 from utils.process_block import process_block
-from copy import copy
+from utils.dict import obj_to_dict
 
 
 class Pipeline(Block):
@@ -226,38 +226,3 @@ def get_source_hierarchy(pipeline: Pipeline, source_hierarchy: Hierarchy) -> Hie
     else:
         source_hierarchy.children = [current_pipeline_hierarchy]
         return source_hierarchy
-
-
-def is_custom_obj(obj: Any):
-    if (
-        type(obj).__module__ is not object.__module__
-        and isinstance(obj, Enum) is False
-        and hasattr(obj, "__dict__")
-    ):
-        return True
-    else:
-        return False
-
-
-def list_to_dict(obj: List):
-    return {
-        el.id
-        if hasattr(el, "id")
-        else type(el).__name__: obj_to_dict(el)
-        if is_custom_obj(el)
-        else el
-        for el in obj
-    }
-
-
-def obj_to_dict(obj: Any) -> dict:
-    obj_dict = vars(copy(obj))
-
-    for key, value in obj_dict.items():
-        if isinstance(value, List):
-            obj_dict[key] = list_to_dict(value)
-
-        elif is_custom_obj(value):
-            obj_dict[key] = obj_to_dict(value)
-
-    return obj_dict
