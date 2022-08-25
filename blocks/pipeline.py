@@ -242,7 +242,7 @@ def list_to_dict(obj: List):
         if hasattr(el, "id")
         else type(el).__name__: obj_to_dict(el)
         if is_custom_obj(el)
-        else el
+        else deepcopy(el)
         for el in obj
     }
 

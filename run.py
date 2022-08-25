@@ -78,7 +78,14 @@ if __name__ == "__main__":
         limit_dataset_to=None,
     )
 
+    dev_config = StagingConfig(
+        name=StagingNames.dev,
+        save_remote=False,
+        log_remote=False,
+        limit_dataset_to=60,
+    )
+
     run(
         all_tweeteval_crossexperiments + all_merged_cross_experiments,
-        staging_config=prod_config,
+        staging_config=dev_config,
     )
