@@ -15,7 +15,7 @@ def create_nlp_huggingface_pipeline(
         remove_none(
             [
                 SpellAutocorrectAugmenter(fast=True) if autocorrect else None,
-                HuggingfaceModel("hf-model", config),
+                HuggingfaceModel("hf-model", config, dict_lookup={"LABEL_0": 0, "LABEL_1": 1}),
             ]
         ),
     )

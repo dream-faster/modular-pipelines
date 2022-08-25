@@ -34,9 +34,9 @@ class Runner:
         self.pipeline = deepcopy(experiment.pipeline)
 
         add_experiment_config_to_blocks_(self.pipeline, experiment)
-        overwrite_model_configs_(experiment, self.pipeline)
         if self.experiment.global_dataloader is not None:
             overwrite_dataloaders_(self.pipeline, experiment.global_dataloader)
+        overwrite_model_configs_(experiment, self.pipeline)
         append_parent_path_and_id_(self.pipeline)
 
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
