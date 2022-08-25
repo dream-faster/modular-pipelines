@@ -1,6 +1,6 @@
 from copy import deepcopy
 from enum import Enum
-from typing import Callable, Dict, Iterable, List, Optional, Union, Any
+from typing import Dict, List, Optional, Union, Any
 
 import pandas as pd
 
@@ -15,7 +15,7 @@ from .concat import Concat
 from type import DataType, SourceTypes
 
 from utils.process_block import process_block
-from constants import Const
+from copy import copy
 
 
 class Pipeline(Block):
@@ -250,8 +250,8 @@ def list_to_dict(obj: List):
     }
 
 
-def obj_to_dict(obj: Any):
-    obj_dict = vars(obj)
+def obj_to_dict(obj: Any) -> dict:
+    obj_dict = vars(copy(obj))
 
     for key, value in obj_dict.items():
         if isinstance(value, List):

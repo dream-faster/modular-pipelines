@@ -75,7 +75,8 @@ huggingface_baseline_distilbert = Pipeline(
     "nlp_hf_distilbert",
     tweet_eval_hate,
     [
-        HuggingfaceModel("hf-model", huggingface_distil_bert_config),
+        HuggingfaceModel("hf-model", huggingface_distil_bert_config            dict_lookup={"LABEL_0": 0, "LABEL_1": 1},
+),
         ClassificationOutputAdaptor(select=0),
     ],
 )
@@ -84,7 +85,11 @@ huggingface_distilroberta = Pipeline(
     "nlp_hf_distilroberta-base",
     tweet_eval_hate,
     [
-        HuggingfaceModel("distilroberta-base", huggingface_distilroberta_config),
+        HuggingfaceModel(
+            "distilroberta-base",
+            huggingface_distilroberta_config,
+            dict_lookup={"LABEL_0": 0, "LABEL_1": 1},
+        ),
         ClassificationOutputAdaptor(select=0),
     ],
 )

@@ -20,6 +20,19 @@ def run(
     for experiment in experiments:
 
         overwrite_preprocessing_configs_(experiment.pipeline, staging_config)
+        if (
+            experiment.global_dataloader is not None
+            and staging_config.limit_dataset_to is not None
+        ):
+            experiment.global_dataloader.preprocessing_configs[
+                0
+            ].train_size = staging_config.limit_dataset_to
+            experiment.global_dataloader.preprocessing_configs[
+                0
+            ].test_size = staging_config.limit_dataset_to
+            experiment.global_dataloader.preprocessing_configs[
+                0
+            ].val_size = staging_config.limit_dataset_to
 
         experiment.save_remote = staging_config.save_remote
         experiment.log_remote = staging_config.log_remote
@@ -45,14 +58,15 @@ def run(
             experiment,
             plugins=logger_plugins + [OutputAnalyserPlugin()],
         )
-        try:
-            runner.run()
-        except Exception as e:
-            print(
-                f"Run {experiment.project_name} - {experiment.run_name} - {experiment.pipeline.id} failed, due to"
-            )
-            print("".join(traceback.format_exception(type(e), e, e.__traceback__)))
-            failed.append(experiment)
+        runner.run()
+
+        # try:
+        # except Exception as e:
+        #     print(
+        #         f"Run {experiment.project_name} - {experiment.run_name} - {experiment.pipeline.id} failed, due to"
+        #     )
+        #     print("".join(traceback.format_exception(type(e), e, e.__traceback__)))
+        #     failed.append(experiment)
 
     if len(failed) > 0:
         failed_ids = "\n".join(
@@ -70,8 +84,8 @@ if __name__ == "__main__":
     prod_config = StagingConfig(
         name=StagingNames.prod,
         save_remote=False,
-        log_remote=False,
-        limit_dataset_to=100,
+        log_remote=True,
+        limit_dataset_to=None,
     )
 
     run(
