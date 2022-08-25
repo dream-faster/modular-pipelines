@@ -97,8 +97,8 @@ class WandbPlugin(Plugin):
                 run.save()
                 run.finish()
 
-                if self.config.delete_run:
-                    run.delete()
+                # if self.config.delete_run:
+                # run.delete()
 
         return pipeline, store
 

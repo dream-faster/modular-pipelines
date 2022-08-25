@@ -72,7 +72,6 @@ if __name__ == "__main__":
         save_remote=False,
         log_remote=True,
         limit_dataset_to=None,
-        delete_remote_log=True,
     )
 
     run(
