@@ -15,4 +15,4 @@ class SpacyTokenizer(Transformation):
         self.nlp = get_spacy()
 
     def predict(self, dataset: List[str]) -> List:
-        return [self.nlp(text) for text in dataset]
+        return [self.nlp(text, disable=["parser", "tagger"]) for text in dataset]
