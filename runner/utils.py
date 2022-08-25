@@ -119,6 +119,8 @@ def append_parent_path_and_id_(pipeline: Pipeline, mask: bool = False) -> None:
     ----------
     pipeline
         The entire pipeline
+    mask
+        Wether it should mask out datasources with generic names
 
     Returns
     -------
