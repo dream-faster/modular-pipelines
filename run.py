@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 from constants import Const
 
@@ -13,9 +13,10 @@ import traceback
 def run(
     experiments: List[Experiment],
     staging_config: StagingConfig,
-) -> None:
+) -> Tuple[List[Tuple[Experiment, "Store"]], List[Experiment]]:
 
     failed: List[Experiment] = []
+    successes: List[Tuple[Experiment, "Store"]] = []
 
     for experiment in experiments:
 
@@ -46,7 +47,8 @@ def run(
             plugins=logger_plugins + [OutputAnalyserPlugin()],
         )
         try:
-            runner.run()
+            store = runner.run()
+            successes.append((experiment, store))
         except Exception as e:
             print(
                 f"Run {experiment.project_name} - {experiment.run_name} - {experiment.pipeline.id} failed, due to"
@@ -59,6 +61,8 @@ def run(
             [f"{exp.project_name}-{exp.run_name}-{exp.pipeline.id}" for exp in failed]
         )
         dump_str(failed_ids, "output/failed_runs.txt")
+
+    return successes, failed
 
 
 if __name__ == "__main__":
