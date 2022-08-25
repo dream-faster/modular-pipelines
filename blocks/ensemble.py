@@ -43,11 +43,11 @@ class Ensemble(Pipeline):
     def children(self, source_type: SourceTypes) -> List[Element]:
         return [self] + [pipeline.children(source_type) for pipeline in self.pipelines]
 
-    def get_hierarchy(self) -> Hierarchy:
+    def get_hierarchy(self, source_hierarchy: Hierarchy) -> Hierarchy:
         return Hierarchy(
             name=self.id,
             obj=self,
-            children=[child.get_hierarchy() for child in self.pipelines]
+            children=[child.get_hierarchy(source_hierarchy) for child in self.pipelines]
             if hasattr(self, "pipelines")
             else [],
         )
