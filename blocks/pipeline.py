@@ -247,7 +247,7 @@ def list_to_dict(obj: List) -> dict:
 
 
 def obj_to_dict(obj: Any) -> dict:
-    obj_dict = copy(vars(obj))
+    obj_dict = vars(copy(obj))
 
     for key, value in obj_dict.items():
         if isinstance(value, List):
