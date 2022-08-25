@@ -76,6 +76,7 @@ class DataSource(Element):
     inputTypes = DataType.Any
     outputType = DataType.Series
     dataloader: DataLoader
+    category: DatasetSplit
 
     def __init__(self, id: str, dataloader: DataLoader) -> None:
         self.id = id

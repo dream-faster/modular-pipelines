@@ -1,3 +1,4 @@
+from tempfile import NamedTemporaryFile
 from utils.printing import logger
 from random import seed
 from type import (
@@ -47,9 +48,10 @@ class HuggingfaceDataLoader(DataLoader):
         self.sampler = sampler
         self.path = path
         self.shuffle_first = shuffle_first
+        self.name = NamedTemporaryFile
 
     def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
-        self.data = load_dataset(path, name)
+        self.data = load_dataset(self.path, self.name)
         if self.is_transformed == False:
             if self.shuffle_first:
                 logger.log("⚠️ Shuffling Data", level=logger.levels.TWO)
