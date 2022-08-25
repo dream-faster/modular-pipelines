@@ -124,13 +124,13 @@ def create_experiments() -> List[Experiment]:
     ]
 
     pipelines_to_evaluate = [
-        # sklearn,
+        sklearn,
         random,
-        # all_0s,
-        # all_1s,
-        # huggingface_baseline,
-        # ensemble_all,
-        # meta_model_all,
+        all_0s,
+        all_1s,
+        huggingface_baseline,
+        ensemble_all,
+        meta_model_all,
     ]
 
     all_tweeteval_experiments = populate_experiments_with_pipelines(
@@ -169,14 +169,10 @@ def test_experiments():
         limit_dataset_to=60,
     )
 
-    successes, fails = run(
+    successes = run(
         create_experiments(),
         staging_config=dev_config,
     )
-
-    assert (
-        len(fails) == 0
-    ), f"Experiments failed: {''.join([experiment.run_name +', ' for experiment in fails])}"
 
     for experiment, store in successes:
         stats = store.get_all_stats()[Const.final_eval_name]
