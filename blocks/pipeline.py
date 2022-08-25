@@ -241,13 +241,13 @@ def list_to_dict(obj: List):
         if hasattr(el, "id")
         else type(el).__name__: obj_to_dict(el)
         if is_custom_obj(el)
-        else el
+        else copy(el)
         for el in obj
     }
 
 
-def obj_to_dict(obj: Any) -> dict:
-    obj_dict = vars(copy(obj))
+def obj_to_dict(obj: Any):
+    obj_dict = copy(vars(obj))
 
     for key, value in obj_dict.items():
         if isinstance(value, List):
