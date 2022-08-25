@@ -44,6 +44,7 @@ def run(
                         project_id=experiment.project_name,
                         run_name=experiment.run_name + "---" + experiment.pipeline.id,
                         train=experiment.train,
+                        delete_run=staging_config.delete_remote_log,
                     ),
                     dict(
                         run_config=experiment.get_configs(),
@@ -76,6 +77,7 @@ if __name__ == "__main__":
         save_remote=False,
         log_remote=True,
         limit_dataset_to=None,
+        delete_remote_log=True,
     )
 
     run(

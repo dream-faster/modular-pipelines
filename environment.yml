@@ -39,7 +39,7 @@ dependencies:
       - emoji>=2.0.0
       - autocorrect
       - spello
-      - pycaleva
+      - https://github.com/itchingpixels/pycaleva/archive/patch-1.zip
       - perspective
 
 prefix: /usr/local/anaconda3/envs/nlp

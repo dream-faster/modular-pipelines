@@ -92,7 +92,7 @@ def create_experiments() -> List[Experiment]:
 
     single_dataset_experiments_tweeteval = [
         Experiment(
-            project_name="hate-speech-detection-tweeteval",
+            project_name="test",
             run_name="tweeteval",
             dataset_category=DatasetSplit.train,
             pipeline=sklearn,
@@ -101,7 +101,7 @@ def create_experiments() -> List[Experiment]:
             global_dataloader=dataloader_tweeteval,
         ),
         Experiment(
-            project_name="hate-speech-detection-tweeteval",
+            project_name="test",
             run_name="tweeteval",
             dataset_category=DatasetSplit.test,
             pipeline=sklearn,
@@ -159,11 +159,25 @@ def test_experiments():
         limit_dataset_to=100,
     )
 
+    experiments = create_experiments()
     successes = run(
-        create_experiments(),
+        experiments,
         staging_config=dev_config,
     )
 
     for experiment, store in successes:
         stats = store.get_all_stats()[Const.final_eval_name]
         __check_correct_stats(stats, experiment)
+
+    prod_config = StagingConfig(
+        name=StagingNames.prod,
+        save_remote=True,
+        log_remote=False,
+        limit_dataset_to=100,
+        delete_remote_log=True,
+    )
+
+    successes = run(
+        [experiments[0]],
+        staging_config=prod_config,
+    )
