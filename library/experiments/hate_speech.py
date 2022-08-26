@@ -71,9 +71,7 @@ huggingface_hatebert = create_nlp_huggingface_pipeline(
 huggingface_bertweet = create_nlp_huggingface_pipeline(
     title="hf-bertweet",
     input=tweet_eval_hate,
-    config=huggingface_config.set_attr(
-        "pretrained_model", "pysentimiento/bertweet-hate-speech"
-    ),
+    config=huggingface_config.set_attr("pretrained_model", "vinai/bertweet-base"),
     autocorrect=False,
 )
 
