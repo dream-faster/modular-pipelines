@@ -6,7 +6,7 @@ from utils.list import flatten
 from blocks.base import DataSource
 from data.dataloader import DataLoader
 from type import Hierarchy
-from copy import copy
+from copy import copy, deepcopy
 from runner.store import Store
 
 
@@ -64,8 +64,8 @@ def overwrite_dataloaders_(pipeline: Pipeline, dataloader: DataLoader) -> None:
     ]
 
     for datasource in datasources:
-        datasource.dataloader = dataloader
-        datasource.id = dataloader.path
+        datasource.dataloader = deepcopy(dataloader)
+        datasource.id = copy(dataloader.path)
 
 
 def overwrite_model_configs_(config: Experiment, pipeline: Pipeline) -> None:
