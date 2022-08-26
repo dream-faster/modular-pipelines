@@ -87,9 +87,7 @@ class LogWrapper:
 logger = LogWrapper()
 
 
-def multi_line_formatter(
-    text: str, level: LogLevels = LogLevels.ONE
-) -> DocumentWrapper:
+def multi_line_formatter(text: str, level: LogLevels = LogLevels.ONE) -> str:
 
     base_indent = " " * 4
     initial_indent = ""
@@ -106,7 +104,7 @@ def multi_line_formatter(
         subsequent_indent = base_indent + "┃    "
 
     d = DocumentWrapper(
-        width=100,
+        width=125,
         initial_indent=initial_indent,
         subsequent_indent=subsequent_indent,
     )

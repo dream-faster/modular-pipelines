@@ -50,7 +50,7 @@ def run(
         )
         runner = Runner(
             experiment,
-            plugins=logger_plugins + [OutputAnalyserPlugin()],
+            plugins=[OutputAnalyserPlugin()] + logger_plugins,
         )
 
         store = runner.run()

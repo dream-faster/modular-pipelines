@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "run",
+            "name": "run_dev",
             "type": "python",
             "request": "launch",
-            "module": "run",
+            "module": "run_dev",
             "args": []
         }
     ]
