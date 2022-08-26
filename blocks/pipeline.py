@@ -172,6 +172,8 @@ class Pipeline(Block):
             },
             {
                 source_type.value: hierarchy_to_str(self.children(source_type))
+                .replace("    ┃      ", "")
+                .replace("    ", "        ")
                 for source_type in source_types
             },
         )

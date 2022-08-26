@@ -72,6 +72,7 @@ class Block(Element):
 class DataSource(Element):
 
     id: str
+    original_id: str
 
     inputTypes = DataType.Any
     outputType = DataType.Series
@@ -80,6 +81,7 @@ class DataSource(Element):
 
     def __init__(self, id: str, dataloader: DataLoader) -> None:
         self.id = id
+        self.original_id = id
         self.dataloader = dataloader
 
     def deplate(
