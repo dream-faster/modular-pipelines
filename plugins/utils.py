@@ -38,7 +38,7 @@ def get_output_statistics(
         if log_it:
             logger.log(
                 f"{logger.formats.BOLD}{func_name}{logger.formats.END}",
-                level=logger.levels.ONE,
+                level=logger.levels.TWO,
             )
             logger.log("", level=logger.levels.THREE)
             logger.log(

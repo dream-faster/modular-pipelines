@@ -118,7 +118,9 @@ class WandbPlugin(Plugin):
             for datasource, output_statistics in result_dfs:
                 for name, df in output_statistics:
                     table = wandb.Table(dataframe=df)
-                    wandb.log({datasource.original_id: {name.replace(" ", "-"): table}})
+                    self.wandb.run.log(
+                        {datasource.original_id + "-" + name.replace(" ", "-"): table}
+                    )
 
         if self.wandb is not None:
             run = self.wandb.run
