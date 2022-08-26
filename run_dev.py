@@ -9,11 +9,10 @@ from run import run
 experiments_list = multi_objective_experiments
 
 
-
 dev_config = StagingConfig(
     name=StagingNames.dev,
     save_remote=False,
-    log_remote=True,
+    log_remote=False,
     limit_dataset_to=60,
 )
 
