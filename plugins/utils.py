@@ -62,15 +62,6 @@ def print_output_statistics(
     final_output_freq = Counter(predictions)
     original_labels_freq = Counter(original_labels)
 
-    string_to_return = ""
-
-    spaceing = "    ┃    {:<16} {:<16} {:<16}"
-    string_to_return += f"{PrintFormats.BOLD}    ┃ Frequencies{PrintFormats.END}\n"
-    string_to_return += (
-        f'{spaceing.format("category", "final_output", "original_labels")}\n'
-    )
-    string_to_return += f'{spaceing.format("-" * 16, "-" * 16, "-" * 16)}\n'
-
     combined_dict = {
         key: [
             key,
@@ -94,14 +85,7 @@ def print_example_outputs(
     predictions: List[Union[int, float]],
     probabilities: List[float],
 ) -> pd.DataFrame:
-    spaceing_example = "    ┃    {:<50} {:>16} {:>16} {:>16}"
-    num_examples = 10
-
-    string_to_return = f"{PrintFormats.BOLD}    ┃ Sampeling {num_examples} Examples{PrintFormats.END}\n"
-    string_to_return += f'{spaceing_example.format("input text", "final_output", "original_labels", "confidence")}\n'
-    string_to_return += (
-        f'{spaceing_example.format("-" * 50, "-" * 16, "-" * 16, "-" * 16)}\n'
-    )
+    num_examples = 20
 
     new_df = pd.DataFrame(
         [], columns=["input text", "final_output", "original_labels", "confidence"]
