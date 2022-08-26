@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Callable, List
 
 from sklearn.metrics import (
@@ -19,11 +20,56 @@ def __wrap_sklearn_scorer(scorer: Callable, *args, **kwargs) -> Callable:
     return wrapper
 
 
+class CTypes(Enum):
+    micro = "micro"
+    macro = "macro"
+    weighted = "weighted"
+
+
 classification_metrics: Evaluators = [
-    ("f1", __wrap_sklearn_scorer(f1_score, average="micro")),
-    ("accuracy", __wrap_sklearn_scorer(accuracy_score)),
-    ("precision", __wrap_sklearn_scorer(precision_score)),
-    ("recall", __wrap_sklearn_scorer(recall_score)),
+    ("f1_binary", __wrap_sklearn_scorer(f1_score)),
+    (
+        "f1_micro",
+        __wrap_sklearn_scorer(f1_score, average=CTypes.micro.value),
+    ),
+    (
+        "f1_macro",
+        __wrap_sklearn_scorer(f1_score, average=CTypes.macro.value),
+    ),
+    (
+        "f1_weighted",
+        __wrap_sklearn_scorer(f1_score, average=CTypes.weighted.value),
+    ),
+    (
+        "accuracy",
+        __wrap_sklearn_scorer(accuracy_score),
+    ),
+    ("precision_binary", __wrap_sklearn_scorer(precision_score)),
+    (
+        "precision_micro",
+        __wrap_sklearn_scorer(precision_score, average=CTypes.micro.value),
+    ),
+    (
+        "precision_macro",
+        __wrap_sklearn_scorer(precision_score, average=CTypes.macro.value),
+    ),
+    (
+        "precision_weighted",
+        __wrap_sklearn_scorer(precision_score, average=CTypes.weighted.value),
+    ),
+    ("recall_binary", __wrap_sklearn_scorer(recall_score)),
+    (
+        "recall_micro",
+        __wrap_sklearn_scorer(recall_score, average=CTypes.micro.value),
+    ),
+    (
+        "recall_macro",
+        __wrap_sklearn_scorer(recall_score, average=CTypes.macro.value),
+    ),
+    (
+        "recall_weighted",
+        __wrap_sklearn_scorer(recall_score, average=CTypes.weighted.value),
+    ),
     ("roc_auc", __wrap_sklearn_scorer(roc_auc_score)),
     ("report", __wrap_sklearn_scorer(classification_report)),
 ]

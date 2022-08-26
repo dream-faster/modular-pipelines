@@ -133,10 +133,10 @@ from run import run
 
 def __check_correct_stats(stats: pd.Series, experiment: Experiment):
     correct_ranges = [
-        ("f1", 0.0, 1.0),
+        ("f1_binary", 0.0, 1.0),
         ("accuracy", 0.0, 1.0),
-        ("precision", 0.0, 1.0),
-        ("recall", 0.0, 1.0),
+        ("precision_binary", 0.0, 1.0),
+        ("recall_binary", 0.0, 1.0),
         ("roc_auc", 0.0, 1.0),
         ("mce", 0.0, 1.0),
     ]
@@ -158,13 +158,27 @@ def test_experiments():
         log_remote=False,
         limit_dataset_to=100,
     )
-
-    experiments = create_experiments()
-    successes = run(
-        experiments,
-        staging_config=dev_config,
+    dev_config_logging = StagingConfig(
+        name=StagingNames.dev,
+        save_remote=False,
+        log_remote=True,
+        limit_dataset_to=100,
     )
 
-    for experiment, store in successes:
-        stats = store.get_all_stats()[Const.final_eval_name]
-        __check_correct_stats(stats, experiment)
+    experiments = create_experiments()
+
+    for i, experiment in enumerate(experiments):
+
+        if i == 0:
+            config = dev_config_logging
+        else:
+            config = dev_config
+
+        successes = run(
+            [experiment],
+            staging_config=config,
+        )
+
+        for experiment, store in successes:
+            stats = store.get_all_stats()[Const.final_eval_name]
+            __check_correct_stats(stats, experiment)

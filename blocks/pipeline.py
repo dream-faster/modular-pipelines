@@ -161,7 +161,7 @@ class Pipeline(Block):
                             isinstance(block, Concat),
                         ]
                     )
-                }
+                },
             }
 
         source_types = self.get_datasource_types()
@@ -204,7 +204,7 @@ def get_datasource_configs(
 ) -> Dict[str, dict]:
     entire_pipeline = pipeline.children(source_type)
     return {
-        block.id: vars(block.dataloader.preprocessing_configs[0])
+        block.id: obj_to_dict(block)
         for block in flatten(entire_pipeline)
         if isinstance(block, DataSource)
     }
