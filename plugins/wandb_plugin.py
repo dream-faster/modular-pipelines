@@ -1,5 +1,3 @@
-import logging
-import os
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -7,6 +5,7 @@ import pandas as pd
 from transformers import TrainerCallback
 
 import wandb
+from blocks.base import DataSource
 from blocks.models.huggingface.base import HuggingfaceModel
 from blocks.pipeline import Pipeline
 from constants import Const
@@ -16,8 +15,12 @@ from utils.env_interface import get_env
 from utils.list import flatten
 
 from .base import Plugin
-
-logger = logging.getLogger("Wandb-Plugin")
+from .utils import (
+    print_output_statistics,
+    print_example_outputs,
+    print_correlation_matrix,
+    get_output_statistics,
+)
 
 
 @dataclass
@@ -26,6 +29,7 @@ class WandbConfig:
     run_name: str
     train: bool
     delete_run: bool
+    output_stats: bool
 
 
 class WandbCallback(TrainerCallback):
@@ -47,6 +51,12 @@ class WandbPlugin(Plugin):
         super().__init__()
         self.config = config
         self.run_config = run_config
+
+        self.analysis_functions = [
+            ("Output Statistics", print_output_statistics),
+            ("Example Outputs", print_example_outputs),
+            ("Correlation Matrix", print_correlation_matrix),
+        ]
 
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
         pipeline_config, hierarchy = pipeline.get_configs()
@@ -89,6 +99,26 @@ class WandbPlugin(Plugin):
         report_results(
             stats=store.get_all_stats(), wandb=self.wandb, config=self.config
         )
+        if self.config.output_stats:
+            all_datasources = [
+                block
+                for block in flatten(pipeline.children(SourceTypes.predict))
+                if type(block) is DataSource
+            ]
+
+            result_dfs = [
+                (
+                    datasource,
+                    get_output_statistics(
+                        store, datasource, self.analysis_functions, log_it=False
+                    ),
+                )
+                for datasource in all_datasources
+            ]
+            for datasource, output_statistics in result_dfs:
+                for name, df in output_statistics:
+                    table = wandb.Table(dataframe=df)
+                    wandb.log({datasource.original_id: {name.replace(" ", "-"): table}})
 
         if self.wandb is not None:
             run = self.wandb.run

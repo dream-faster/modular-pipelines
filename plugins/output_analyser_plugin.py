@@ -29,7 +29,7 @@ from .utils import (
 class OutputAnalyserPlugin(Plugin):
     def __init__(self, num_examples: int = 10):
         self.num_examples = num_examples
-        self.analysis_functions: List[Tuple[str, Callable]] = [
+        self.analysis_functions = [
             ("Output Statistics", print_output_statistics),
             ("Example Outputs", print_example_outputs),
             ("Correlation Matrix", print_correlation_matrix),
@@ -56,23 +56,12 @@ class OutputAnalyserPlugin(Plugin):
             for block in flatten(pipeline.children(SourceTypes.predict))
             if type(block) is DataSource
         ]
-        for datasource in all_datasources:
-            result_dfs = get_output_statistics(
-                store,
-                datasource,
-                [analysis_function[1] for analysis_function in self.analysis_functions],
-            )
 
-            for i, df in enumerate(result_dfs):
-                logger.log(
-                    f"{logger.formats.BOLD}{self.analysis_functions[i][0]}{logger.formats.END}\n",
-                    level=logger.levels.ONE,
-                )
-                logger.log(
-                    df.to_string(),
-                    level=logger.levels.THREE,
-                    mode=logger.modes.MULTILINE,
-                )
-                logger.log("", level=logger.levels.ONE)
+        _ = [
+            get_output_statistics(
+                store, datasource, self.analysis_functions, log_it=True
+            )
+            for datasource in all_datasources
+        ]
 
         return pipeline, store

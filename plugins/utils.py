@@ -1,18 +1,22 @@
 from blocks.base import DataSource
 from constants import Const
 from runner.store import Store
-from typing import List, Callable, Union
+from typing import List, Callable, Union, Tuple, Optional
 import random
 import numpy as np
 from collections import Counter
 from utils.printing import PrintFormats, multi_line_formatter
 import pandas as pd
 import re
+from utils.printing import logger
 
 
 def get_output_statistics(
-    store: Store, datasource: DataSource, analysis_functions: List[Callable]
-) -> List[pd.DataFrame]:
+    store: Store,
+    datasource: DataSource,
+    analysis_functions: List[Tuple[str, Callable]],
+    log_it: Optional[bool] = False,
+) -> List[Tuple[str, pd.DataFrame]]:
     input = datasource.deplate(store, [], False)
     final_output = store.get_data(Const.final_output)
     original_labels = datasource.get_labels()
@@ -25,12 +29,24 @@ def get_output_statistics(
     predictions, probabilities = store.data_to_preds_probs(final_output)
 
     dfs = []
-    for analysis_function in analysis_functions:
-        dfs.append(
-            analysis_function(
-                store, input, original_labels, final_output, predictions, probabilities
-            )
+    for func_name, analysis_function in analysis_functions:
+        stat_df = analysis_function(
+            store, input, original_labels, final_output, predictions, probabilities
         )
+        dfs.append((func_name, stat_df))
+
+        if log_it:
+            logger.log(
+                f"{logger.formats.BOLD}{func_name}{logger.formats.END}",
+                level=logger.levels.ONE,
+            )
+            logger.log("", level=logger.levels.THREE)
+            logger.log(
+                stat_df.to_string(),
+                level=logger.levels.THREE,
+                mode=logger.modes.MULTILINE,
+            )
+            logger.log("", level=logger.levels.THREE)
 
     return dfs
 
