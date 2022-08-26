@@ -6,6 +6,8 @@ from type import StagingConfig, StagingNames
 
 from run import run
 
+experiments_list = multi_objective_experiments
+
 
 dev_config = StagingConfig(
     name=StagingNames.dev,
@@ -14,11 +16,11 @@ dev_config = StagingConfig(
     limit_dataset_to=60,
 )
 
-for experiment in all_experiments:
+for experiment in experiments_list:
     experiment.project_name = "hate-speech-DEV"
 
 
 run(
-    multi_objective_experiments,
+    experiments_list,
     staging_config=dev_config,
 )

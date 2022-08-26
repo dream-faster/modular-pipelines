@@ -11,7 +11,7 @@ def hierarchy_to_str(
             string_to_return += hierarchy_to_str(block, indent)
             indent = indent[: len(indent) - len("    ")]
         elif isinstance(block, DataSource):
-            string_to_return += indent + "-" + block.id + "\n"
+            string_to_return += indent + "-" + block.original_id + "\n"
             indent += "    "
         else:
             string_to_return += indent + "-" + block.id + "\n"

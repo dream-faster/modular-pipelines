@@ -7,6 +7,8 @@ jobs:
     # optionally use a convenient Ubuntu LTS + CUDA + DVC + CML image
     # container: docker://dvcorg/cml:0-dvc2-base1-gpu
     # container: docker://ghcr.io/iterative/cml:0-dvc2-base1-gpu
+    env:
+      WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
     steps:
       - uses: actions/checkout@v3
       - uses: conda-incubator/setup-miniconda@v2.1.1
