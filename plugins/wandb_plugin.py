@@ -112,18 +112,18 @@ def launch_wandb(
 
     wsb_token = get_env("WANDB_API_KEY")
 
-    try:
-        wandb.login(key=wsb_token)
-        wandb.init(
-            project=project_name,
-            config=configs,
-            reinit=True,
-            name=run_name,
-            notes=notes,
-        )
-        return wandb
-    except Exception as e:
-        logger.debug(e, exc_info=True)
+    # try:
+    wandb.login(key=wsb_token)
+    wandb.init(
+        project=project_name,
+        config=configs,
+        reinit=True,
+        name=run_name,
+        notes=notes,
+    )
+    return wandb
+    # except Exception as e:
+    #     logger.debug(e, exc_info=True)
 
 
 def report_results(stats: pd.DataFrame, wandb: wandb, config: WandbConfig):
