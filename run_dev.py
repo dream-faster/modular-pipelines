@@ -6,13 +6,13 @@ from type import StagingConfig, StagingNames
 
 from run import run
 
-experiments_list = multi_objective_experiments
+experiments_list = all_experiments
 
 
 dev_config = StagingConfig(
     name=StagingNames.dev,
     save_remote=False,
-    log_remote=False,
+    log_remote=True,
     limit_dataset_to=60,
 )
 

@@ -41,6 +41,7 @@ def run(
                         run_name=experiment.run_name + "---" + experiment.pipeline.id,
                         train=experiment.train,
                         delete_run=staging_config.delete_remote_log,
+                        output_stats=True,
                     ),
                     run_config=experiment.get_configs(type_exclude=["Pipeline"]),
                 )
@@ -50,7 +51,7 @@ def run(
         )
         runner = Runner(
             experiment,
-            plugins=logger_plugins + [OutputAnalyserPlugin()],
+            plugins=[OutputAnalyserPlugin()] + logger_plugins,
         )
 
         store = runner.run()
