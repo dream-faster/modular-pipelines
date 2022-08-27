@@ -71,7 +71,12 @@
   </ol>
 </details>
 
-![Visualization of the codebase](./diagram.svg)
+<details>
+  <summary>Visualization of the Repo</summary>
+  <ol>
+    ![Visualization of the codebase](./diagram.svg)
+  </ol>
+</details>
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
