@@ -28,6 +28,7 @@ class CTypes(Enum):
 
 classification_metrics: Evaluators = [
     ("f1_binary", __wrap_sklearn_scorer(f1_score)),
+    ("f1_binary_class_0", __wrap_sklearn_scorer(f1_score, pos_label=0)),
     (
         "f1_micro",
         __wrap_sklearn_scorer(f1_score, average=CTypes.micro.value),
@@ -45,6 +46,7 @@ classification_metrics: Evaluators = [
         __wrap_sklearn_scorer(accuracy_score),
     ),
     ("precision_binary", __wrap_sklearn_scorer(precision_score)),
+    ("precision_binary_class_0", __wrap_sklearn_scorer(precision_score, pos_label=0)),
     (
         "precision_micro",
         __wrap_sklearn_scorer(precision_score, average=CTypes.micro.value),
@@ -58,6 +60,7 @@ classification_metrics: Evaluators = [
         __wrap_sklearn_scorer(precision_score, average=CTypes.weighted.value),
     ),
     ("recall_binary", __wrap_sklearn_scorer(recall_score)),
+    ("recall_binary_class_0", __wrap_sklearn_scorer(recall_score, pos_label=0)),
     (
         "recall_micro",
         __wrap_sklearn_scorer(recall_score, average=CTypes.micro.value),
