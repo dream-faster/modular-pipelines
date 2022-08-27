@@ -71,7 +71,7 @@
   </ol>
 </details>
 
-
+![Visualization of the codebase](./diagram.svg)
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
