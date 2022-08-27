@@ -31,6 +31,7 @@ def pickle_loading(parent_path: str, id: str) -> "Model":
     logger.log(
         f"Loading model {parent_path}/{logger.formats.BOLD}{id}{logger.formats.END}",
         mode=logger.modes.MULTILINE,
+        level=logger.levels.TWO,
     )
 
     with open(path, "rb") as f:
@@ -47,6 +48,7 @@ def pickle_saving(
     logger.log(
         f"Saving model {parent_path}/{logger.formats.BOLD}{id}{logger.formats.END}",
         mode=logger.modes.MULTILINE,
+        level=logger.levels.TWO,
     )
     with open(path + f"/{id}.pkl", "wb") as f:
         joblib.dump(object, f, compress=9)
