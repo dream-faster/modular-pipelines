@@ -74,7 +74,7 @@
 <details>
   <summary>Visualization of the Repo</summary>
   <ol>
-    ![Visualization of the codebase](./diagram.svg)
+    <img src="./diagram.svg" alt="Visualization of the codebase" width="80" height="80">
   </ol>
 </details>
 
