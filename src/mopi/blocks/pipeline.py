@@ -4,21 +4,21 @@ from typing import Dict, List, Optional, Union, Any, Tuple
 
 import pandas as pd
 
-from runner.store import Store
-from runner.train import predict, train_predict
-from type import BaseConfig, Hierarchy
-from utils.list import flatten
-from utils.printing import logger
+from mopi.runner.store import Store
+from mopi.runner.train import predict, train_predict
+from mopi.type import BaseConfig, Hierarchy
+from mopi.utils.list import flatten
+from mopi.utils.printing import logger
 
 from .base import Block, DataSource, Element
 from .concat import Concat
-from type import DataType, SourceTypes
+from mopi.type import DataType, SourceTypes
 
-from utils.process_block import process_block
+from mopi.utils.process_block import process_block
 
-from utils.dict import obj_to_dict
-from constants import Const
-from utils.hierarchy import hierarchy_to_str
+from mopi.utils.dict import obj_to_dict
+from mopi.constants import Const
+from mopi.utils.hierarchy import hierarchy_to_str
 
 
 class Pipeline(Block):

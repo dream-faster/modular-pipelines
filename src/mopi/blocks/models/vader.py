@@ -5,8 +5,8 @@ import numpy as np
 import pandas as pd
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-from blocks.models.base import Model
-from type import DataType, PredsWithProbs
+from mopi.blocks.models.base import Model
+from mopi.type import DataType, PredsWithProbs
 
 
 class VaderModel(Model):

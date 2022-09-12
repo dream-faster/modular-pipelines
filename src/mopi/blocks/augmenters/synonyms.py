@@ -4,7 +4,7 @@ import nltk
 import pandas as pd
 from nltk.corpus import wordnet as wn
 
-from type import DataType
+from mopi.type import DataType
 
 from .base import Augmenter
 

@@ -1,6 +1,7 @@
-from blocks.base import DataLoader
-from type import DatasetSplit
-from constants import Const
+from mopi.blocks.base import DataLoader
+from mopi.type import DatasetSplit
+from mopi.constants import Const
+
 
 def print_dataset_analytics(dataloader: DataLoader, split: DatasetSplit) -> None:
     data = dataloader.load(split)

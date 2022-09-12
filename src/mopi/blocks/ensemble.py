@@ -3,8 +3,8 @@ from typing import List, Union, Optional
 import numpy as np
 import pandas as pd
 
-from runner.store import Store
-from type import PredsWithProbs, Hierarchy, SourceTypes
+from mopi.runner.store import Store
+from mopi.type import PredsWithProbs, Hierarchy, SourceTypes
 
 from .base import Block, Element, DataSource
 from .pipeline import Pipeline

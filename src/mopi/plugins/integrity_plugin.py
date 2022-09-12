@@ -1,12 +1,12 @@
 from typing import List
 
-from blocks.base import Block
-from blocks.pipeline import Pipeline
-from type import DataType, Hierarchy
+from mopi.blocks.base import Block
+from mopi.blocks.pipeline import Pipeline
+from mopi.type import DataType, Hierarchy
 
 from .base import Plugin
-from utils.printing import logger
-from constants import Const
+from mopi.utils.printing import logger
+from mopi.constants import Const
 
 
 class IntegrityChecker(Plugin):

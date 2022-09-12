@@ -1,23 +1,23 @@
-from utils.printing import logger
+from mopi.utils.printing import logger
 from pprint import pprint
 from typing import Iterable, List
 
-from blocks.base import Block, DataSource, Element
-from blocks.pipeline import Pipeline
+from mopi.blocks.base import Block, DataSource, Element
+from mopi.blocks.pipeline import Pipeline
 
 from .base import Plugin
-from runner.store import Store
-from constants import Const
+from mopi.runner.store import Store
+from mopi.constants import Const
 
 from collections import Counter
 import numpy as np
 import random
-from utils.printing import PrintFormats, multi_line_formatter
+from mopi.utils.printing import PrintFormats, multi_line_formatter
 from typing import Any, Tuple, Callable, Union
 import matplotlib.pyplot as plt
 import pandas as pd
-from type import SourceTypes
-from utils.list import flatten
+from mopi.type import SourceTypes
+from mopi.utils.list import flatten
 from .utils import (
     print_output_statistics,
     print_example_outputs,

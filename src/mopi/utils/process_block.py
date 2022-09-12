@@ -9,9 +9,9 @@ def process_block(
     plugins: List["Plugin"],
     train: bool,
 ) -> pd.Series:
-    from blocks.base import DataSource
-    from blocks.concat import Concat
-    from blocks.pipeline import Pipeline
+    from mopi.blocks.base import DataSource
+    from mopi.blocks.concat import Concat
+    from mopi.blocks.pipeline import Pipeline
 
     if isinstance(block, DataSource) or isinstance(block, Concat):
         return block.deplate(store, plugins, train=train)

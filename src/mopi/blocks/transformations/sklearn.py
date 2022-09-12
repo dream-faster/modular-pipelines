@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator
 
-from type import DataType
+from mopi.type import DataType
 
 from .base import Transformation
 from ..io import PickleIO

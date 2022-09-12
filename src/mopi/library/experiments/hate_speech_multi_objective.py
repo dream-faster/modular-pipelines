@@ -1,19 +1,19 @@
 from enum import Enum
 
-from blocks.concat import ClassificationOutputConcat, DataSource
+from mopi.blocks.concat import ClassificationOutputConcat, DataSource
 
-from blocks.models.huggingface import HuggingfaceModel
-from blocks.pipeline import Pipeline
+from mopi.blocks.models.huggingface import HuggingfaceModel
+from mopi.blocks.pipeline import Pipeline
 
-from library.evaluation.classification import classification_metrics
+from mopi.library.evaluation.classification import classification_metrics
 from transformers.training_args import TrainingArguments
-from type import (
+from mopi.type import (
     DatasetSplit,
     HuggingfaceConfig,
     Experiment,
     HFTaskTypes,
 )
-from blocks.models.sklearn import SKLearnModel
+from mopi.blocks.models.sklearn import SKLearnModel
 
 from ..dataset.tweet_eval import get_tweet_eval_dataloader
 from ..models.sklearn_voting import sklearn_config

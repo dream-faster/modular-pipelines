@@ -5,8 +5,8 @@ from sklearn.base import BaseEstimator, ClassifierMixin, clone
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.calibration import CalibratedClassifierCV
 
-from blocks.models.base import Model
-from type import DataType, Evaluators, PredsWithProbs, SKLearnConfig
+from mopi.blocks.models.base import Model
+from mopi.type import DataType, Evaluators, PredsWithProbs, SKLearnConfig
 from ..io import PickleIO
 
 

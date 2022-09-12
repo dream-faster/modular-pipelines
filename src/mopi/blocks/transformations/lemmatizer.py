@@ -3,9 +3,9 @@ from typing import Any, List
 import pandas as pd
 import spacy
 
-from constants import Const
-from type import DataType
-from utils.spacy import get_spacy
+from mopi.constants import Const
+from mopi.type import DataType
+from mopi.utils.spacy import get_spacy
 
 from .base import Transformation
 

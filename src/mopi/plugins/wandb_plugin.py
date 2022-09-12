@@ -5,14 +5,14 @@ import pandas as pd
 from transformers import TrainerCallback
 
 import wandb
-from blocks.base import DataSource
-from blocks.models.huggingface.base import HuggingfaceModel
-from blocks.pipeline import Pipeline
-from constants import Const
-from runner.store import Store
-from type import BaseConfig, SourceTypes
-from utils.env_interface import get_env
-from utils.list import flatten
+from mopi.blocks.base import DataSource
+from mopi.blocks.models.huggingface.base import HuggingfaceModel
+from mopi.blocks.pipeline import Pipeline
+from mopi.constants import Const
+from mopi.runner.store import Store
+from mopi.type import BaseConfig, SourceTypes
+from mopi.utils.env_interface import get_env
+from mopi.utils.list import flatten
 
 from .base import Plugin
 from .utils import (

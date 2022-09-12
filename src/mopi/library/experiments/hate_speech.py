@@ -1,24 +1,24 @@
-from blocks.adaptors import ListOfListsToNumpy
-from blocks.concat import ClassificationOutputConcat, DataSource
-from blocks.ensemble import Ensemble
-from blocks.models.random import AllOnesModel, RandomModel, AllZerosModel
-from blocks.models.sklearn import SKLearnModel
-from blocks.models.vader import VaderModel
-from blocks.pipeline import Pipeline
-from blocks.transformations import (
+from mopi.blocks.adaptors import ListOfListsToNumpy
+from mopi.blocks.concat import ClassificationOutputConcat, DataSource
+from mopi.blocks.ensemble import Ensemble
+from mopi.blocks.models.random import AllOnesModel, RandomModel, AllZerosModel
+from mopi.blocks.models.sklearn import SKLearnModel
+from mopi.blocks.models.vader import VaderModel
+from mopi.blocks.pipeline import Pipeline
+from mopi.blocks.transformations import (
     SKLearnTransformation,
     SpacyTokenizer,
     TextStatisticTransformation,
 )
-from data.dataloader import MergedDataLoader
+from mopi.data.dataloader import MergedDataLoader
 from ..evaluation.classification import classification_metrics
 from ..evaluation.calibration import calibration_metrics
 from sklearn.preprocessing import MinMaxScaler
-from type import (
+from mopi.type import (
     Experiment,
     DatasetSplit,
 )
-from utils.list import flatten
+from mopi.utils.list import flatten
 from ..dataset.dynahate import get_dynahate_dataloader
 from ..dataset.hatecheck import get_hatecheck_dataloader
 from ..dataset.hatespeech_offensive import get_hate_speech_offensive_dataloader

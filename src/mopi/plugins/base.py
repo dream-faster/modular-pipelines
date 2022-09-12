@@ -3,11 +3,11 @@ from typing import Any, Callable, List, Tuple
 
 import pandas as pd
 
-from blocks.pipeline import Pipeline
-from constants import LogConst
-from runner.store import Store
-from utils.random import random_string
-from utils.printing import logger
+from mopi.blocks.pipeline import Pipeline
+from mopi.constants import LogConst
+from mopi.runner.store import Store
+from mopi.utils.random import random_string
+from mopi.utils.printing import logger
 
 
 def just_custom_functions(obj) -> List[Tuple]:

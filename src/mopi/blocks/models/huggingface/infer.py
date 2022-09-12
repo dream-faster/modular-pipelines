@@ -5,8 +5,8 @@ from datasets.arrow_dataset import Dataset
 from transformers.tokenization_utils import PreTrainedTokenizer
 from transformers.modeling_utils import PreTrainedModel
 from transformers.pipelines import pipeline
-from constants import Const
-from type import HuggingfaceConfig, PredsWithProbs
+from mopi.constants import Const
+from mopi.type import HuggingfaceConfig, PredsWithProbs
 
 
 def run_inference(

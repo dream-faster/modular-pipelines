@@ -1,8 +1,10 @@
-from library.experiments.hate_speech_multi_objective import multi_objective_experiments
-from library.experiments.hate_speech_baselines import all_experiments
-from type import Experiment, StagingConfig, StagingNames
+from mopi.library.experiments.hate_speech_multi_objective import (
+    multi_objective_experiments,
+)
+from mopi.library.experiments.hate_speech_baselines import all_experiments
+from mopi.type import Experiment, StagingConfig, StagingNames
 
-from run import run
+from mopi.run import run
 from typing import List
 
 

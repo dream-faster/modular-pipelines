@@ -4,14 +4,14 @@ from typing import List, Optional
 import pandas as pd
 
 
-from blocks.models.base import Model
-from type import DataType, Evaluators, PredsWithProbs, SKLearnConfig
+from mopi.blocks.models.base import Model
+from mopi.type import DataType, Evaluators, PredsWithProbs, SKLearnConfig
 from ...io import PickleIO
 
 from perspective import PerspectiveAPI
-from utils.env_interface import get_env
+from mopi.utils.env_interface import get_env
 import time
-from utils.printing import logger
+from mopi.utils.printing import logger
 import random
 
 

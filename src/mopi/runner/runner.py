@@ -3,11 +3,11 @@ from copy import deepcopy
 from typing import Dict, List, Optional, Union
 
 import pandas as pd
-from constants import Const
-from plugins import IntegrityChecker, PipelineAnalyser
-from plugins.base import Plugin
-from type import Experiment
-from runner.utils import (
+from mopi.constants import Const
+from mopi.plugins import IntegrityChecker, PipelineAnalyser
+from mopi.plugins.base import Plugin
+from mopi.type import Experiment
+from mopi.runner.utils import (
     overwrite_dataloaders_,
     overwrite_model_configs_,
     append_parent_path_and_id_,
@@ -16,7 +16,7 @@ from runner.utils import (
 )
 from .evaluation import evaluate
 from .store import Store
-from utils.printing import logger
+from mopi.utils.printing import logger
 
 obligatory_plugins_begin = []
 obligatory_plugins_end = [PipelineAnalyser(), IntegrityChecker()]

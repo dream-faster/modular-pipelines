@@ -2,7 +2,7 @@ from typing import List
 
 import pandas as pd
 
-from type import DataType
+from mopi.type import DataType
 
 from .base import Adaptor
 

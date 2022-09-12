@@ -2,7 +2,7 @@ from typing import List
 
 from autocorrect import Speller
 
-from type import DataType
+from mopi.type import DataType
 
 from .base import Augmenter
 

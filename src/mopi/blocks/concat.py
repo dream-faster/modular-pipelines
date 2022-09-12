@@ -3,11 +3,11 @@ from typing import List, Optional, Union
 import numpy as np
 import pandas as pd
 
-from runner.store import Store
+from mopi.runner.store import Store
 
 from .base import DataSource, Element
-from type import BaseConfig, DataType, Hierarchy, SourceTypes
-from utils.process_block import process_block
+from mopi.type import BaseConfig, DataType, Hierarchy, SourceTypes
+from mopi.utils.process_block import process_block
 
 
 class Concat(Element):

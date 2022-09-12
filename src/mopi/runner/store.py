@@ -2,7 +2,7 @@ from typing import Dict, List, Union, Iterable, Tuple
 
 import pandas as pd
 
-from utils.random import random_string
+from mopi.utils.random import random_string
 import numpy as np
 
 

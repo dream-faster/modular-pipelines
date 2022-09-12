@@ -4,19 +4,25 @@ from typing import List, Optional
 import pandas as pd
 import torch
 from transformers import PreTrainedTokenizer
-from blocks.models.base import Model
-from constants import Const
+from mopi.blocks.models.base import Model
+from mopi.constants import Const
 from datasets import ClassLabel, Features, Value
 from datasets.arrow_dataset import Dataset
 from sklearn.model_selection import train_test_split
 from transformers.modeling_utils import PreTrainedModel
 from transformers.trainer_utils import enable_full_determinism
-from type import DataType, Evaluators, HuggingfaceConfig, LoadOrigin, PredsWithProbs
-from utils.env_interface import get_env
+from mopi.type import (
+    DataType,
+    Evaluators,
+    HuggingfaceConfig,
+    LoadOrigin,
+    PredsWithProbs,
+)
+from mopi.utils.env_interface import get_env
 
 from .infer import run_inference
 from .train import run_training
-from utils.printing import logger
+from mopi.utils.printing import logger
 from .loading import safe_load, determine_load_order, get_paths
 import time
 

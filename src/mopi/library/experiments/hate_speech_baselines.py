@@ -1,13 +1,13 @@
-from blocks.concat import DataSource
+from mopi.blocks.concat import DataSource
 
-from blocks.models.random import AllOnesModel, RandomModel, AllZerosModel
+from mopi.blocks.models.random import AllOnesModel, RandomModel, AllZerosModel
 
-from blocks.pipeline import Pipeline
+from mopi.blocks.pipeline import Pipeline
 
 from ..evaluation.classification import classification_metrics
 from ..evaluation.calibration import calibration_metrics
 
-from type import (
+from mopi.type import (
     Experiment,
     DatasetSplit,
 )

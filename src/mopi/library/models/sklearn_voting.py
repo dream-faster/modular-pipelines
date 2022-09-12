@@ -2,8 +2,8 @@ from sklearn.ensemble import GradientBoostingClassifier, VotingClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import MultinomialNB
-from type import SKLearnConfig
-from constants import Const
+from mopi.type import SKLearnConfig
+from mopi.constants import Const
 
 sklearn_config = SKLearnConfig(
     frozen=False,

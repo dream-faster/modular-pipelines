@@ -1,7 +1,7 @@
 from typing import List, Optional
 
-from blocks.base import Block, Element
-from type import BaseConfig, Evaluators, Hierarchy
+from mopi.blocks.base import Block, Element
+from mopi.type import BaseConfig, Evaluators, Hierarchy
 
 
 class Model(Block):

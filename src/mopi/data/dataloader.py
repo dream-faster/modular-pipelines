@@ -1,20 +1,20 @@
-from utils.printing import logger
-from type import (
+from mopi.utils.printing import logger
+from mopi.type import (
     PreprocessConfig,
     DatasetSplit,
     TrainDataset,
     TestDataset,
 )
-from constants import Const
+from mopi.constants import Const
 from typing import List, Callable, Optional, Union
 from datasets.load import load_dataset
 
-from utils.list import flatten
+from mopi.utils.list import flatten
 import pandas as pd
 from imblearn.base import BaseSampler
-from utils.setter import Settable
+from mopi.utils.setter import Settable
 import numpy as np
-from constants import Const
+from mopi.constants import Const
 
 
 class DataLoader(Settable):

@@ -3,8 +3,8 @@ from typing import List, Optional
 
 import pandas as pd
 
-from blocks.models.base import Model
-from type import DataType, PredsWithProbs
+from mopi.blocks.models.base import Model
+from mopi.type import DataType, PredsWithProbs
 
 
 class AllZerosModel(Model):

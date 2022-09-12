@@ -5,8 +5,8 @@ from typing import Any, Callable, List, Optional, Tuple, Union
 import pandas as pd
 from sklearn.base import ClassifierMixin
 from transformers.training_args import TrainingArguments
-from utils.setter import Settable
-from utils.dict import obj_to_dict
+from mopi.utils.setter import Settable
+from mopi.utils.dict import obj_to_dict
 
 TrainDataset = pd.DataFrame
 TestDataset = pd.DataFrame

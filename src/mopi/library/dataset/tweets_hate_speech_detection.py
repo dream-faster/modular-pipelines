@@ -2,9 +2,9 @@ import pandas as pd
 from datasets.arrow_dataset import Dataset
 from sklearn.model_selection import train_test_split
 
-from constants import Const
-from type import PreprocessConfig, DatasetSplit
-from data.dataloader import DataLoader, HuggingfaceDataLoader
+from mopi.constants import Const
+from mopi.type import PreprocessConfig, DatasetSplit
+from mopi.data.dataloader import DataLoader, HuggingfaceDataLoader
 
 
 def transform_hatespeech_detection_dataset(

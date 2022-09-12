@@ -9,8 +9,8 @@ from transformers.tokenization_utils import PreTrainedTokenizer
 from transformers.modeling_utils import PreTrainedModel
 from transformers.data.data_collator import DataCollatorWithPadding
 
-from constants import Const
-from type import HuggingfaceConfig
+from mopi.constants import Const
+from mopi.type import HuggingfaceConfig
 
 
 def compute_metrics(eval_pred):

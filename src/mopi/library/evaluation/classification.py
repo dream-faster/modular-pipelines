@@ -10,7 +10,7 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 
-from type import Evaluators, PredsWithProbs
+from mopi.type import Evaluators, PredsWithProbs
 
 
 def __wrap_sklearn_scorer(scorer: Callable, *args, **kwargs) -> Callable:

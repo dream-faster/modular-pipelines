@@ -7,9 +7,9 @@ from torch import nn
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, random_split
 
-from blocks.models.base import Model
-from constants import Const
-from type import DataType, Evaluators, PytorchConfig
+from mopi.blocks.models.base import Model
+from mopi.constants import Const
+from mopi.type import DataType, Evaluators, PytorchConfig
 
 from .decoder import Decoder
 

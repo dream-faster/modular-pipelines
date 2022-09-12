@@ -1,6 +1,6 @@
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
-from type import SKLearnConfig
+from mopi.type import SKLearnConfig
 
 sklearn_config_simple_nb = SKLearnConfig(
     preferred_load_origin=None,

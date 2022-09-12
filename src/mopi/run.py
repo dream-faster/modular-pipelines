@@ -1,12 +1,12 @@
 from typing import List, Tuple
 
-from constants import Const
+from mopi.constants import Const
 
-from plugins import WandbConfig, WandbPlugin, OutputAnalyserPlugin
-from runner.runner import Runner
-from type import Experiment, StagingConfig, StagingNames, SourceTypes
-from runner.utils import overwrite_preprocessing_configs_
-from utils.json import dump_str
+from mopi.plugins import WandbConfig, WandbPlugin, OutputAnalyserPlugin
+from mopi.runner.runner import Runner
+from mopi.type import Experiment, StagingConfig, StagingNames, SourceTypes
+from mopi.runner.utils import overwrite_preprocessing_configs_
+from mopi.utils.json import dump_str
 
 
 def run(
@@ -61,7 +61,7 @@ def run(
 
 
 if __name__ == "__main__":
-    from library.experiments.hate_speech import (
+    from mopi.library.experiments.hate_speech import (
         all_merged_cross_experiments,
         all_tweeteval_crossexperiments,
     )

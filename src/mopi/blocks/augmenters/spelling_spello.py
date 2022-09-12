@@ -3,8 +3,8 @@ from typing import Optional
 import pandas as pd
 from spello.model import SpellCorrectionModel
 
-from constants import Const
-from type import DataType
+from mopi.constants import Const
+from mopi.type import DataType
 
 from .base import Augmenter
 

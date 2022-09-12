@@ -1,15 +1,15 @@
-from blocks.concat import DataSource
+from mopi.blocks.concat import DataSource
 
-from blocks.pipeline import Pipeline
+from mopi.blocks.pipeline import Pipeline
 
-from library.evaluation.classification import classification_metrics
-from library.evaluation.calibration import calibration_metrics
-from type import (
+from mopi.library.evaluation.classification import classification_metrics
+from mopi.library.evaluation.calibration import calibration_metrics
+from mopi.type import (
     Experiment,
     DatasetSplit,
 )
 from ..dataset.tweet_eval import get_tweet_eval_dataloader
-from blocks.models.perspective import PerspectiveModel
+from mopi.blocks.models.perspective import PerspectiveModel
 
 
 tweet_eval_hate = DataSource("tweet_eval_hate", get_tweet_eval_dataloader("hate"))

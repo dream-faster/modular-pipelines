@@ -1,7 +1,7 @@
 import pandas as pd
 
 from .base import Adaptor
-from type import DataType, PredsWithProbs
+from mopi.type import DataType, PredsWithProbs
 from typing import List, Optional
 
 

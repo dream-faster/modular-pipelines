@@ -2,32 +2,32 @@ from ast import Store
 from copy import deepcopy
 import pandas as pd
 from typing import List
-from blocks.base import DataSource
+from mopi.blocks.base import DataSource
 
-from blocks.concat import ClassificationOutputConcat
-from blocks.ensemble import Ensemble
-from blocks.models.random import AllOnesModel, RandomModel, AllZerosModel
-from blocks.models.sklearn import SKLearnModel
-from blocks.pipeline import Pipeline
-from constants import Const
-from library.evaluation.classification import classification_metrics
-from library.evaluation.calibration import calibration_metrics
-from type import (
+from mopi.blocks.concat import ClassificationOutputConcat
+from mopi.blocks.ensemble import Ensemble
+from mopi.blocks.models.random import AllOnesModel, RandomModel, AllZerosModel
+from mopi.blocks.models.sklearn import SKLearnModel
+from mopi.blocks.pipeline import Pipeline
+from mopi.constants import Const
+from mopi.library.evaluation.classification import classification_metrics
+from mopi.library.evaluation.calibration import calibration_metrics
+from mopi.type import (
     Experiment,
     DatasetSplit,
     StagingConfig,
     StagingNames,
 )
-from utils.list import flatten
-from library.models.sklearn_voting import sklearn_config
-from library.models.huggingface import huggingface_config
-from library.pipelines.huggingface import create_nlp_huggingface_pipeline
-from library.pipelines.sklearn_nlp import create_nlp_sklearn_pipeline
-from library.experiments.utils import populate_experiments_with_pipelines
-from library.dataset.tweet_eval import get_tweet_eval_dataloader
-from blocks.models.vader import VaderModel
+from mopi.utils.list import flatten
+from mopi.library.models.sklearn_voting import sklearn_config
+from mopi.library.models.huggingface import huggingface_config
+from mopi.library.pipelines.huggingface import create_nlp_huggingface_pipeline
+from mopi.library.pipelines.sklearn_nlp import create_nlp_sklearn_pipeline
+from mopi.library.experiments.utils import populate_experiments_with_pipelines
+from mopi.library.dataset.tweet_eval import get_tweet_eval_dataloader
+from mopi.blocks.models.vader import VaderModel
 
-from library.models.sklearn_simple import (
+from mopi.library.models.sklearn_simple import (
     sklearn_config_simple_nb,
     sklearn_config_simple_lr,
 )

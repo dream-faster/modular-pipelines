@@ -3,12 +3,19 @@ from typing import Callable, List, Optional, Union
 
 import pandas as pd
 
-from blocks.io import pickle_loading, pickle_saving
-from data.dataloader import DataLoader
-from runner.store import Store
-from type import BaseConfig, DataType, Hierarchy, RunContext, DatasetSplit, SourceTypes
-from constants import Const
-from utils.printing import logger
+from mopi.blocks.io import pickle_loading, pickle_saving
+from mopi.data.dataloader import DataLoader
+from mopi.runner.store import Store
+from mopi.type import (
+    BaseConfig,
+    DataType,
+    Hierarchy,
+    RunContext,
+    DatasetSplit,
+    SourceTypes,
+)
+from mopi.constants import Const
+from mopi.utils.printing import logger
 
 
 class Element(ABC):

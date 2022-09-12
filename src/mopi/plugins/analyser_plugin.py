@@ -1,13 +1,13 @@
 from pprint import pprint
 from typing import List
 
-from blocks.base import Block, DataSource, Element
-from blocks.pipeline import Pipeline
+from mopi.blocks.base import Block, DataSource, Element
+from mopi.blocks.pipeline import Pipeline
 
 from .base import Plugin
-from utils.printing import logger
-from constants import Const
-from utils.hierarchy import hierarchy_to_str
+from mopi.utils.printing import logger
+from mopi.constants import Const
+from mopi.utils.hierarchy import hierarchy_to_str
 
 
 class PipelineAnalyser(Plugin):

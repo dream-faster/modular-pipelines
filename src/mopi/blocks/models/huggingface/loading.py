@@ -1,14 +1,14 @@
 from typing import Callable, List, Optional, Tuple, Union
 
-from type import HuggingfaceConfig, LoadOrigin
+from mopi.type import HuggingfaceConfig, LoadOrigin
 
-from utils.printing import logger
+from mopi.utils.printing import logger
 
 from transformers.modeling_utils import PreTrainedModel
 from transformers.tokenization_utils import PreTrainedTokenizer
 from transformers.models.auto.tokenization_auto import AutoTokenizer
 from transformers.models.auto.modeling_auto import AutoModelForSequenceClassification
-from constants import Const
+from mopi.constants import Const
 import torch
 
 device = 0 if torch.cuda.is_available() else -1

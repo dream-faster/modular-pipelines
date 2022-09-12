@@ -2,12 +2,12 @@ from typing import Callable, List, Optional
 
 import pandas as pd
 
-from blocks.base import Block
-from blocks.models.base import Model
+from mopi.blocks.base import Block
+from mopi.blocks.models.base import Model
 
 from .evaluation import evaluate
 from .store import Store
-from utils.printing import logger
+from mopi.utils.printing import logger
 
 
 def train_predict(

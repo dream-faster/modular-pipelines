@@ -1,10 +1,10 @@
 from copy import deepcopy
 from typing import List
 
-from blocks.pipeline import Pipeline
+from mopi.blocks.pipeline import Pipeline
 
-from type import Experiment
-from utils.list import flatten
+from mopi.type import Experiment
+from mopi.utils.list import flatten
 
 
 def _set_pipeline(experiment: Experiment, pipeline: Pipeline) -> Experiment:

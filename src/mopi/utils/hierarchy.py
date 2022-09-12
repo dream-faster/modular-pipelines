@@ -1,5 +1,5 @@
 from typing import List
-from blocks.base import Element, DataSource
+from mopi.blocks.base import Element, DataSource
 
 
 def hierarchy_to_str(

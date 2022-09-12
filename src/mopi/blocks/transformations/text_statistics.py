@@ -6,7 +6,7 @@ import numpy as np
 from emoji import EMOJI_DATA
 from urlextract import URLExtract
 
-from type import DataType
+from mopi.type import DataType
 
 from .base import Transformation
 

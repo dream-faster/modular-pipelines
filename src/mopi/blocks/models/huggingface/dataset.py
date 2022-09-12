@@ -1,7 +1,7 @@
 import pandas as pd
 from datasets import Dataset
 
-from constants import Const
+from mopi.constants import Const
 
 
 class RawDataset(Dataset):

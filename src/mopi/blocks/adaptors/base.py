@@ -2,8 +2,8 @@ from typing import List, Optional
 
 import pandas as pd
 
-from blocks.base import Block, Element
-from type import BaseConfig, Hierarchy
+from mopi.blocks.base import Block, Element
+from mopi.type import BaseConfig, Hierarchy
 
 
 class Adaptor(Block):

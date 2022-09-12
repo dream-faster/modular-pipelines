@@ -1,7 +1,7 @@
 from typing import List
 
-from type import DataType
-from utils.spacy import get_spacy
+from mopi.type import DataType
+from mopi.utils.spacy import get_spacy
 
 from .base import Transformation
 

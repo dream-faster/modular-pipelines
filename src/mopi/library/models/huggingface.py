@@ -1,5 +1,5 @@
 from transformers.training_args import TrainingArguments
-from type import HuggingfaceConfig, HFTaskTypes
+from mopi.type import HuggingfaceConfig, HFTaskTypes
 
 
 huggingface_config = HuggingfaceConfig(

@@ -1,13 +1,13 @@
 from dataclasses import dataclass
-from type import Experiment, StagingConfig, RunContext
-from blocks.pipeline import Pipeline
-from constants import Const
-from utils.list import flatten
-from blocks.base import DataSource
-from data.dataloader import DataLoader
-from type import Hierarchy
+from mopi.type import Experiment, StagingConfig, RunContext
+from mopi.blocks.pipeline import Pipeline
+from mopi.constants import Const
+from mopi.utils.list import flatten
+from mopi.blocks.base import DataSource
+from mopi.data.dataloader import DataLoader
+from mopi.type import Hierarchy
 from copy import copy, deepcopy
-from runner.store import Store
+from mopi.runner.store import Store
 
 
 def overwrite_preprocessing_configs_(

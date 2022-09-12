@@ -2,7 +2,7 @@ from typing import List, Union
 
 import numpy as np
 
-from type import DataType
+from mopi.type import DataType
 
 from .base import Adaptor
 

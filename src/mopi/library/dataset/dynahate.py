@@ -1,9 +1,9 @@
 import pandas as pd
 from datasets.arrow_dataset import Dataset
 
-from constants import Const
-from type import PreprocessConfig, DatasetSplit
-from data.dataloader import DataLoader, HuggingfaceDataLoader
+from mopi.constants import Const
+from mopi.type import PreprocessConfig, DatasetSplit
+from mopi.data.dataloader import DataLoader, HuggingfaceDataLoader
 
 
 def transform_dynahate_dataset(dataset: Dataset, config: PreprocessConfig) -> dict:
