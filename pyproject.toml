@@ -12,7 +12,7 @@ authors = [
 description = "Modular Pipelines (mopi) let's you create and manage Machine Learning pipelines with ease."
 readme = "README.md"
 license = { file="LICENSE" }
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: Other/Proprietary License",
@@ -20,5 +20,5 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/pypa/sampleproject"
-"Bug Tracker" = "https://github.com/pypa/sampleproject/issues"
+"Homepage" = "https://github.com/applied-exploration/modular-pipelines"
+"Bug Tracker" = "https://github.com/applied-exploration/modular-pipelines/issues"

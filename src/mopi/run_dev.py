@@ -1,9 +1,6 @@
 from library.experiments.hate_speech_multi_objective import multi_objective_experiments
 from library.experiments.hate_speech_baselines import all_experiments
-from src.type import Experiment
-
-from type import StagingConfig, StagingNames
-
+from type import Experiment, StagingConfig, StagingNames
 
 from run import run
 from typing import List
