@@ -36,7 +36,7 @@ class OutputAnalyserPlugin(Plugin):
         ]
 
     def on_predict_end(self, store: Store, last_output: Any) -> Tuple[Store, Any]:
-        random_indecies = random.sample(range(len(last_output)), self.num_examples)
+        random_indecies = random.sample(range(len(last_output)), min(len(last_output),self.num_examples))
 
         prefix = "    ┃    "
 

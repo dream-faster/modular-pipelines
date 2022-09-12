@@ -38,11 +38,21 @@ random = Pipeline(
     [RandomModel("random")],
 )
 
+from .hate_speech import sklearn_simple_nb
 
-pipelines_to_evaluate = [all_0s, all_1s, random]
+pipelines_to_evaluate = [sklearn_simple_nb]  # [all_0s, all_1s, random]
 metrics = classification_metrics + calibration_metrics
 
 tweeteval_simple = [
+    Experiment(
+        project_name="hate-speech-detection-tweeteval",
+        run_name="tweeteval",
+        dataset_category=DatasetSplit.train,
+        pipeline=all_0s,
+        metrics=metrics,
+        train=True,
+        global_dataloader=global_dataloader,
+    ),
     Experiment(
         project_name="hate-speech-detection-tweeteval",
         run_name="tweeteval",

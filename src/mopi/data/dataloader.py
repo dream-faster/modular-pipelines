@@ -76,6 +76,7 @@ class PandasDataLoader(DataLoader):
         sampler: Optional[BaseSampler] = None,
         shuffle_first: Optional[bool] = False,
     ):
+        self.path = path
         self.preprocessing_configs = [preprocessing_config]
         self.train_data = train_data
         self.test_data = test_data

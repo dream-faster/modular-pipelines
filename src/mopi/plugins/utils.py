@@ -91,7 +91,7 @@ def print_example_outputs(
         [], columns=["input text", "final_output", "original_labels", "confidence"]
     )
 
-    random_indecies = random.sample(range(len(input)), num_examples)
+    random_indecies = random.sample(range(len(input)), min(len(input),num_examples))
     for i in random_indecies:
         sliced_input = (
             input[i][:50]
