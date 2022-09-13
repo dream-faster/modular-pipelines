@@ -20,6 +20,10 @@ class PickleIO:
         )
         if model is not None:
             self.model = model
+            logger.log(
+                f"✅ Loaded model",
+                level=logger.levels.TWO,
+            )
 
 
 def pickle_loading(parent_path: str, id: str) -> "Model":
@@ -31,6 +35,7 @@ def pickle_loading(parent_path: str, id: str) -> "Model":
     logger.log(
         f"Loading model {parent_path}/{logger.formats.BOLD}{id}{logger.formats.END}",
         mode=logger.modes.MULTILINE,
+        level=logger.levels.ONE,
     )
 
     with open(path, "rb") as f:
@@ -52,17 +57,17 @@ def pickle_saving(
         joblib.dump(object, f, compress=9)
 
 
-from mopi.blocks.pipeline import Pipeline
+# from mopi.blocks.pipeline import Pipeline
 import pickle
 
 
-def export_pipeline(path: str, pipeline: Pipeline) -> None:
-    with open(path, "wb") as handle:
+def export_pipeline(name: str, pipeline: "Pipeline") -> None:
+    with open(f"{Const.output_pipelines_path}/{name}", "wb") as handle:
         pickle.dump(pipeline, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-def load_pipeline(path: str) -> Pipeline:
-    with open(path, "rb") as handle:
+def load_pipeline(name: str) -> "Pipeline":
+    with open(f"{Const.output_pipelines_path}/{name}", "rb") as handle:
         pipeline = pickle.load(handle)
 
     return pipeline

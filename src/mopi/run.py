@@ -15,6 +15,7 @@ from mopi.blocks.io import export_pipeline, load_pipeline
 def run(
     experiments: List[Experiment],
     staging_config: StagingConfig,
+    pure_inference:bool = False
 ) -> List[Tuple[Experiment, "Store"]]:
 
     successes = []
@@ -57,11 +58,11 @@ def run(
             plugins=[OutputAnalyserPlugin()] + logger_plugins,
         )
 
-        store = runner.run()
+        store = runner.run(pure_inference)
         successes.append((experiment, store))
 
         export_pipeline(
-            f"{Const.output_pipelines_path}/{experiment.pipeline.id}",
+            experiment.pipeline.id,
             experiment.pipeline,
         )
 
