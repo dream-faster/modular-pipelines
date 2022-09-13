@@ -1,3 +1,4 @@
+from re import A
 from typing import List, Tuple
 
 from mopi.constants import Const
@@ -7,6 +8,8 @@ from mopi.runner.runner import Runner
 from mopi.type import Experiment, StagingConfig, StagingNames, SourceTypes
 from mopi.runner.utils import overwrite_preprocessing_configs_
 from mopi.utils.json import dump_str
+
+from mopi.blocks.io import export_pipeline, load_pipeline
 
 
 def run(
@@ -56,6 +59,11 @@ def run(
 
         store = runner.run()
         successes.append((experiment, store))
+
+        export_pipeline(
+            f"{Const.output_pipelines_path}/{experiment.pipeline.id}",
+            experiment.pipeline,
+        )
 
     return successes
 

@@ -50,3 +50,19 @@ def pickle_saving(
     )
     with open(path + f"/{id}.pkl", "wb") as f:
         joblib.dump(object, f, compress=9)
+
+
+from mopi.blocks.pipeline import Pipeline
+import pickle
+
+
+def export_pipeline(path: str, pipeline: Pipeline) -> None:
+    with open(path, "wb") as handle:
+        pickle.dump(pipeline, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+
+def load_pipeline(path: str) -> Pipeline:
+    with open(path, "rb") as handle:
+        pipeline = pickle.load(handle)
+
+    return pipeline
