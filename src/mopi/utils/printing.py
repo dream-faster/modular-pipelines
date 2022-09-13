@@ -104,7 +104,7 @@ def multi_line_formatter(text: str, level: LogLevels = LogLevels.ONE) -> str:
         subsequent_indent = base_indent + "┃    "
 
     d = DocumentWrapper(
-        width=125,
+        width=100,
         initial_indent=initial_indent,
         subsequent_indent=subsequent_indent,
     )
