@@ -42,7 +42,7 @@ dependencies = [
   "imbalanced-learn",
   "swifter",
   # "huggingface_hub",
-  "pytorch-lightning",
+  # "pytorch-lightning",
   "matplotlib",
   "scipy",
   "joblib",
