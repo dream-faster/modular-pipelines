@@ -25,7 +25,7 @@ dependencies = [
   "ipython",
   "notebook",
   "ipykernel",
-  "torch",
+  # "torch",
   "tqdm",
   "numpy",
   "pandas",
