@@ -2,7 +2,7 @@ from typing import List, Tuple
 
 from mopi.plugins import WandbConfig, WandbPlugin, OutputAnalyserPlugin
 from mopi.runner.runner import Runner
-from mopi.type import Experiment, StagingConfig, StagingNames,
+from mopi.type import Experiment, StagingConfig, StagingNames
 from mopi.runner.utils import overwrite_preprocessing_configs_
 
 from mopi.blocks.io import export_pipeline

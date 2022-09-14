@@ -31,7 +31,7 @@ from mopi.library.models.sklearn_simple import (
     sklearn_config_simple_nb,
     sklearn_config_simple_lr,
 )
-
+from mopi.run import run
 
 def create_experiments() -> List[Experiment]:
     ### Datasources
@@ -128,7 +128,7 @@ def create_experiments() -> List[Experiment]:
     return all_tweeteval_experiments
 
 
-from run import run
+
 
 
 def __check_correct_stats(stats: pd.Series, experiment: Experiment):
