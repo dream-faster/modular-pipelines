@@ -1,4 +1,3 @@
-from tkinter import NW
 from typing import Any, TypeVar
 from copy import deepcopy
 from typing_extensions import Self
