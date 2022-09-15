@@ -1,4 +1,4 @@
-from src.mopi.utils.dict import obj_to_dict, flatten
+from mopi.utils.dict import obj_to_dict, flatten
 import pandas as pd
 import numpy as np
 
