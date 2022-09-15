@@ -7,6 +7,8 @@ from mopi.constants import Const
 
 from mopi.utils.printing import logger
 
+import dill as pickle
+
 
 class PickleIO:
     def save(self) -> None:
@@ -57,20 +59,16 @@ def pickle_saving(
         joblib.dump(object, f, compress=9)
 
 
-# from mopi.blocks.pipeline import Pipeline
-import pickle
-
-
 def export_pipeline(name: str, pipeline: "Pipeline") -> None:
     if os.path.exists(Const.output_pipelines_path) is False:
         os.makedirs(Const.output_pipelines_path)
 
     with open(f"{Const.output_pipelines_path}/{name}", "wb") as handle:
-        joblib.dump(pipeline, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(pipeline, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 def load_pipeline(name: str) -> "Pipeline":
     with open(f"{Const.output_pipelines_path}/{name}", "rb") as handle:
-        pipeline = joblib.load(handle)
+        pipeline = pickle.load(handle)
 
     return pipeline
