@@ -62,6 +62,9 @@ import pickle
 
 
 def export_pipeline(name: str, pipeline: "Pipeline") -> None:
+    if os.path.exists(Const.output_pipelines_path) is False:
+        os.makedirs(Const.output_pipelines_path)
+
     with open(f"{Const.output_pipelines_path}/{name}", "wb") as handle:
         pickle.dump(pipeline, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
