@@ -66,11 +66,11 @@ def export_pipeline(name: str, pipeline: "Pipeline") -> None:
         os.makedirs(Const.output_pipelines_path)
 
     with open(f"{Const.output_pipelines_path}/{name}", "wb") as handle:
-        pickle.dump(pipeline, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        joblib.dump(pipeline, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 def load_pipeline(name: str) -> "Pipeline":
     with open(f"{Const.output_pipelines_path}/{name}", "rb") as handle:
-        pipeline = pickle.load(handle)
+        pipeline = joblib.load(handle)
 
     return pipeline
