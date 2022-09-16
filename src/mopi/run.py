@@ -12,6 +12,7 @@ def run(
     experiments: List[Experiment],
     staging_config: StagingConfig,
     pure_inference: bool = False,
+    save_entire_pipeline: bool = False,
 ) -> List[Tuple[Experiment, "Store"]]:
 
     successes = []
@@ -57,7 +58,7 @@ def run(
         store, pipeline = runner.run(pure_inference)
         successes.append((experiment, store))
 
-        if pure_inference is False:
+        if pure_inference is False and save_entire_pipeline is True:
             export_pipeline(
                 pipeline.id,
                 pipeline,
