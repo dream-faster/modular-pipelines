@@ -56,7 +56,7 @@ def run(
         )
 
         store, pipeline = runner.run(pure_inference)
-        successes.append((experiment, store))
+        successes.append((experiment, pipeline, store))
 
         if pure_inference is False and save_entire_pipeline is True:
             export_pipeline(
