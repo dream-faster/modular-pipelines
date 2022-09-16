@@ -26,6 +26,6 @@ def run_dev(
 
 
 if __name__ == "__main__":
-    from mopi.library.experiments.hate_speech_baselines_trained import all_experiments
+    from mopi.library.experiments.hate_speech_baselines import all_experiments
 
     run_dev(all_experiments)
