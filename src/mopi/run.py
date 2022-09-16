@@ -13,7 +13,7 @@ def run(
     staging_config: StagingConfig,
     pure_inference: bool = False,
     save_entire_pipeline: bool = False,
-) -> List[Tuple[Experiment, "Store"]]:
+) -> List[Tuple[Experiment, "Pipeline", "Store"]]:
 
     successes = []
 

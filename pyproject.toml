@@ -20,23 +20,23 @@ classifiers = [
 ]
 
 dependencies = [
-  "pyarrow>=3.0",
-  "tqdm",
   "numpy",
   "pandas",
-  "pytest",
+  "matplotlib",
+  "tqdm",
+  "pyarrow>=3.0",
   "python-dotenv",
+  "swifter",
+  "joblib",
+  "pycaleva @ https://github.com/itchingpixels/pycaleva/archive/patch-1.zip",
+  
+  # -- Below are modules that are endpoints or blocks that can be used. --
   "nltk",
   "transformers",
   "datasets",
   "scikit-learn",
   "spacy",
   "imbalanced-learn",
-  "swifter",
-  "matplotlib",
-  "joblib",
-  "pycaleva @ https://github.com/itchingpixels/pycaleva/archive/patch-1.zip",
-  # -- Below are modules that are endpoints or blocks that can be used. --
   # "huggingface_hub",
   # "isort",
   # "URLExtract",
@@ -47,9 +47,11 @@ dependencies = [
   # "pytorch-lightning",
   # "scipy",
   # "tensorboard",
+  
   # -- Currently required to be installed by the user --
   # "torch",
   # "wandb",
+  
   # -- Dev Dependencies --
   # "pyright",
   # "black",
@@ -57,6 +59,7 @@ dependencies = [
   # "notebook",
   # "ipykernel",
   # "pydeps",
+  # "pytest",
 ]
 
 [tool.hatch.metadata]
