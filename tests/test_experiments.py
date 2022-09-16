@@ -177,6 +177,6 @@ def test_experiments():
             staging_config=config,
         )
 
-        for experiment, store in successes:
+        for experiment, pipeline, store in successes:
             stats = store.get_all_stats()[Const.final_eval_name]
             __check_correct_stats(stats, experiment)
