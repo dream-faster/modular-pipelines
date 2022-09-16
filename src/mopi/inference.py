@@ -46,6 +46,7 @@ def run_inference(pipeline: Pipeline, texts: List[str]) -> Tuple[int, float]:
     ]
     successes = run_dev(experiments_for_inference, pure_inference=True)
 
-    results = successes[0][1].get_all_predictions()[Const.final_output][: len(texts)]
+    _, _, store = successes[0]
+    results = store.get_all_predictions()[Const.final_output][: len(texts)]
 
     return results
