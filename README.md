@@ -33,10 +33,13 @@
     Fast composition of Machine Learning Pipelines
     <br />
     <a href="https://github.com/applied-exploration/modular-pipelines"><strong>Explore the docs »</strong></a>
+    .
     <!-- <br />
     <br /> -->
-    <!-- <a href="https://github.com/applied-exploration/modular-pipelines">View Demo</a>
-    ·
+    <a href="https://github.com/applied-exploration/modular-pipelines">View Demo</a>
+    .
+    <a href="https://github.com/applied-exploration/modular-pipelines/src/mopi/library/examples">Check Examples</a>
+    <!-- ·
     <a href="https://github.com/applied-exploration/modular-pipelines/issues">Report Bug</a>
     ·
     <a href="https://github.com/applied-exploration/modular-pipelines/issues">Request Feature</a> -->
@@ -92,6 +95,7 @@ You can easily build:
     <b>Ensemble Learning</b>  &rarr;  Ensemble learning is a general meta approach to machine learning that seeks better predictive performance by combining the predictions from multiple models. See more on wikipedia <a href="https://en.wikipedia.org/wiki/Ensemble_learning">Wiki - Ensemble Learning</a> or <a href="https://machinelearningmastery.com/tour-of-ensemble-learning-algorithms/">A Gentle Introduction to Ensemble Learning Algorithms</a><br>
   </p>
 </div>
+</br>
 
 ### **Meta-Learning Pipelines**:
 <div class="warning" style='background-color:#EDF2F7; color:#1A2067; border-left: solid #718096 4px; border-radius: 4px;'>
@@ -101,6 +105,7 @@ You can easily build:
     <b>Meta Learning</b>  &rarr; in machine learning refers to learning algorithms that learn from other learning algorithms. Most commonly, this means the use of machine learning algorithms that learn how to best combine the predictions from other machine learning algorithms in the field of ensemble learning. <a href="https://en.wikipedia.org/wiki/Metamodeling">Meta Modelling</a> and <a href="https://machinelearningmastery.com/meta-learning-in-machine-learning/)"> What Is Meta-Learning in Machine Learning?</a><br>
   </p>
 </div>
+</br>
 
 ### **Multi-objective Pipelines**:
 
