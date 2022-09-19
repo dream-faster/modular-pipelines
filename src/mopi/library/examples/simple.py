@@ -43,3 +43,18 @@ all_experiments = [
 ]
 
 # %%
+# 3. Run Experiments
+from mopi.run import run
+from mopi.type import Experiment, StagingConfig, StagingNames
+
+prod_config = StagingConfig(
+    name=StagingNames.prod,
+    save_remote=False,
+    log_remote=True,
+    limit_dataset_to=None,
+)
+
+run(
+    all_experiments,
+    staging_config=prod_config,
+)
