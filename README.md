@@ -12,9 +12,9 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-[![Contributors][contributors-shield]][contributors-url]
+<!-- [![Contributors][contributors-shield]][contributors-url]
 [![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+[![MIT License][license-shield]][license-url] -->
 <!-- [![Stargazers][stars-shield]][stars-url] -->
 <!-- [![Forks][forks-shield]][forks-url] -->
 <!-- [![LinkedIn][linkedin-shield]][linkedin-url] -->
@@ -25,86 +25,125 @@
 <br />
 <div align="center">
   <a href="https://github.com/applied-exploration/modular-pipelines">
-    <!-- <img src="images/logo.png" alt="Logo" width="80" height="80"> -->
+    <img src="docs/resources/logo.png" alt="Logo" width="160" >
   </a>
 
 <h3 align="center">Modular Pipelines</h3>
   <p align="center">
-    Easy composition of ML Pipelines
+    Fast composition of Machine Learning Pipelines
     <br />
     <a href="https://github.com/applied-exploration/modular-pipelines"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/applied-exploration/modular-pipelines">View Demo</a>
+    <!-- <br />
+    <br /> -->
+    <!-- <a href="https://github.com/applied-exploration/modular-pipelines">View Demo</a>
     ·
     <a href="https://github.com/applied-exploration/modular-pipelines/issues">Report Bug</a>
     ·
-    <a href="https://github.com/applied-exploration/modular-pipelines/issues">Request Feature</a>
+    <a href="https://github.com/applied-exploration/modular-pipelines/issues">Request Feature</a> -->
+    <!-- TABLE OF CONTENTS -->
+    <!-- <details align="left">
+      <summary>Table of Contents</summary>
+      <ol>
+        <li>
+          <a href="#about-the-project">About The Project</a>
+          <ul>
+            <li><a href="#built-with">Compatible With</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#getting-started">Getting Started</a>
+          <ul>
+            <li><a href="#prerequisites">Prerequisites</a></li>
+            <li><a href="#installation">Installation</a></li>
+          </ul>
+        </li>
+        <li><a href="#usage">Usage</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+        <li><a href="#contributing">Contributing</a></li>
+        <li><a href="#license">License</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#acknowledgments">Acknowledgments</a></li>
+      </ol>
+    </details> -->
   </p>
 </div>
 
 
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Compatible With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
 
+---
 
 
 <!-- ABOUT THE PROJECT -->
-## About The Project
+<br/>
 
+## About Modular Pipelines (mopi)
 <!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
 
-Modular Pipelines is a lightweight and extensible library to create complex multi-model and multi-modal pipelines, including ``Ensembles`` and ``Meta-Models``.
+Modular Pipelines is a lightweight and extensible library to create complex multi-model and multi-modal pipelines.
+
+You can easily build:
+### **Ensemble Pipelines**: 
+
+<div class="warning" style='background-color:#EDF2F7; color:#1A2067; border-left: solid #718096 4px; border-radius: 4px;'>
+  <p style='padding:0.7em; margin-left:0.7em; display: inline-block;'>
+    <img src="docs/resources/ensemble.png" width="160" style="zoom:70%;  float:right; padding:0.7em"/>
+    <img src="docs/resources/stacking.png" width="160" style="zoom:70%;  float:right; padding:0.7em"/>
+    <b>Ensemble Learning</b>  &rarr;  Ensemble learning is a general meta approach to machine learning that seeks better predictive performance by combining the predictions from multiple models. See more on wikipedia <a href="https://en.wikipedia.org/wiki/Ensemble_learning">Wiki - Ensemble Learning</a> or <a href="https://machinelearningmastery.com/tour-of-ensemble-learning-algorithms/">A Gentle Introduction to Ensemble Learning Algorithms</a><br>
+  </p>
+</div>
+
+### **Meta-Learning Pipelines**:
+<div class="warning" style='background-color:#EDF2F7; color:#1A2067; border-left: solid #718096 4px; border-radius: 4px;'>
+  <p style='padding:0.7em; margin-left:0.7em; display: inline-block;'>
+    <img src="docs/resources/ensemble.png" width="160" style="zoom:70%;  float:right; padding:0.7em"/>
+    <img src="docs/resources/stacking.png" width="160" style="zoom:70%;  float:right; padding:0.7em"/>
+    <b>Meta Learning</b>  &rarr; in machine learning refers to learning algorithms that learn from other learning algorithms. Most commonly, this means the use of machine learning algorithms that learn how to best combine the predictions from other machine learning algorithms in the field of ensemble learning. <a href="https://en.wikipedia.org/wiki/Metamodeling">Meta Modelling</a> and <a href="https://machinelearningmastery.com/meta-learning-in-machine-learning/)"> What Is Meta-Learning in Machine Learning?</a><br>
+  </p>
+</div>
+
+### **Multi-objective Pipelines**:
+
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
 
 ### Compatible With
 
-* [![Pytorch][Pytorch.js]][Pytorch-url]
-* [![Sklearn][Sklearn.js]][Sklearn-url]
+[![Pytorch][Pytorch.js]][Pytorch-url]
+[![Sklearn][Sklearn.js]][Sklearn-url]
+[![Huggingface][hf.js]][hf-url]
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
+---
 
 <!-- GETTING STARTED -->
-## Getting Started
+## Installation
 
 The project was entire built in ``python``
 
 ### Prerequisites
 
-* ``conda`` and ``python >= 3.7``
+* ``conda``, ``python >= 3.7`` and ``pip``
+* ``pytorch`` and ``wandb``
 
 
-### Installation
+### Install mopi (default)
+1. Clone the project by running
+    ```
+    git clone https://github.com/applied-exploration/modular-pipelines.git
+    ```
+
+2. Navigate to the project root directory
+
+3. Build the project by executing 
+    ```
+    pip install -e .
+    ```
+
+### Clone project
 
 1. The repo comes with a conda env file, enter `mamba env create` to install all dependencies
 
@@ -112,7 +151,7 @@ The project was entire built in ``python``
 
 To be able to use ``Huggingface`` and ``Wandb``:
 
-3. Enter your ``Wandb`` and ``Huggingface`` API in `.env`
+3. Enter your ``Wandb`` and ``Huggingface`` API in and `.env` file
    ```python
     HF_HUB_TOKEN = [ENTER YOUR API]
     WANDB_API_KEY = [ENTER YOUR API]
@@ -220,4 +259,7 @@ Project Link: [https://github.com/applied-exploration/modular-pipelines](https:/
 
 [Sklearn.js]: https://img.shields.io/badge/sklearn-000000?style=for-the-badge&logo=scikit-learn&logoColor=61DAFB
 [Sklearn-url]: https://scikit-learn.org/
+
+[hf.js]: https://img.shields.io/badge/huggingface-000000?style=for-the-badge&logo=huggingface&logoColor=61DAFB
+[hf-url]: https://huggingface.co/
 
