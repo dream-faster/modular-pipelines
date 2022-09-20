@@ -17,7 +17,7 @@ class SpellAutocorrectAugmenter(Augmenter):
         self.fast = fast
 
     def load(self) -> None:
-        self.spell = Speller(fast=self.fast)
+        self.model = Speller(fast=self.fast)
 
     def predict(self, dataset: List[str]) -> List[str]:
-        return [self.spell(text) for text in dataset]
+        return [self.model(text) for text in dataset]

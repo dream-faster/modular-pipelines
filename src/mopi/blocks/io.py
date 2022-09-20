@@ -6,7 +6,7 @@ import joblib
 from mopi.constants import Const
 
 from mopi.utils.printing import logger
-
+from mopi.utils.list import flatten
 import dill as pickle
 
 
@@ -60,11 +60,29 @@ def pickle_saving(
 
 
 def export_pipeline(name: str, pipeline: "Pipeline") -> None:
+
+    blocks = [
+        block
+        for source_type in pipeline.get_datasource_types()
+        for block in flatten(pipeline.children(source_type))
+    ]
+
+    for block in blocks:
+        if hasattr(block, "model") and block.model is not None:
+            block.model = None
+        if (
+            hasattr(block, "dataloader")
+            and hasattr(block.dataloader, "data")
+            and block.dataloader.data is not None
+        ):
+            block.dataloader.data = None
+
     if os.path.exists(Const.output_pipelines_path) is False:
         os.makedirs(Const.output_pipelines_path)
 
     with open(f"{Const.output_pipelines_path}/{name}", "wb") as handle:
         pickle.dump(pipeline, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        handle.close()
 
 
 def load_pipeline(name: str) -> "Pipeline":

@@ -15,7 +15,7 @@ class SpellingSpelloAugmenter(Augmenter):
     outputType = DataType.List
 
     def load(self) -> None:
-        self.sp = SpellCorrectionModel(language="en")
+        self.model = SpellCorrectionModel(language="en")
 
     def predict(self, dataset: pd.Series) -> pd.Series:
-        return dataset.apply(self.sp)
+        return dataset.apply(self.model)

@@ -36,15 +36,16 @@ class Runner:
         if self.experiment.global_dataloader is not None:
             overwrite_dataloaders_(self.pipeline, experiment.global_dataloader)
         overwrite_model_configs_(experiment, self.pipeline)
+        add_split_category_to_datasource_(self.pipeline, experiment)
+
+        self.unloaded_pipeline = deepcopy(self.pipeline)
         append_parent_path_and_id_(self.pipeline, mask=True)
 
         self.run_path = f"{Const.output_runs_path}/{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}/"
         self.store = Store(dict(), self.run_path)
-        add_split_category_to_datasource_(self.pipeline, experiment)
         self.plugins = obligatory_plugins_begin + plugins + obligatory_plugins_end
 
-    def infer(self) -> Tuple[Store, "Pipeline"]:
-
+    def infer(self) -> Tuple[Store, "Pipeline", "Pipeline"]:
         logger.log("💈 Loading existing models")
         self.pipeline.load(self.plugins)
 
@@ -52,10 +53,9 @@ class Runner:
         preds_probs = self.pipeline.predict(self.store, self.plugins)
         self.store.set_data(Const.final_output, preds_probs)
 
-        return self.store, self.pipeline
+        return self.store, self.pipeline, self.unloaded_pipeline
 
-    def train_test(self) -> Tuple[Store, "Pipeline"]:
-
+    def train_test(self) -> Tuple[Store, "Pipeline", "Pipeline"]:
         logger.log(
             f"Running Experiment in {logger.formats.BOLD}{'TRAINING' if self.experiment.train else 'INFERENCE'}{logger.formats.END} mode"
             + f"\n{logger.formats.CYAN}{self.experiment.project_name} ~ {self.experiment.run_name} {logger.formats.END}",
@@ -93,4 +93,4 @@ class Runner:
             plugin.print_me("on_run_end")
             _, _ = plugin.on_run_end(self.pipeline, self.store)
 
-        return self.store, self.pipeline
+        return self.store, self.pipeline, self.unloaded_pipeline

@@ -18,7 +18,9 @@ def run_training_dev(
     for experiment in experiments:
         experiment.project_name = "hate-speech-DEV"
 
-    successes = run_training(experiments, staging_config=dev_config)
+    successes = run_training(
+        experiments, staging_config=dev_config, save_entire_pipeline=True
+    )
 
     return successes
 

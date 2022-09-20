@@ -20,7 +20,7 @@ class NoLemmatizer(Transformation):
         self.remove_stopwords = remove_stopwords
 
     def load(self) -> None:
-        self.nlp = get_spacy()
+        get_spacy()
 
     def predict(self, dataset: List) -> List[str]:
         return [preprocess(item, self.remove_stopwords) for item in dataset]

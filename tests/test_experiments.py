@@ -25,6 +25,9 @@ from mopi.library.experiments.utils import populate_experiments_with_pipelines
 from mopi.library.dataset.tweet_eval import get_tweet_eval_dataloader
 from mopi.blocks.models.vader import VaderModel
 
+from mopi.run_inference import run_inference
+from mopi.blocks.io import load_pipeline
+
 from mopi.library.models.sklearn_simple import (
     sklearn_config_simple_nb,
     sklearn_config_simple_lr,
@@ -171,10 +174,20 @@ def test_experiments():
             config = dev_config
 
         successes = run_training(
-            [experiment],
-            staging_config=config,
+            [experiment], staging_config=config, save_entire_pipeline=True
         )
 
         for experiment, pipeline, store in successes:
             stats = store.get_all_stats()[Const.final_eval_name]
             __check_correct_stats(stats, experiment)
+
+
+def test_inference():
+
+    pipeline = load_pipeline("meta_model_all")
+
+    example_texts = ["Some text.", "Second text."]
+
+    results = run_inference(pipeline, example_texts)
+
+    assert isinstance(results, List), "Results is not a valid list"

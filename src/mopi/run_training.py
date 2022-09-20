@@ -54,14 +54,14 @@ def run_training(
             plugins=[OutputAnalyserPlugin()] + logger_plugins,
         )
 
-        store, pipeline = runner.train_test()
+        store, pipeline, unloaded_pipeline = runner.train_test()
 
         successes.append((experiment, pipeline, store))
 
-        if save_entire_pipeline is True:
+        if save_entire_pipeline is True and experiment.train is True:
             export_pipeline(
-                pipeline.id,
-                pipeline,
+                unloaded_pipeline.id,
+                unloaded_pipeline,
             )
 
     return successes
