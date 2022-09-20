@@ -23,8 +23,12 @@ def get_output_statistics(
 
     if type(final_output) == np.ndarray:
         final_output = final_output.tolist()
+    elif type(final_output) == pd.Series or type(final_output) == pd.DataFrame:
+        final_output = final_output.to_list()
     if type(original_labels) == np.ndarray:
         original_labels = original_labels.tolist()
+    elif type(original_labels) == pd.Series or type(original_labels) == pd.DataFrame:
+        original_labels = original_labels.to_list()
 
     predictions, probabilities = store.data_to_preds_probs(final_output)
 
@@ -91,7 +95,7 @@ def print_example_outputs(
         [], columns=["input text", "final_output", "original_labels", "confidence"]
     )
 
-    random_indecies = random.sample(range(len(input)), min(len(input),num_examples))
+    random_indecies = random.sample(range(len(input)), min(len(input), num_examples))
     for i in random_indecies:
         sliced_input = (
             input[i][:50]
