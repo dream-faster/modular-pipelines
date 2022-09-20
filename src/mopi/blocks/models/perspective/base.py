@@ -32,8 +32,11 @@ class PerspectiveModel(PickleIO, Model):
         self.evaluators = evaluators
         self.trained = True
 
-        self.model = PerspectiveAPI(get_env("PERSPECTIVE_TOKEN"))
+        self.model = None
 
+    def load(self):
+        self.model = PerspectiveAPI(get_env("PERSPECTIVE_TOKEN"))
+    
     def predict(self, dataset: pd.Series) -> List[PredsWithProbs]:
         results = [self.get_rate_limited_result(text) for text in dataset]
 

@@ -24,10 +24,11 @@ class PytorchModel(Model):
     ):
         self.config = config
         self.id = id
-        self.model = LightningWrapper(Decoder(config))
+        self.model = None
         self.evaluators: Optional[Evaluators] = evaluators
 
     def load(self) -> None:
+        self.model = LightningWrapper(Decoder(self.config))
         torch.manual_seed(Const.seed)
         return super().load()
 

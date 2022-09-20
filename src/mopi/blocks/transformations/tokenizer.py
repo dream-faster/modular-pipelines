@@ -12,7 +12,7 @@ class SpacyTokenizer(Transformation):
     outputType = DataType.List
 
     def load(self) -> None:
-        self.nlp = get_spacy()
+        self.model = get_spacy()
 
     def predict(self, dataset: List[str]) -> List:
-        return [self.nlp(text, disable=["parser", "tagger"]) for text in dataset]
+        return [self.model(text, disable=["parser", "tagger"]) for text in dataset]
