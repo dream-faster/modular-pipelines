@@ -23,12 +23,15 @@ def run_training(
             experiment.global_dataloader is not None
             and staging_config.limit_dataset_to is not None
         ):
-            for (
-                preprocessing_config
-            ) in experiment.global_dataloader.preprocessing_configs:
-                preprocessing_config.test_size = staging_config.limit_dataset_to
-                preprocessing_config.train_size = staging_config.limit_dataset_to
-                preprocessing_config.val_size = staging_config.limit_dataset_to
+            experiment.global_dataloader.preprocessing_config.test_size = (
+                staging_config.limit_dataset_to
+            )
+            experiment.global_dataloader.preprocessing_config.train_size = (
+                staging_config.limit_dataset_to
+            )
+            experiment.global_dataloader.preprocessing_config.val_size = (
+                staging_config.limit_dataset_to
+            )
 
         experiment.save_remote = staging_config.save_remote
         experiment.log_remote = staging_config.log_remote
@@ -71,6 +74,8 @@ if __name__ == "__main__":
     from mopi.library.experiments.hate_speech import (
         all_merged_cross_experiments,
         all_tweeteval_crossexperiments,
+        all_dynahate_cross_experiments,
+        all_offensive_cross_experiments,
     )
 
     prod_config = StagingConfig(
@@ -81,6 +86,9 @@ if __name__ == "__main__":
     )
 
     run_training(
-        all_tweeteval_crossexperiments + all_merged_cross_experiments,
+        all_tweeteval_crossexperiments
+        + all_dynahate_cross_experiments
+        + all_offensive_cross_experiments
+        + all_merged_cross_experiments,
         staging_config=prod_config,
     )

@@ -8,7 +8,7 @@
             "name": "run_dev",
             "type": "python",
             "request": "launch",
-            "module": "run_dev",
+            "module": "mopi.run_training_dev",
             "args": []
         }
     ]

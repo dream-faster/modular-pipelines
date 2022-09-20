@@ -155,7 +155,7 @@ data_merged_train = MergedDataLoader(
         get_tweets_hate_speech_detection_dataloader(),
         get_hate_speech_offensive_dataloader(),
         get_dynahate_dataloader(),
-    ]
+    ], oversample=True
 )
 
 
@@ -205,7 +205,135 @@ cross_dataset_experiments_tweeteval = [
     ),
     Experiment(
         project_name="hate-speech-detection",
+        run_name="tweeteval-offensive",
+        dataset_category=DatasetSplit.test,
+        pipeline=sklearn,
+        metrics=metrics,
+        train=False,
+        global_dataloader=get_hate_speech_offensive_dataloader(),
+    ),
+    Experiment(
+        project_name="hate-speech-detection",
         run_name="tweeteval-merged",
+        dataset_category=DatasetSplit.test,
+        pipeline=sklearn,
+        metrics=metrics,
+        train=False,
+        global_dataloader=data_merged_train,
+    ),
+]
+
+
+### Dynahate - tweeteval/hatecheck/dynahate/merged
+
+cross_dataset_experiments_dynahate = [
+    Experiment(
+        project_name="hate-speech-detection",
+        run_name="dynahate",
+        dataset_category=DatasetSplit.train,
+        pipeline=sklearn,
+        metrics=metrics,
+        train=True,
+        global_dataloader=get_dynahate_dataloader(),
+    ),
+    Experiment(
+        project_name="hate-speech-detection",
+        run_name="dynahate-tweeteval",
+        dataset_category=DatasetSplit.test,
+        pipeline=sklearn,
+        metrics=metrics,
+        train=False,
+        global_dataloader=dataloader_tweeteval,
+    ),
+    Experiment(
+        project_name="hate-speech-detection",
+        run_name="dynahate-hatecheck",
+        dataset_category=DatasetSplit.test,
+        pipeline=sklearn,
+        metrics=metrics,
+        train=False,
+        global_dataloader=get_hatecheck_dataloader(),
+    ),
+    Experiment(
+        project_name="hate-speech-detection",
+        run_name="dynahate-dynahate",
+        dataset_category=DatasetSplit.test,
+        pipeline=sklearn,
+        metrics=metrics,
+        train=False,
+        global_dataloader=get_dynahate_dataloader(),
+    ),
+    Experiment(
+        project_name="hate-speech-detection",
+        run_name="dynahate-offensive",
+        dataset_category=DatasetSplit.test,
+        pipeline=sklearn,
+        metrics=metrics,
+        train=False,
+        global_dataloader=get_hate_speech_offensive_dataloader(),
+    ),
+    Experiment(
+        project_name="hate-speech-detection",
+        run_name="dynahate-merged",
+        dataset_category=DatasetSplit.test,
+        pipeline=sklearn,
+        metrics=metrics,
+        train=False,
+        global_dataloader=data_merged_train,
+    ),
+]
+
+### Offensive - tweeteval/hatecheck/dynahate/merged
+
+cross_dataset_experiments_offensive = [
+    Experiment(
+        project_name="hate-speech-detection",
+        run_name="offensive",
+        dataset_category=DatasetSplit.train,
+        pipeline=sklearn,
+        metrics=metrics,
+        train=True,
+        global_dataloader=get_hate_speech_offensive_dataloader(),
+    ),
+    Experiment(
+        project_name="hate-speech-detection",
+        run_name="offensive-tweeteval",
+        dataset_category=DatasetSplit.test,
+        pipeline=sklearn,
+        metrics=metrics,
+        train=False,
+        global_dataloader=dataloader_tweeteval,
+    ),
+    Experiment(
+        project_name="hate-speech-detection",
+        run_name="offensive-hatecheck",
+        dataset_category=DatasetSplit.test,
+        pipeline=sklearn,
+        metrics=metrics,
+        train=False,
+        global_dataloader=get_hatecheck_dataloader(),
+    ),
+    Experiment(
+        project_name="hate-speech-detection",
+        run_name="offensive-dynahate",
+        dataset_category=DatasetSplit.test,
+        pipeline=sklearn,
+        metrics=metrics,
+        train=False,
+        global_dataloader=get_dynahate_dataloader(),
+    ),
+    Experiment(
+        project_name="hate-speech-detection",
+        run_name="offensive-offensive",
+        dataset_category=DatasetSplit.test,
+        pipeline=sklearn,
+        metrics=metrics,
+        train=False,
+        global_dataloader=get_hate_speech_offensive_dataloader(),
+    ),
+    Experiment(
+        project_name="hate-speech-detection",
+        run_name="offensive-merged",
         dataset_category=DatasetSplit.test,
         pipeline=sklearn,
         metrics=metrics,
@@ -256,6 +384,15 @@ cross_dataset_experiments_merged = [
     ),
     Experiment(
         project_name="hate-speech-detection",
+        run_name="merged-offensive",
+        dataset_category=DatasetSplit.test,
+        pipeline=sklearn,
+        metrics=metrics,
+        train=False,
+        global_dataloader=get_hate_speech_offensive_dataloader(),
+    ),
+    Experiment(
+        project_name="hate-speech-detection",
         run_name="merged-tweeteval",
         dataset_category=DatasetSplit.test,
         pipeline=sklearn,
@@ -268,27 +405,35 @@ cross_dataset_experiments_merged = [
 
 pipelines_to_evaluate = [
     sklearn,
-    sklearn_calibrated,
-    sklearn_autocorrect,
-    sklearn_simple_nb,
+    # sklearn_calibrated,
+    # sklearn_autocorrect,
+    # sklearn_simple_nb,
     random,
     all_0s,
     all_1s,
     vader,
-    huggingface_baseline,
-    huggingface_hatebert,
+    # huggingface_baseline,
+    # huggingface_hatebert,
     huggingface_bertweet,
-    text_statistics_pipeline,
-    ensemble_all,
-    ensemble_hf_vader,
-    ensemble_sklearn_hf,
-    ensemble_sklearn_vader,
-    meta_model_all,
+    # text_statistics_pipeline,
+    # ensemble_all,
+    # ensemble_hf_vader,
+    # ensemble_sklearn_hf,
+    # ensemble_sklearn_vader,
+    # meta_model_all,
 ]
 
 
 all_tweeteval_crossexperiments = populate_experiments_with_pipelines(
     cross_dataset_experiments_tweeteval, pipelines_to_evaluate
+)
+
+all_dynahate_cross_experiments = populate_experiments_with_pipelines(
+    cross_dataset_experiments_dynahate, pipelines_to_evaluate
+)
+
+all_offensive_cross_experiments = populate_experiments_with_pipelines(
+    cross_dataset_experiments_dynahate, pipelines_to_evaluate
 )
 
 all_merged_cross_experiments = populate_experiments_with_pipelines(

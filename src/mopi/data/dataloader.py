@@ -19,7 +19,7 @@ from mopi.constants import Const
 
 class DataLoader(Settable):
 
-    preprocessing_configs: List[PreprocessConfig]
+    preprocessing_config: PreprocessConfig
     sampler: Optional[BaseSampler]
     path: str
 
@@ -41,7 +41,7 @@ class HuggingfaceDataLoader(DataLoader):
         shuffle_first: Optional[bool] = False,
     ):
         self.transformation = transformation
-        self.preprocessing_configs = [preprocessing_config]
+        self.preprocessing_config = preprocessing_config
         self.is_transformed = False
         self.sampler = sampler
         self.path = path
@@ -54,7 +54,7 @@ class HuggingfaceDataLoader(DataLoader):
             if self.shuffle_first:
                 logger.log("⚠️ Shuffling Data", level=logger.levels.TWO)
                 self.data = self.data.shuffle(Const.seed)
-            self.data = self.transformation(self.data, self.preprocessing_configs[0])
+            self.data = self.transformation(self.data, self.preprocessing_config)
             if self.sampler is not None:
                 self.data[DatasetSplit.train.value] = apply_sampler(
                     self.data[DatasetSplit.train.value], self.sampler
@@ -77,7 +77,7 @@ class PandasDataLoader(DataLoader):
         shuffle_first: Optional[bool] = False,
     ):
         self.path = path
-        self.preprocessing_configs = [preprocessing_config]
+        self.preprocessing_config = preprocessing_config
         self.train_data = train_data
         self.test_data = test_data
         self.is_transformed = False
@@ -103,15 +103,26 @@ class PandasDataLoader(DataLoader):
 
 
 class MergedDataLoader(DataLoader):
-    def __init__(self, dataloaders: List[DataLoader]):
+    def __init__(self, dataloaders: List[DataLoader], oversample: bool):
         self.dataloaders = dataloaders
-        self.preprocessing_configs = flatten(
-            [dataloader.preprocessing_configs for dataloader in self.dataloaders]
-        )
+        self.preprocessing_config = dataloaders[0].preprocessing_config
         self.path = "/".join([dl.path for dl in dataloaders])
+        self.oversample = oversample
 
     def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
         datasets = [data_loader.load(category) for data_loader in self.dataloaders]
+        max_dataset_len = max([len(dataset) for dataset in datasets])
+        if self.oversample:
+            datasets = [
+                dataset.sample(n=max_dataset_len, replace=True, random_state=Const.seed)
+                for dataset in datasets
+            ]
+        else:
+            datasets = [
+                dataset.sample(n=max_dataset_len, random_state=Const.seed)
+                for dataset in datasets
+            ]
+
         return pd.concat(datasets, axis=0).reset_index(drop=True)
 
 

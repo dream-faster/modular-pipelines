@@ -40,19 +40,24 @@ def overwrite_preprocessing_configs_(
     ):
 
         for datasource in datasources:
-            for preprocessing_config in datasource.dataloader.preprocessing_configs:
-                preprocessing_config.test_size = staging_config.limit_dataset_to
-                preprocessing_config.train_size = staging_config.limit_dataset_to
-                preprocessing_config.val_size = staging_config.limit_dataset_to
+            datasource.dataloader.preprocessing_config.test_size = (
+                staging_config.limit_dataset_to
+            )
+            datasource.dataloader.preprocessing_config.train_size = (
+                staging_config.limit_dataset_to
+            )
+            datasource.dataloader.preprocessing_config.val_size = (
+                staging_config.limit_dataset_to
+            )
 
     # This is for overwriting exisiting keys in the preprocessing_config
     for key_sta, value_sta in vars(staging_config).items():
         if value_sta is not None:
             for datasource in datasources:
-                for preprocessing_config in datasource.dataloader.preprocessing_configs:
-                    for key_pre in vars(preprocessing_config).keys():
-                        if key_pre == key_sta:
-                            vars(preprocessing_config)[key_sta] = value_sta
+                preprocessing_config = datasource.dataloader.preprocessing_config
+                for key_pre in vars(preprocessing_config).keys():
+                    if key_pre == key_sta:
+                        vars(preprocessing_config)[key_sta] = value_sta
 
 
 def overwrite_dataloaders_(pipeline: Pipeline, dataloader: DataLoader) -> None:
