@@ -1,5 +1,3 @@
-from ast import Store
-from copy import deepcopy
 import pandas as pd
 from typing import List
 from mopi.blocks.base import DataSource
@@ -31,7 +29,7 @@ from mopi.library.models.sklearn_simple import (
     sklearn_config_simple_nb,
     sklearn_config_simple_lr,
 )
-from mopi.run import run
+from mopi.run_training import run_training
 
 
 def create_experiments() -> List[Experiment]:
@@ -172,7 +170,7 @@ def test_experiments():
         else:
             config = dev_config
 
-        successes = run(
+        successes = run_training(
             [experiment],
             staging_config=config,
         )
