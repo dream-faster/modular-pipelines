@@ -174,8 +174,7 @@ def test_experiments():
             config = dev_config
 
         successes = run_training(
-            [experiment],
-            staging_config=config,
+            [experiment], staging_config=config, save_entire_pipeline=True
         )
 
         for experiment, pipeline, store in successes:
