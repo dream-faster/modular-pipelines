@@ -112,6 +112,8 @@ class MergedDataLoader(DataLoader):
     def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
         datasets = [data_loader.load(category) for data_loader in self.dataloaders]
         max_dataset_len = max([len(dataset) for dataset in datasets])
+        min_dataset_len = min([len(dataset) for dataset in datasets])
+
         if self.oversample:
             datasets = [
                 dataset.sample(n=max_dataset_len, replace=True, random_state=Const.seed)
@@ -119,7 +121,7 @@ class MergedDataLoader(DataLoader):
             ]
         else:
             datasets = [
-                dataset.sample(n=max_dataset_len, random_state=Const.seed)
+                dataset.sample(n=min_dataset_len, random_state=Const.seed)
                 for dataset in datasets
             ]
 
