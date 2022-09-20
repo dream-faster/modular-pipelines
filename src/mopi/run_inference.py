@@ -19,7 +19,7 @@ from mopi.type import Experiment, StagingConfig, StagingNames
 from mopi.runner.utils import overwrite_preprocessing_configs_
 
 
-def run_inference(
+def inference(
     experiment: Experiment,
     staging_config: StagingConfig,
 ) -> Tuple[Experiment, "Pipeline", "Store"]:
@@ -36,7 +36,7 @@ def run_inference(
     return experiment, pipeline, store
 
 
-def inference(pipeline: Pipeline, texts: List[str]) -> Tuple[int, float]:
+def run_inference(pipeline: Pipeline, texts: List[str]) -> Tuple[int, float]:
 
     text_with_fake_labels = [[text, 0] for text in texts] + [["dummy_text", 1]]
 
@@ -72,7 +72,7 @@ def inference(pipeline: Pipeline, texts: List[str]) -> Tuple[int, float]:
         limit_dataset_to=None,
     )
 
-    successes = run_inference(
+    successes = inference(
         experiment_for_inference,
         staging_config=prod_config,
     )
