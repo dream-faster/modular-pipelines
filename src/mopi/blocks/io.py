@@ -8,7 +8,6 @@ from mopi.constants import Const
 from mopi.utils.printing import logger
 from mopi.utils.list import flatten
 import dill as pickle
-from mopi.blocks.base import Block
 
 
 class PickleIO:
@@ -66,12 +65,17 @@ def export_pipeline(name: str, pipeline: "Pipeline") -> None:
         block
         for source_type in pipeline.get_datasource_types()
         for block in flatten(pipeline.children(source_type))
-        if type(block) == Block
     ]
 
     for block in blocks:
-        if block.model is not None:
+        if hasattr(block, "model") and block.model is not None:
             block.model = None
+        if (
+            hasattr(block, "dataloader")
+            and hasattr(block.dataloader, "data")
+            and block.dataloader.data is not None
+        ):
+            block.dataloader.data = None
 
     if os.path.exists(Const.output_pipelines_path) is False:
         os.makedirs(Const.output_pipelines_path)

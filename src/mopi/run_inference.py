@@ -17,6 +17,7 @@ from mopi.plugins import OutputAnalyserPlugin
 from mopi.runner.runner import Runner
 from mopi.type import Experiment, StagingConfig, StagingNames
 from mopi.runner.utils import overwrite_preprocessing_configs_
+from mopi.blocks.io import load_pipeline
 
 
 def inference(
@@ -81,3 +82,15 @@ def run_inference(pipeline: Pipeline, texts: List[str]) -> Tuple[int, float]:
     results = store.get_all_predictions()[Const.final_output][: len(texts)]
 
     return results
+
+
+if __name__ == "__main__":
+    pipeline_name = "sklearn-0"
+    example_texts = ["This is an example text.", "Another example text."]
+    pipeline = load_pipeline(pipeline_name)
+    results = run_inference(pipeline, example_texts)
+
+    for text, result in zip(example_texts, results):
+        print(
+            f"Results for '{text}' is {'hate speech ❌' if result is 1 else 'non-hate speech ✅'} ({result})"
+        )
