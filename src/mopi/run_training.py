@@ -8,10 +8,9 @@ from mopi.runner.utils import overwrite_preprocessing_configs_
 from mopi.blocks.io import export_pipeline
 
 
-def run(
+def run_training(
     experiments: List[Experiment],
     staging_config: StagingConfig,
-    pure_inference: bool = False,
     save_entire_pipeline: bool = False,
 ) -> List[Tuple[Experiment, "Pipeline", "Store"]]:
 
@@ -55,10 +54,11 @@ def run(
             plugins=[OutputAnalyserPlugin()] + logger_plugins,
         )
 
-        store, pipeline = runner.run(pure_inference)
+        store, pipeline = runner.train_test()
+
         successes.append((experiment, pipeline, store))
 
-        if pure_inference is False and save_entire_pipeline is True:
+        if save_entire_pipeline is True:
             export_pipeline(
                 pipeline.id,
                 pipeline,
@@ -80,7 +80,7 @@ if __name__ == "__main__":
         limit_dataset_to=None,
     )
 
-    run(
+    run_training(
         all_tweeteval_crossexperiments + all_merged_cross_experiments,
         staging_config=prod_config,
     )

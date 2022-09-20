@@ -1,11 +1,11 @@
 from mopi.type import Experiment, StagingConfig, StagingNames
 
-from mopi.run import run
+from mopi.run_training import run_training
 from typing import List, Tuple
 
 
-def run_dev(
-    experiments: List[Experiment], pure_inference: bool = False
+def run_training_dev(
+    experiments: List[Experiment],
 ) -> List[Tuple[Experiment, "Pipeline", "Store"]]:
 
     dev_config = StagingConfig(
@@ -18,9 +18,7 @@ def run_dev(
     for experiment in experiments:
         experiment.project_name = "hate-speech-DEV"
 
-    successes = run(
-        experiments, staging_config=dev_config, pure_inference=pure_inference
-    )
+    successes = run_training(experiments, staging_config=dev_config)
 
     return successes
 
@@ -28,4 +26,4 @@ def run_dev(
 if __name__ == "__main__":
     from mopi.library.experiments.hate_speech_baselines import all_experiments
 
-    run_dev(all_experiments)
+    run_training_dev(all_experiments)

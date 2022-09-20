@@ -43,16 +43,18 @@ class Runner:
         add_split_category_to_datasource_(self.pipeline, experiment)
         self.plugins = obligatory_plugins_begin + plugins + obligatory_plugins_end
 
-    def run(self, pure_inference: bool = False) -> Tuple[Store, "Pipeline"]:
-        if pure_inference:
-            logger.log("💈 Loading existing models")
-            self.pipeline.load(self.plugins)
+    def infer(self) -> Tuple[Store, "Pipeline"]:
 
-            logger.log("🔮 Predicting with pipeline")
-            preds_probs = self.pipeline.predict(self.store, self.plugins)
-            self.store.set_data(Const.final_output, preds_probs)
+        logger.log("💈 Loading existing models")
+        self.pipeline.load(self.plugins)
 
-            return self.store, self.pipeline
+        logger.log("🔮 Predicting with pipeline")
+        preds_probs = self.pipeline.predict(self.store, self.plugins)
+        self.store.set_data(Const.final_output, preds_probs)
+
+        return self.store, self.pipeline
+
+    def train_test(self) -> Tuple[Store, "Pipeline"]:
 
         logger.log(
             f"Running Experiment in {logger.formats.BOLD}{'TRAINING' if self.experiment.train else 'INFERENCE'}{logger.formats.END} mode"
