@@ -1,0 +1,70 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mopi"
+version = "0.0.1"
+authors = [
+  { name="Mark Szulyovszky", email="mark.szulyovszky@gmail.com" },
+  { name="Daniel Szemerey", email="daniel@szemerey.eu" },
+]
+description = "Modular Pipelines (mopi) let's you create and manage Machine Learning pipelines with ease."
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: Other/Proprietary License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+  "numpy",
+  "pandas",
+  "matplotlib",
+  "tqdm",
+  "pyarrow>=3.0",
+  "python-dotenv",
+  "swifter",
+  "joblib",
+  "pycaleva @ https://github.com/itchingpixels/pycaleva/archive/patch-1.zip",
+  
+  # -- Below are modules that are endpoints or blocks that can be used. --
+  "nltk",
+  "transformers",
+  "datasets",
+  "scikit-learn",
+  "spacy",
+  "imbalanced-learn",
+  # "huggingface_hub",
+  # "isort",
+  # "URLExtract",
+  # "emoji>=2.0.0",
+  # "autocorrect",
+  # "spello",
+  # "perspective",
+  # "pytorch-lightning",
+  # "scipy",
+  # "tensorboard",
+  
+  # -- Currently required to be installed by the user --
+  # "torch",
+  # "wandb",
+  
+  # -- Dev Dependencies --
+  # "pyright",
+  # "black",
+  # "ipython",
+  # "notebook",
+  # "ipykernel",
+  # "pydeps",
+  # "pytest",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[project.urls]
+"Homepage" = "https://github.com/applied-exploration/modular-pipelines"
+"Bug Tracker" = "https://github.com/applied-exploration/modular-pipelines/issues"

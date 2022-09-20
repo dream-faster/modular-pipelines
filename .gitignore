@@ -133,3 +133,4 @@ dmypy.json
 /output/pipelines/**
 /output/runs/**
 /output/failed_runs.txt
+*.pkl

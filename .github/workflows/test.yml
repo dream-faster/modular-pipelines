@@ -21,7 +21,10 @@ jobs:
           auto-activate-base: false
           show-channel-urls: true
           use-mamba: true
-
+      - name: Install local module mopi
+        shell: bash -l {0}
+        run: |
+          pip install -e .
       - uses: iterative/setup-cml@v1
       - name: Run pytest
         shell: bash -l {0}
