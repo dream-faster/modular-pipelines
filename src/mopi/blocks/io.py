@@ -82,6 +82,7 @@ def export_pipeline(name: str, pipeline: "Pipeline") -> None:
 
     with open(f"{Const.output_pipelines_path}/{name}", "wb") as handle:
         pickle.dump(pipeline, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        handle.close()
 
 
 def load_pipeline(name: str) -> "Pipeline":

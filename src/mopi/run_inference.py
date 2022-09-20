@@ -32,7 +32,7 @@ def inference(
         plugins=[OutputAnalyserPlugin()],
     )
 
-    store, pipeline = runner.infer()
+    store, pipeline, _ = runner.infer()
 
     return experiment, pipeline, store
 
@@ -40,7 +40,7 @@ def inference(
 def run_inference(pipeline: Pipeline, texts: List[str]) -> Tuple[int, float]:
 
     text_with_fake_labels = [[text, 0] for text in texts] + [["dummy_text", 1]]
-
+    project_name = pipeline.run_context.project_name
     dataloader = PandasDataLoader(
         "",
         PreprocessConfig(
@@ -55,8 +55,8 @@ def run_inference(pipeline: Pipeline, texts: List[str]) -> Tuple[int, float]:
     )
 
     experiment_for_inference = Experiment(
-        project_name="hate-speech-detection-tweeteval",
-        run_name="tweeteval",
+        project_name=project_name,
+        run_name="inference",
         dataset_category=DatasetSplit.test,
         pipeline=pipeline,
         metrics=classification_metrics,
@@ -85,12 +85,12 @@ def run_inference(pipeline: Pipeline, texts: List[str]) -> Tuple[int, float]:
 
 
 if __name__ == "__main__":
-    pipeline_name = "sklearn-0"
+    pipeline_name = "hf-distillbert"
     example_texts = ["This is an example text.", "Another example text."]
     pipeline = load_pipeline(pipeline_name)
     results = run_inference(pipeline, example_texts)
 
     for text, result in zip(example_texts, results):
         print(
-            f"Results for '{text}' is {'hate speech ❌' if result is 1 else 'non-hate speech ✅'} ({result})"
+            f"Results for '{text}' is {'hate speech ❌' if result == 1 else 'non-hate speech ✅'} ({result})"
         )
