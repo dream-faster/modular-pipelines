@@ -23,6 +23,7 @@ from .utils import (
     get_correlation_matrix,
     get_output_statistics,
 )
+from mopi.utils.printing import logger
 
 
 class OutputAnalyserPlugin(Plugin):
@@ -38,16 +39,13 @@ class OutputAnalyserPlugin(Plugin):
         random_indecies = random.sample(
             range(len(last_output)), min(len(last_output), self.num_examples)
         )
-
-        prefix = "    ┃    "
-
         selected_outputs = [last_output[i] for i in random_indecies]
 
         if isinstance(selected_outputs[0], Iterable):
             for i in selected_outputs:
-                print(prefix + str(i))
+                logger.log(str(i), level=logger.levels.THREE)
         else:
-            print(prefix + str(selected_outputs))
+            logger.log(str(selected_outputs), level=logger.levels.THREE)
 
         return store, last_output
 
