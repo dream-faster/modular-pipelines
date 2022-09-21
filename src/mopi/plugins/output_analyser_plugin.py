@@ -18,9 +18,9 @@ import pandas as pd
 from mopi.type import SourceTypes
 from mopi.utils.list import flatten
 from .utils import (
-    print_output_statistics,
-    print_example_outputs,
-    print_correlation_matrix,
+    get_output_frequencies,
+    get_example_outputs,
+    get_correlation_matrix,
     get_output_statistics,
 )
 
@@ -29,9 +29,9 @@ class OutputAnalyserPlugin(Plugin):
     def __init__(self, num_examples: int = 10):
         self.num_examples = num_examples
         self.analysis_functions = [
-            ("Output Statistics", print_output_statistics),
-            ("Example Outputs", print_example_outputs),
-            ("Correlation Matrix", print_correlation_matrix),
+            ("Output Statistics", get_output_frequencies),
+            ("Example Outputs", get_example_outputs),
+            ("Correlation Matrix", get_correlation_matrix),
         ]
 
     def on_predict_end(self, store: Store, last_output: Any) -> Tuple[Store, Any]:

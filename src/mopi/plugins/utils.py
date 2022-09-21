@@ -55,7 +55,7 @@ def get_output_statistics(
     return dfs
 
 
-def print_output_statistics(
+def get_output_frequencies(
     store: Store,
     input: List[Union[str, int, float]],
     original_labels: List[Union[str, int, float]],
@@ -63,25 +63,27 @@ def print_output_statistics(
     predictions: List[Union[int, float]],
     probabilities: List[float],
 ) -> pd.DataFrame:
+
     final_output_freq = Counter(predictions)
     original_labels_freq = Counter(original_labels)
 
-    combined_dict = {
-        key: [
-            key,
-            f"{value} ({round(value / len(final_output) * 100, 2)}%)",
-            f"{original_labels_freq[key]} ({round(original_labels_freq[key] / len(original_labels) * 100, 2)}%)",
+    df = pd.DataFrame([], columns=["category", "final_output", "original_labels"])
+
+    df["category"] = pd.Series(list(final_output_freq.keys()))
+    df["final_output"] = pd.Series(list(final_output_freq.values())).apply(
+        lambda x: f"{x} ({round(x / len(final_output) * 100, 2)}%)"
+    )
+    df["original_labels"] = pd.Series(
+        [
+            f"{original_labels_freq[key]} ({round(original_labels_freq[key] / len(original_labels) * 100, 2)}%)"
+            for key, value in final_output_freq.items()
         ]
-        for key, value in final_output_freq.items()
-    }
-    frequencies = pd.DataFrame(
-        combined_dict, index=["category", "final_output", "original_labels"]
-    ).transpose()
+    )
 
-    return frequencies
+    return df
 
 
-def print_example_outputs(
+def get_example_outputs(
     store: Store,
     input: List[Union[str, int, float]],
     original_labels: List[Union[str, int, float]],
@@ -91,44 +93,21 @@ def print_example_outputs(
 ) -> pd.DataFrame:
     num_examples = 20
 
-    new_df = pd.DataFrame(
+    df = pd.DataFrame(
         [], columns=["input text", "final_output", "original_labels", "confidence"]
     )
 
-    random_indecies = random.sample(range(len(input)), min(len(input), num_examples))
-    for i in random_indecies:
-        sliced_input = (
-            input[i][:50]
-            if type(input[i]) is str
-            else f"Not a string type: {type(input[i])}."
-        )
+    df["input text"] = pd.Series(input).apply(lambda x: x[: min(len(x), 35)])
+    df["final_output"] = pd.Series(predictions)
+    df["original_labels"] = pd.Series(original_labels)
+    df["confidence"] = pd.Series(probabilities).apply(lambda x: round(max(x) * 100, 2))
 
-        new_df = pd.concat(
-            [
-                new_df,
-                pd.DataFrame(
-                    [
-                        [
-                            sliced_input + " " * max(0, (50 - len(sliced_input))),
-                            predictions[i],
-                            original_labels[i],
-                            f"{round(max(probabilities[i]) * 100, 2)}%",
-                        ]
-                    ],
-                    columns=[
-                        "input text",
-                        "final_output",
-                        "original_labels",
-                        "confidence",
-                    ],
-                ),
-            ]
-        )
+    df = df.sample(min(len(input), num_examples))
 
-    return new_df
+    return df
 
 
-def print_correlation_matrix(
+def get_correlation_matrix(
     store: Store,
     input: List[Union[str, int, float]],
     original_labels: List[Union[str, int, float]],
