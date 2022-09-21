@@ -16,9 +16,9 @@ from mopi.utils.list import flatten
 
 from .base import Plugin
 from .utils import (
-    print_output_statistics,
-    print_example_outputs,
-    print_correlation_matrix,
+    get_output_frequencies,
+    get_example_outputs,
+    get_correlation_matrix,
     get_output_statistics,
 )
 
@@ -53,9 +53,9 @@ class WandbPlugin(Plugin):
         self.run_config = run_config
 
         self.analysis_functions = [
-            ("Output Statistics", print_output_statistics),
-            ("Example Outputs", print_example_outputs),
-            ("Correlation Matrix", print_correlation_matrix),
+            ("Output Statistics", get_output_frequencies),
+            ("Example Outputs", get_example_outputs),
+            ("Correlation Matrix", get_correlation_matrix),
         ]
 
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
