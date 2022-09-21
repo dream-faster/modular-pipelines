@@ -83,7 +83,6 @@ pipeline_hate = Pipeline(
         HuggingfaceModel(
             "bert-binary",
             huggingface_binary_config,
-            dict_lookup={"LABEL_0": 0, "LABEL_1": 1},
         ),
     ],
 )
@@ -95,7 +94,6 @@ pipeline_sentiment = Pipeline(
         HuggingfaceModel(
             "bert-multiclass",
             huggingface_multiclass_config.set_attr("num_classes", 3),
-            dict_lookup={"LABEL_0": 0, "LABEL_1": 1, "LABEL_2": 2},
         ),
     ],
     datasource_predict=tweet_eval_hate,
@@ -108,14 +106,6 @@ pipeline_emotion = Pipeline(
         HuggingfaceModel(
             "bert-multiclass",
             huggingface_multiclass_config.set_attr("num_classes", 6),
-            dict_lookup={
-                "LABEL_0": 0,
-                "LABEL_1": 1,
-                "LABEL_2": 2,
-                "LABEL_3": 3,
-                "LABEL_4": 4,
-                "LABEL_5": 5,
-            },
         ),
     ],
     datasource_predict=tweet_eval_hate,
@@ -128,29 +118,6 @@ pipeline_emoji = Pipeline(
         HuggingfaceModel(
             "bert-multiclass",
             huggingface_multiclass_config.set_attr("num_classes", 20),
-            dict_lookup={
-                "LABEL_0": 0,
-                "LABEL_1": 1,
-                "LABEL_2": 2,
-                "LABEL_3": 3,
-                "LABEL_4": 4,
-                "LABEL_5": 5,
-                "LABEL_6": 6,
-                "LABEL_7": 7,
-                "LABEL_8": 8,
-                "LABEL_9": 9,
-                "LABEL_10": 10,
-                "LABEL_11": 11,
-                "LABEL_12": 12,
-                "LABEL_13": 13,
-                "LABEL_14": 14,
-                "LABEL_15": 15,
-                "LABEL_16": 16,
-                "LABEL_17": 17,
-                "LABEL_18": 18,
-                "LABEL_19": 19,
-                "LABEL_20": 20,
-            },
         ),
     ],
     datasource_predict=tweet_eval_hate,
@@ -163,7 +130,6 @@ pipeline_irony = Pipeline(
         HuggingfaceModel(
             "bert-binary",
             huggingface_binary_config,
-            dict_lookup={"LABEL_0": 0, "LABEL_1": 1},
         ),
     ],
     datasource_predict=tweet_eval_hate,
@@ -176,7 +142,6 @@ pipeline_offensive = Pipeline(
         HuggingfaceModel(
             "bert-binary",
             huggingface_binary_config,
-            dict_lookup={"LABEL_0": 0, "LABEL_1": 1},
         ),
     ],
     datasource_predict=tweet_eval_hate,

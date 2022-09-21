@@ -1,4 +1,4 @@
-from typing import Callable, List, Tuple, Optional
+from typing import List, Tuple
 
 import numpy as np
 from datasets.arrow_dataset import Dataset
@@ -15,7 +15,7 @@ def run_inference(
     config: HuggingfaceConfig,
     tokenizer: PreTrainedTokenizer,
     device,
-    dict_lookup: dict,
+    num_classes: int,
 ) -> List[PredsWithProbs]:
 
     inference_pipeline = pipeline(
@@ -28,6 +28,7 @@ def run_inference(
     scores = inference_pipeline(
         test_data[Const.input_col], top_k=config.num_classes, truncation=True
     )
+    dict_lookup = {f"LABEL_{i}": i for i in range(num_classes)}
     probs = [convert_scores_dict_to_probs(score, dict_lookup) for score in scores]
     predicitions = [np.argmax(prob) for prob in probs]
 

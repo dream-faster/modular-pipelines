@@ -47,7 +47,6 @@ class HuggingfaceModel(Model):
         self,
         id: str,
         config: HuggingfaceConfig,
-        dict_lookup: dict,
         evaluators: Optional[Evaluators] = None,
     ):
         self.id = id
@@ -56,7 +55,6 @@ class HuggingfaceModel(Model):
         self.trainer = None
         self.pretrained = False
         self.evaluators = evaluators
-        self.dict_lookup = dict_lookup
 
     def load(self) -> None:
         enable_full_determinism(Const.seed)
@@ -137,7 +135,7 @@ class HuggingfaceModel(Model):
             tokenizer=self.tokenizer,
             config=self.config,
             device=device,
-            dict_lookup=self.dict_lookup,
+            num_classes=self.config.num_classes,
         )
 
     def is_fitted(self) -> bool:
