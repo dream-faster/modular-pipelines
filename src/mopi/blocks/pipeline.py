@@ -206,7 +206,7 @@ def get_datasource_configs(
 ) -> Dict[str, dict]:
     entire_pipeline = pipeline.children(source_type)
     return {
-        block.id: obj_to_dict(block)
+        block.id: obj_to_dict(block, key_exclude=["data"])
         for block in flatten(entire_pipeline)
         if isinstance(block, DataSource)
     }

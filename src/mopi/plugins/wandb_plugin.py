@@ -60,10 +60,12 @@ class WandbPlugin(Plugin):
 
     def on_run_begin(self, pipeline: Pipeline) -> Pipeline:
         pipeline_config, hierarchy = pipeline.get_configs()
+
         all_configs = [
             ("run_config", self.run_config),
             ("pipeline_config", pipeline_config),
         ]
+
         self.wandb = launch_wandb(
             self.config.project_id,
             self.config.run_name + ("_train" if self.config.train is True else "_test"),

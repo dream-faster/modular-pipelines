@@ -17,18 +17,28 @@ def is_custom_obj(obj: Any):
         return False
 
 
-def list_to_dict(obj: Union[List, Tuple], type_exclude: Optional[List[str]] = None):
+def list_to_dict(
+    obj: Union[List, Tuple],
+    type_exclude: Optional[List[str]] = None,
+    key_exclude: Optional[List[str]] = None,
+):
     return {
         el.id
         if hasattr(el, "id")
-        else type(el).__name__: obj_to_dict(el, type_exclude=type_exclude)
+        else type(el).__name__: obj_to_dict(
+            el, type_exclude=type_exclude, key_exclude=key_exclude
+        )
         if is_custom_obj(el)
         else el
         for el in obj
     }
 
 
-def obj_to_dict(obj: Any, type_exclude: Optional[List[str]] = None) -> dict:
+def obj_to_dict(
+    obj: Any,
+    type_exclude: Optional[List[str]] = None,
+    key_exclude: Optional[List[str]] = None,
+) -> dict:
     obj_dict = vars(copy(obj))
 
     for key in list(obj_dict.keys()):
@@ -38,8 +48,14 @@ def obj_to_dict(obj: Any, type_exclude: Optional[List[str]] = None) -> dict:
             del obj_dict[key]
             continue
 
+        if key_exclude is not None and key in key_exclude:
+            del obj_dict[key]
+            continue
+
         if isinstance(value, (List, Tuple)):
-            obj_dict[key] = list_to_dict(value, type_exclude=type_exclude)
+            obj_dict[key] = list_to_dict(
+                value, type_exclude=type_exclude, key_exclude=key_exclude
+            )
 
         elif isinstance(value, np.ndarray):
             obj_dict[key] = copy(pd.DataFrame(value).to_dict())
@@ -48,7 +64,9 @@ def obj_to_dict(obj: Any, type_exclude: Optional[List[str]] = None) -> dict:
             obj_dict[key] = copy(value.to_dict())
 
         elif is_custom_obj(value):
-            obj_dict[key] = obj_to_dict(value, type_exclude=type_exclude)
+            obj_dict[key] = obj_to_dict(
+                value, type_exclude=type_exclude, key_exclude=key_exclude
+            )
 
     return obj_dict
 
