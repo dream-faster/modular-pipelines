@@ -49,8 +49,8 @@ class HuggingfaceDataLoader(DataLoader):
         self.name = name
 
     def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
-        self.data = load_dataset(self.path, self.name)
         if self.is_transformed == False:
+            self.data = load_dataset(self.path, self.name)
             if self.shuffle_first:
                 logger.log("⚠️ Shuffling Data", level=logger.levels.TWO)
                 self.data = self.data.shuffle(Const.seed)
