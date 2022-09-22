@@ -10,7 +10,7 @@ from mopi.blocks.transformations import (
     SpacyTokenizer,
     TextStatisticTransformation,
 )
-from mopi.data.dataloader import MergedDataLoader
+from mopi.data.dataloader import MergedDataLoader, SamplingStrategy
 from ..evaluation.classification import classification_metrics
 from ..evaluation.calibration import calibration_metrics
 from sklearn.preprocessing import MinMaxScaler
@@ -34,6 +34,7 @@ from ..pipelines.huggingface import create_nlp_huggingface_pipeline
 from ..pipelines.sklearn_nlp import create_nlp_sklearn_pipeline
 
 from .utils import populate_experiments_with_pipelines
+from ...utils.dataset_analytics import print_dataset_analytics
 
 ### Models
 
@@ -155,8 +156,22 @@ data_merged_train = MergedDataLoader(
         get_tweets_hate_speech_detection_dataloader(),
         get_hate_speech_offensive_dataloader(),
         get_dynahate_dataloader(),
-    ], oversample=True
+    ],
+    sampling=SamplingStrategy.No,
 )
+
+data_merged_test = MergedDataLoader(
+    [
+        dataloader_tweeteval,
+        get_tweets_hate_speech_detection_dataloader(),
+        get_hate_speech_offensive_dataloader(),
+        get_dynahate_dataloader(),
+    ],
+    sampling=SamplingStrategy.OverSample,
+)
+
+print_dataset_analytics(data_merged_train, DatasetSplit.train)
+print_dataset_analytics(data_merged_train, DatasetSplit.test)
 
 
 ### Metrics
@@ -219,7 +234,7 @@ cross_dataset_experiments_tweeteval = [
         pipeline=sklearn,
         metrics=metrics,
         train=False,
-        global_dataloader=data_merged_train,
+        global_dataloader=data_merged_test,
     ),
 ]
 
@@ -279,7 +294,7 @@ cross_dataset_experiments_dynahate = [
         pipeline=sklearn,
         metrics=metrics,
         train=False,
-        global_dataloader=data_merged_train,
+        global_dataloader=data_merged_test,
     ),
 ]
 
@@ -338,7 +353,7 @@ cross_dataset_experiments_offensive = [
         pipeline=sklearn,
         metrics=metrics,
         train=False,
-        global_dataloader=data_merged_train,
+        global_dataloader=data_merged_test,
     ),
 ]
 
@@ -362,7 +377,7 @@ cross_dataset_experiments_merged = [
         pipeline=sklearn,
         metrics=metrics,
         train=False,
-        global_dataloader=data_merged_train,
+        global_dataloader=data_merged_test,
     ),
     Experiment(
         project_name="hate-speech-detection",

@@ -1,3 +1,4 @@
+from enum import Enum
 from mopi.utils.printing import logger
 from mopi.type import (
     PreprocessConfig,
@@ -102,24 +103,30 @@ class PandasDataLoader(DataLoader):
             return self.train_data
 
 
+class SamplingStrategy(Enum):
+    No = 0
+    OverSample = 1
+    UnderSample = 2
+
+
 class MergedDataLoader(DataLoader):
-    def __init__(self, dataloaders: List[DataLoader], oversample: bool):
+    def __init__(self, dataloaders: List[DataLoader], sampling: SamplingStrategy):
         self.dataloaders = dataloaders
         self.preprocessing_config = dataloaders[0].preprocessing_config
         self.path = "/".join([dl.path for dl in dataloaders])
-        self.oversample = oversample
+        self.sampling = sampling
 
     def load(self, category: DatasetSplit) -> Union[TrainDataset, TestDataset]:
         datasets = [data_loader.load(category) for data_loader in self.dataloaders]
         max_dataset_len = max([len(dataset) for dataset in datasets])
         min_dataset_len = min([len(dataset) for dataset in datasets])
 
-        if self.oversample:
+        if self.sampling == SamplingStrategy.OverSample.value:
             datasets = [
                 dataset.sample(n=max_dataset_len, replace=True, random_state=Const.seed)
                 for dataset in datasets
             ]
-        else:
+        elif self.sampling == SamplingStrategy.UnderSample.value:
             datasets = [
                 dataset.sample(n=min_dataset_len, random_state=Const.seed)
                 for dataset in datasets
