@@ -88,7 +88,6 @@ huggingface_distilroberta = Pipeline(
         HuggingfaceModel(
             "distilroberta-base",
             huggingface_distilroberta_config,
-            dict_lookup={"LABEL_0": 0, "LABEL_1": 1},
         ),
         ClassificationOutputAdaptor(select=0),
     ],

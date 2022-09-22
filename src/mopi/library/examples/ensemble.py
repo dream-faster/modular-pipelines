@@ -50,9 +50,7 @@ huggingface_baseline = Pipeline(
     datasource,
     remove_none(
         [
-            HuggingfaceModel(
-                "hf-model", huggingface_config, dict_lookup={"LABEL_0": 0, "LABEL_1": 1}
-            ),
+            HuggingfaceModel("hf-model", huggingface_config),
         ]
     ),
 )

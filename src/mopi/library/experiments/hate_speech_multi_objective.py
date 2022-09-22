@@ -38,14 +38,9 @@ huggingface_training_args = TrainingArguments(
 )
 
 
-class HFModels(Enum):
-    distilbert_base_uncased = "distilbert-base-uncased"
-    distilroberta_base = "distilroberta-base"
-
-
 huggingface_base_config = HuggingfaceConfig(
-    preferred_load_origin=None,  # LoadOrigin.local,
-    pretrained_model=HFModels.distilbert_base_uncased.value,
+    preferred_load_origin=None,
+    pretrained_model="vinai/bertweet-base",
     user_name="semy",
     task_type=HFTaskTypes.sentiment_analysis,
     remote_name_override=None,
@@ -58,23 +53,9 @@ huggingface_base_config = HuggingfaceConfig(
 )
 
 
-huggingface_distil_bert_binary_config = huggingface_base_config
-
-
-huggingface_distilbert_emotion_config = (
-    huggingface_base_config.set_attr(
-        "pretrained_model", HFModels.distilbert_base_uncased.value
-    )
-    .set_attr("num_classes", 6)
-    .set_attr("task_type", HFTaskTypes.text_classification)
-)
-
-huggingface_distilbert_emoji_config = (
-    huggingface_base_config.set_attr(
-        "pretrained_model", HFModels.distilbert_base_uncased.value
-    )
-    .set_attr("num_classes", 6)
-    .set_attr("task_type", HFTaskTypes.text_classification)
+huggingface_binary_config = huggingface_base_config
+huggingface_multiclass_config = huggingface_base_config.set_attr(
+    "task_type", HFTaskTypes.text_classification
 )
 
 
@@ -95,106 +76,72 @@ tweet_eval_offensive = DataSource(
 
 """ Pipelines"""
 
-hf_distilbert_hate = Pipeline(
+pipeline_hate = Pipeline(
     "hf-hate",
     datasource=tweet_eval_hate,
     models=[
         HuggingfaceModel(
-            "distilbert-binary",
-            huggingface_distil_bert_binary_config,
-            dict_lookup={"LABEL_0": 0, "LABEL_1": 1},
+            "bert-binary",
+            huggingface_binary_config,
         ),
     ],
 )
 
-hf_distilbert_sentiment = Pipeline(
+pipeline_sentiment = Pipeline(
     "hf-sentiment",
     datasource=tweet_eval_sentiment,
     models=[
         HuggingfaceModel(
-            "distilbert-binary",
-            huggingface_distil_bert_binary_config,
-            dict_lookup={"LABEL_0": 0, "LABEL_1": 1},
+            "bert-multiclass",
+            huggingface_multiclass_config.set_attr("num_classes", 3),
         ),
     ],
     datasource_predict=tweet_eval_hate,
 )
 
-hf_distilbert_emotion = Pipeline(
+pipeline_emotion = Pipeline(
     "hf-emotion",
     datasource=tweet_eval_emotion,
     models=[
         HuggingfaceModel(
-            "distilbert-multiclass",
-            huggingface_distilbert_emotion_config,
-            dict_lookup={
-                "sadness": 0,
-                "joy": 1,
-                "anger": 2,
-                "fear": 3,
-                "love": 4,
-                "surprise": 5,
-            },
+            "bert-multiclass",
+            huggingface_multiclass_config.set_attr("num_classes", 6),
         ),
     ],
     datasource_predict=tweet_eval_hate,
 )
 
-hf_distilbert_emoji = Pipeline(
+pipeline_emoji = Pipeline(
     "hf-emoji",
     datasource=tweet_eval_emoji,
     models=[
         HuggingfaceModel(
-            "distilbert-multiclass",
-            huggingface_distilbert_emoji_config,
-            dict_lookup={
-                "\u2764": 0,
-                "\ud83d\ude0d": 1,
-                "\ud83d\ude02": 2,
-                "\ud83d\udc95": 3,
-                "\ud83d\udd25": 4,
-                "\ud83d\ude0a": 5,
-                "\ud83d\ude0e": 6,
-                "\u2728": 7,
-                "\ud83d\udc99": 8,
-                "\ud83d\ude18": 9,
-                "\ud83d\udcf7": 10,
-                "\ud83c\uddfa\ud83c\uddf8": 11,
-                "\u2600": 12,
-                "\ud83d\udc9c": 13,
-                "\ud83d\ude09": 14,
-                "\ud83d\udcaf": 15,
-                "\ud83d\ude01": 16,
-                "\ud83c\udf84": 17,
-                "\ud83d\udcf8": 18,
-                "\ud83d\ude1c": 19,
-            },
+            "bert-multiclass",
+            huggingface_multiclass_config.set_attr("num_classes", 20),
         ),
     ],
     datasource_predict=tweet_eval_hate,
 )
 
-hf_distilbert_irony = Pipeline(
+pipeline_irony = Pipeline(
     "hf-irony",
     datasource=tweet_eval_irony,
     models=[
         HuggingfaceModel(
-            "distilbert-binary",
-            huggingface_distil_bert_binary_config,
-            dict_lookup={"LABEL_0": 0, "LABEL_1": 1},
+            "bert-binary",
+            huggingface_binary_config,
         ),
     ],
     datasource_predict=tweet_eval_hate,
 )
 
-hf_distilbert_offensive = Pipeline(
+pipeline_offensive = Pipeline(
     "hf-offensive",
     datasource=tweet_eval_offensive,
     models=[
         HuggingfaceModel(
-            "distilbert-binary",
-            huggingface_distil_bert_binary_config,
-            dict_lookup={"LABEL_0": 0, "LABEL_1": 1},
+            "bert-binary",
+            huggingface_binary_config,
         ),
     ],
     datasource_predict=tweet_eval_hate,
@@ -205,11 +152,11 @@ full_pipeline = Pipeline(
     datasource=ClassificationOutputConcat(
         "concat-source",
         [
-            hf_distilbert_hate,
-            hf_distilbert_sentiment,
-            hf_distilbert_emotion,
-            hf_distilbert_emoji,
-            hf_distilbert_offensive,
+            pipeline_hate,
+            pipeline_sentiment,
+            pipeline_emotion,
+            pipeline_emoji,
+            pipeline_offensive,
         ],
         datasource_labels=tweet_eval_hate,
     ),
