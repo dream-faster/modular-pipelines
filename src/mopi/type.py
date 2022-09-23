@@ -117,8 +117,12 @@ class Experiment:
     save_remote: Optional[bool] = False
     log_remote: Optional[bool] = False
 
-    def get_configs(self, type_exclude: Optional[List[str]] = None):
-        return obj_to_dict(self, type_exclude=type_exclude)
+    def get_configs(
+        self,
+        type_exclude: Optional[List[str]] = None,
+        key_exclude: Optional[List[str]] = None,
+    ):
+        return obj_to_dict(self, type_exclude=type_exclude, key_exclude=key_exclude)
 
 
 class StagingNames(Enum):

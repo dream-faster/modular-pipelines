@@ -46,7 +46,9 @@ def run_training(
                         delete_run=staging_config.delete_remote_log,
                         output_stats=True,
                     ),
-                    run_config=experiment.get_configs(type_exclude=["Pipeline"]),
+                    run_config=experiment.get_configs(
+                        type_exclude=["Pipeline"], key_exclude=["global_dataloader"]
+                    ),
                 )
             ]
             if staging_config.log_remote
